@@ -1,0 +1,15 @@
+﻿{
+	"groupId": "pl.itger.PolishAPI",
+	"artifactId": "PolishAPI_2_1_2_sample",
+	"basePackage": "pl.itger.PolishAPI.io.swagger",
+	"configPackage": "pl.itger.PolishAPI.io.swagger.config",
+	"modelPackage": "pl.itger.PolishAPI.io.swagger.model",
+	"apiPackage": "pl.itger.PolishAPI.io.swagger.api",
+	"invokerPackage": "pl.itger.PolishAPI.io.swagger.invoker",
+	"sourceFolder": "src\\main\\java",
+	"dateLibrary": "java8",
+	"java8": "true",
+	"delegatePattern": "true",
+	"bigDecimalAsString": "true",
+	"useTags": "true"
+}
