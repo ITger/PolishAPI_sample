@@ -20,7 +20,7 @@ Change default port value in application.properties
 # Step by step PSD2 PolishAPI 2_1_2 sample implementation
 
 ## 1.
-Sprawdzamy czy spelnione sa wymagania systemowe dla swaggera:
+Sprawdzamy czy spełnione są wymagania systemowe dla swaggera:
 ```
 {workspace_path}\swagger\swagger-codegen>mvn --version
 ```
@@ -43,7 +43,7 @@ Pobranie swaggera:
 
 ## 3.
 dodanie do pliku  {workspace_path}\swagger\swagger-codegen\modules\swagger-generator\pom.xml
-nastepujacych zaleznosci:
+następujacych zależności:
 ```
 <dependency>
     <groupId>javax.xml.bind</groupId>
@@ -66,26 +66,26 @@ nastepujacych zaleznosci:
     <version>1.1.1</version>
 </dependency>
 ```
-bez tego jest blad kompilacji.
+bez tego jest błąd kompilacji.
 
 ## 4.
 przechodzimy do katalogu {workspace_path}\swagger>cd swagger-codegen
-i nastepnie budujemy swaggera:
+i następnie budujemy swaggera:
 ```
 {workspace_path}\swagger\swagger-codegen>mvn clean package -DskipTests
 ```
-Testy na windows 10 w tej wersji swaggera nie przechodza dlatego trzeba je wylaczyc.
+Testy na windows 10 w tej wersji swaggera nie przechodzą, dlatego trzeba je wyłączyć.
 
 ## 5.
-Pod tym adresem mozemy zapoznac sie z mozliwymi parametrami dla generatora spring:
+Pod tym adresem możemy zapoznac się z możliwymi parametrami dla generatora spring:
 ```
 https://generator.swagger.io/api/gen/servers/spring
 ```
 
 ## 6.
 Dzieki Delegation pattern uzyskamy Loose Coupling oraz Separation of Responsibilities.
-Najwazniejsze sa delegatePattern, java8, bigDecimalAsString.
-wg mnie optymalne parametry generatora dla PolishAPI sa nastepujace:
+Najważniejsze sż delegatePattern, java8, bigDecimalAsString.
+wg mnie optymalne parametry generatora dla PolishAPI sa następujące:
 ```
 {
 "groupId":"pl.itger.PolishAPI",
@@ -104,35 +104,35 @@ wg mnie optymalne parametry generatora dla PolishAPI sa nastepujace:
 ```
 
 ## 7.
-Po sciagnieciu definicji polish-api (plik ZBP-polish-api-2_1_2-swagger.json) przystepujemy do wygenerowania:
+Po ściągnięciu definicji polish-api (plik ZBP-polish-api-2_1_2-swagger.json) przystępujemy do wygenerowania:
 ```
 {workspace_path}\swagger\swagger-codegen\java -jar modules/swagger-codegen-cli/target/swagger-codegen-cli.jar generate -i {workspace_path}\PolishAPI_2_1_2_sample\ZBP-polish-api-2_1_2-swagger.json -l spring -o {workspace_path}\PolishAPI_2_1_2_sample\server -c F:\workspace\PolishAPI_2_1_2_sample\polishAPI_Options.json
 ```
-polishAPI_Options.json jest to plik zawierajacy parametry opisane w punkcie 6.
+polishAPI_Options.json jest to plik zawierający parametry opisane w punkcie 6.
 
 ## 8.
-nastepnie w netbeans tworzymy nowy projekt: New Project/Maven/Project with Existing POM
+następnie w netbeans tworzymy nowy projekt: New Project/Maven/Project with Existing POM
 
 ## 9.
-Poniewaz wsród parametrów generatora swagger zaznaczylismy iz interesuje nas wzorzec Delegate,
-wystarczy teraz utworzyc klasy implementujace interfejsy AisApiDelegate, AsApiDelegate, CafApiDelegate, PisApiDelegate. 
-W tych klasach zawrzemy logike biznesowa i bedziemy uniezaleznieni od generowanego kodu, tj bedziemy mogli regenerowac Polish API nie zmieniajac klas z logika biznesowa.
+Ponieważ wśród parametrów generatora swagger zaznaczyliśmy iż interesuje nas wzorzec Delegate,
+wystarczy teraz utworzyć klasy implementujące interfejsy AisApiDelegate, AsApiDelegate, CafApiDelegate, PisApiDelegate. 
+W tych klasach zawrzemy logike biznesowa i bedziemy uniezaleznieni od generowanego kodu, tj będziemy mogli regenerować Polish API nie zmieniając klas z logiką biznesową.
 
-Np. na poczatek moze byc jedna klasa:
+Np. na początek może być jedna klasa:
 ```
 @Service
 public class NewService implements AisApiDelegate, AsApiDelegate,CafApiDelegate,PisApiDelegate{...}
 ```
-Wazne aby klasa ta miala adnotacje "org.springframework.stereotype.Service"!
+Ważne aby klasa ta miała adnotacje "org.springframework.stereotype.Service"!
 
-Nastepnie czyscimy, budujemy mavenem nasz projekt i uruchamiamy go:
-w netBeans sa to komendy clean and build, a nastepnie run.
+Następnie czyścimy, budujemy mavenem nasz projekt i uruchamiamy go:
+w netBeans są to komendy clean and build, a następnie run.
 
-Spring boot powinien sie odpalic i nasluchiwac na porcie 8080.
+Spring boot powinien sie odpalić i nasłuchiwać na porcie 8080.
 
 ## 10.
-Gdy spring sie uruchomi, z linii komend mozemy przetestowac jego dzialanie.
-Oto przykladowe wywolanie uslugi getAccount:
+Gdy spring sie uruchomi, z linii komend możemy przetestowac jego działanie.
+Oto przykładowe wywołanie usługi getAccount:
 ```
 curl  -X POST -H "Accept: application/json" -H "Accept-Language: PL-pl"  -H "Referer: http://localhost:8080/swagger-ui.html" -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoidXNlcnMvSmFudXN6IGkgR3Jhxbx5bmEiLCJhdWQiOiJzb21ldGhpbmciLCJleHAiOjE1NTE4NjY1OTIsIm5hbWUiOiJKYW51c3ogaSBHcmHFvHluYSBOb3NhY3oiLCJzY29wZSI6InNlbGYgZ3JvdXBzL2FkbWlucyJ9.kfhkYfgXFstJe5Ws4UXGYtEQhh5NBg4Sl6Kqn1wkQH4" -H "X-JWS-SIGNATURE: 123" -H "Accept-Charset: utf-8" -H "X-REQUEST-ID: 1391c93e-45af-11e9-b210-d663bd873d93" -H "DNT: 1" -H "Accept-Encoding: gzip" -H "Connection: keep-alive" -d "{  \"accountNumber\": \"string\",  \"requestHeader\": {  \"ipAddress\": \"string\",  \"isDirectPsu\": false,  \"requestId\": \"1391c93e-45af-11e9-b210-d663bd873d93\",  \"sendDate\": \"2019-03-13T14:34:03.777Z\",  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoidXNlcnMvSmFudXN6IGkgR3Jhxbx5bmEiLCJhdWQiOiJzb21ldGhpbmciLCJleHAiOjE1NTE4NjY1OTIsIm5hbWUiOiJKYW51c3ogaSBHcmHFvHluYSBOb3NhY3oiLCJzY29wZSI6InNlbGYgZ3JvdXBzL2FkbWlucyJ9.kfhkYfgXFstJe5Ws4UXGYtEQhh5NBg4Sl6Kqn1wkQH4\",  \"tppId\": \"string\",  \"userAgent\": \"string\"  }   }"  http://localhost:8080/v2_1_2.1/accounts/v2_1_2.1/getAccount
 ```
