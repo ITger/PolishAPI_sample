@@ -5,16 +5,12 @@
  */
 package pl.itger.PolishAPI.dataFaker;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.config.XmlConfigBuilder;
-import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
-import com.hazelcast.nio.serialization.Data;
 import com.hazelcast.query.EntryObject;
 import com.hazelcast.query.Predicate;
 import com.hazelcast.query.PredicateBuilder;
-import io.swagger.model.AccountBaseInfo;
+import io.swagger.model.AccountInfo;
 import java.util.Collection;
 
 /**
@@ -25,44 +21,46 @@ public class Reader {
 
 public static void main(String[] args) throws Exception {
     new Reader().read();
-
 }
 
 public void read() {
-//    ClassLoader ccl = Thread.currentThread().
-//            getContextClassLoader();
-//// Get the classloader of a class from inside the bundle
-//    ClassLoader classLoader = this.getClass().
-//            getClassLoader();
-//// Set it as context class loader
-//    Thread.currentThread().
-//            setContextClassLoader(classLoader);
-//    Config config = new Config();
-//config.setClassLoader(getBundleClassLoader());
-    //HazelcastInstance client = Hazelcast.newHazelcastInstance(config);
-    //HazelcastInstance client = HazelCastFactory.getInstance();
-
     HazelcastInstance client = HazelCastFactory.getInstance();
+    IMap<Long, io.swagger.model.AccountBaseInfo> accountBaseInfo_map = client.
+            getMap(
+                    "AccountBaseInfo_map");
+    System.out.
+            println("AccountBaseInfo_map.size: " + accountBaseInfo_map.size());
 
     EntryObject e = new PredicateBuilder().getEntryObject();
     Predicate predicate = e.get("accountNumber").
             equal("6767-2827-4794-3486-48");
-    IMap<Long, io.swagger.model.AccountBaseInfo> accountBaseInfo_map = client.getMap(
-            "AccountBaseInfo_map");
 
-    System.out.
-            println("AccountBaseInfo_map.size: " + accountBaseInfo_map.size());
-    //
-    //  accountNumber: 6771-8925-0596-9323
-
-    Collection<io.swagger.model.AccountBaseInfo> result = accountBaseInfo_map.values(predicate);
+    Collection<io.swagger.model.AccountBaseInfo> result = accountBaseInfo_map.
+            values(predicate);
     System.out.println("result.size: " + result.size());
     for (io.swagger.model.AccountBaseInfo accountBaseInfo : result) {
         System.out.println(accountBaseInfo.toString());
     }
-//    Thread.currentThread().
-//            setContextClassLoader(ccl);
-    
+
+    IMap<Long, io.swagger.model.AccountInfo> accountInfo_map = client.
+            getMap(
+                    "AccountInfo_map");
+    System.out.
+            println("accountInfo_map.size: " + accountInfo_map.
+                    size());
+
+    e = new PredicateBuilder().getEntryObject();
+    predicate = e.get("accountNumber").
+            equal("4232-6150-4228-7919");
+
+    Collection<io.swagger.model.AccountInfo> result2 = accountInfo_map.
+            values(predicate);
+    System.out.println("result.size: " + result2.size());
+    AccountInfo ai = null;
+    for (io.swagger.model.AccountInfo accountInfo : result2) {
+        System.out.println(accountInfo.toString());
+        ai = accountInfo;
+    }
     HazelCastFactory.shutDown();
 }
 }

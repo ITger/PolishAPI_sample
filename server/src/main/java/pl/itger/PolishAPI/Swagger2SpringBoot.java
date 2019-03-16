@@ -11,28 +11,33 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
-@ComponentScan(basePackages = { "pl.itger.PolishAPI", "io.swagger.api" , "io.swagger.configuration"})
-public class Swagger2SpringBoot implements CommandLineRunner {
+@ComponentScan(
+            basePackages = {"pl.itger.PolishAPI", "pl.itger.PolishAPI.implementation", "pl.itger.hazelcastConfig", "io.swagger.api", "io.swagger.configuration"})
+public class Swagger2SpringBoot
+        implements CommandLineRunner {
 
-    @Override
-    public void run(String... arg0) throws Exception {
-        if (arg0.length > 0 && arg0[0].equals("exitcode")) {
-            throw new ExitException();
-        }
+@Override
+public void run(String... arg0) throws Exception {
+    if (arg0.length > 0 && arg0[0].equals("exitcode")) {
+        throw new ExitException();
     }
+}
 
-    public static void main(String[] args) throws Exception {
-        FakeDataGen.makeData();
-        new SpringApplication(Swagger2SpringBoot.class).run(args);
-    }
+public static void main(String[] args) throws Exception {
+    //FakeDataGen.makeData();
+    new SpringApplication(Swagger2SpringBoot.class).run(args);
+}
 
-    class ExitException extends RuntimeException implements ExitCodeGenerator {
-        private static final long serialVersionUID = 1L;
+class ExitException
+        extends RuntimeException
+        implements ExitCodeGenerator {
 
-        @Override
-        public int getExitCode() {
-            return 10;
-        }
+private static final long serialVersionUID = 1L;
 
-    }
+@Override
+public int getExitCode() {
+    return 10;
+}
+
+}
 }

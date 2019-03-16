@@ -1,4 +1,4 @@
-package pl.itger.PolishAPI.dataFaker;
+package pl.itger.hazelcastConfig;
 
 import com.github.javafaker.Faker;
 import com.hazelcast.core.HazelcastInstance;
@@ -15,11 +15,21 @@ import io.swagger.model.HoldInfo;
 import io.swagger.model.NameAddress;
 import io.swagger.model.SenderRecipient;
 import java.time.OffsetDateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+@Controller
 public class FakeDataGen {
 
-public static void main(String[] args) throws Exception {
-    makeData();
+@Autowired
+private HazelcastInstance hazelcast_Instance;
+//public static void main(String[] args) throws Exception {
+//    makeData();
 //    HazelcastInstance hz = HazelCastFactory.getInstance();
 //    System.out.println("Hazelcast Member instance is running!");
 //    //HazelcastInstance hz = Hazelcast.newHazelcastInstance();
@@ -29,19 +39,23 @@ public static void main(String[] args) throws Exception {
 //    makeAccountBaseInfo_data(hz,
 //                             faker);
 //    HazelCastFactory.shutDown();
-}
+//}
 
-public static void makeData() {
-    HazelcastInstance hz = HazelCastFactory.getInstance();
+@RequestMapping(value = "/makeData")
+@ResponseBody
+public HttpEntity makeData() {
+    //HazelcastInstance hz = HazelCastFactory.getInstance();
     System.out.println("Hazelcast Member instance is running!");
     Faker faker = new Faker();
-    makeAccountInfo_data(hz,
+    makeAccountInfo_data(hazelcast_Instance,
                          faker);
-    makeAccountBaseInfo_data(hz,
+    makeAccountBaseInfo_data(hazelcast_Instance,
                              faker);
-    makeHoldInfo_data(hz,
+    makeHoldInfo_data(hazelcast_Instance,
                       faker);
-    HazelCastFactory.shutDown();
+    return HttpEntity.EMPTY;
+    //HazelCastFactory.shutDown();
+
 }
 
 private static void makeHoldInfo_data(HazelcastInstance hz,
