@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableSwagger2
 @ComponentScan(
-            basePackages = {"pl.itger.PolishAPI", "pl.itger.PolishAPI.implementation", "pl.itger.hazelcastConfig", "io.swagger.api", "io.swagger.configuration"})
+        basePackages = {"pl.itger.PolishAPI", "pl.itger.PolishAPI.implementation", "pl.itger.hazelcastConfig", "io.swagger.api", "io.swagger.configuration"})
 public class Swagger2SpringBoot
         implements CommandLineRunner {
 

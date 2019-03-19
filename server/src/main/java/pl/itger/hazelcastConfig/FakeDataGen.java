@@ -18,9 +18,7 @@ import java.time.OffsetDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -28,23 +26,10 @@ public class FakeDataGen {
 
 @Autowired
 private HazelcastInstance hazelcast_Instance;
-//public static void main(String[] args) throws Exception {
-//    makeData();
-//    HazelcastInstance hz = HazelCastFactory.getInstance();
-//    System.out.println("Hazelcast Member instance is running!");
-//    //HazelcastInstance hz = Hazelcast.newHazelcastInstance();
-//    Faker faker = new Faker();
-//    makeAccountInfo_data(hz,
-//                         faker);
-//    makeAccountBaseInfo_data(hz,
-//                             faker);
-//    HazelCastFactory.shutDown();
-//}
 
-@RequestMapping(value = "/makeData")
+@RequestMapping(value = "/makeFakeData")
 @ResponseBody
-public HttpEntity makeData() {
-    //HazelcastInstance hz = HazelCastFactory.getInstance();
+public HttpEntity makeFakeData() {
     System.out.println("Hazelcast Member instance is running!");
     Faker faker = new Faker();
     makeAccountInfo_data(hazelcast_Instance,
@@ -54,8 +39,6 @@ public HttpEntity makeData() {
     makeHoldInfo_data(hazelcast_Instance,
                       faker);
     return HttpEntity.EMPTY;
-    //HazelCastFactory.shutDown();
-
 }
 
 private static void makeHoldInfo_data(HazelcastInstance hz,
@@ -148,6 +131,12 @@ private static void makeAccountBaseInfo_data(HazelcastInstance hz,
         aBI.setAccountType(di);
         aBI.setAccountTypeName(faker.company().
                 buzzword());
+//        PageInfo pageInfo = new PageInfo();
+//        pageInfo.setNextPage(Integer.toString(faker.number().numberBetween(5,
+//                              10)));
+//        pageInfo.setPreviousPage(Integer.toString(faker.number().numberBetween(1,
+//                              4)));
+//        aBI.set
         aBI.addPsuRelationsItem(fakeAccountPsuRelation(faker));
         System.out.println(aBI);
         AccountBaseInfo_map.putIfAbsent(idGen.newId(),

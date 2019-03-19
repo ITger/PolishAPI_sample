@@ -15,6 +15,7 @@ import io.swagger.model.HoldInfo;
 import io.swagger.model.NameAddress;
 import io.swagger.model.SenderRecipient;
 import java.time.OffsetDateTime;
+import java.util.concurrent.TimeUnit;
 
 public class FakeDataGen {
 
@@ -59,7 +60,12 @@ private static void makeHoldInfo_data(HazelcastInstance hz,
                 code());
         hI.setDescription(faker.chuckNorris().
                 fact());
-        hI.setHoldExpirationDate(OffsetDateTime.MIN);
+        hI.setHoldExpirationDate(faker.date().
+                future(90,
+                       TimeUnit.DAYS).
+                toInstant().
+                atOffset(OffsetDateTime.now().
+                        getOffset()));
         hI.setInitiator(fakeNameaddress(faker));
         hI.setItemId(faker.idNumber().
                 ssnValid());
@@ -68,7 +74,12 @@ private static void makeHoldInfo_data(HazelcastInstance hz,
                               6000)));
         hI.setRecipient(fakeSenderRecipient(faker));
         hI.setSender(fakeSenderRecipient(faker));
-        hI.setTradeDate(OffsetDateTime.MAX);
+        hI.setTradeDate(faker.date().
+                past(90,
+                     TimeUnit.DAYS).
+                toInstant().
+                atOffset(OffsetDateTime.now().
+                        getOffset()));
         hI.setTransactionType(faker.commerce().
                 productName());
         HoldInfo_map.putIfAbsent(idGen.newId(),
