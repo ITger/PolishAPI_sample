@@ -1,7 +1,7 @@
 ﻿{
 	"groupId": "pl.itger.PolishAPI",
 	"artifactId": "PolishAPI_2_1_2_sample",
-	"basePackage": "pl.itger.PolishAPI.io.swagger",
+	"basePackage": "pl.itger.PolishAPI",
 	"configPackage": "pl.itger.PolishAPI.io.swagger.config",
 	"modelPackage": "pl.itger.PolishAPI.io.swagger.model",
 	"apiPackage": "pl.itger.PolishAPI.io.swagger.api",
@@ -11,6 +11,6 @@
 	"java8": "true",
 	"delegatePattern": "true",
 	"bigDecimalAsString": "true",
-	"useTags": "true"
+	"useTags": "true",
+	"serializableModel": "true"
 }
-
