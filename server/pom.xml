@@ -32,16 +32,16 @@
             </plugin>
         </plugins>
     </build>
-   
+
     <profiles>
         <profile>
             <id>only-model</id>
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-jar-plugin</artifactId>                        
+                        <artifactId>maven-jar-plugin</artifactId>
                         <configuration>
-                            <classifier>only-model</classifier>                            
+                            <classifier>only-model</classifier>
                             <sourceDirectory>src/main/java</sourceDirectory>
                             <includes>
                                 <include>**/io/swagger/model/*</include>
@@ -59,7 +59,7 @@
             </build>
         </profile>
     </profiles>
-   
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -122,5 +122,12 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.8.1</version>
         </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+            <type>jar</type>
+        </dependency>
+        
     </dependencies>
 </project>

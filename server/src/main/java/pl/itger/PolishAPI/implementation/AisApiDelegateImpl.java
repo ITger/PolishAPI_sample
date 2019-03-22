@@ -35,8 +35,6 @@ import io.swagger.model.TransactionsCancelledInfoResponse;
 import io.swagger.model.TransactionsDoneInfoResponse;
 import io.swagger.model.TransactionsScheduledInfoResponse;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -47,16 +45,20 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-@org.springframework.stereotype.Service
+@Service
 public class AisApiDelegateImpl
         implements AisApiDelegate {
 
 @Autowired
 private HazelcastInstance hazelcast_Instance;
+
+@Autowired
+private TokenUtils tokenUtils;
 
 @Override
 public Optional<ObjectMapper> getObjectMapper() {
@@ -288,11 +290,12 @@ public ResponseEntity<HoldInfoResponse> getHolds(String authorization,
         String X_REQUEST_ID,
         HoldRequest getHoldsRequest) {
     if (getObjectMapper().
-            isPresent() && getAcceptHeader().
-                    isPresent()) {
-        if (getAcceptHeader().
-                get().
-                contains("application/json")) {
+            isPresent() && getAcceptHeader().isPresent()) {
+        if (getAcceptHeader().get().contains("application/json")) {
+            if (tokenUtils.verify(authorization,
+                                  getHoldsRequest.getRequestHeader().getToken())) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
             try {
                 final List<Predicate<String, String>> predicates = new LinkedList<>();
 
@@ -349,10 +352,10 @@ public ResponseEntity<HoldInfoResponse> getHolds(String authorization,
                         getHoldsRequest.getTransactionDateTo()).
                         ifPresent(value -> predicates.add(Predicates.
                         lessEqual("tradeDate",
-                                     OffsetDateTime.of(value.atStartOfDay(),
-                                                       OffsetDateTime.now().
-                                                               getOffset()
-                                     )
+                                  OffsetDateTime.of(value.atStartOfDay(),
+                                                    OffsetDateTime.now().
+                                                            getOffset()
+                                  )
                         )));
                 IMap<Long, HoldInfo> _map = hazelcast_Instance.
                         getMap("HoldInfo_map");
