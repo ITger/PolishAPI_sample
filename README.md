@@ -9,7 +9,7 @@ In this case study I tried to get the best from Swagger code generator and the b
 * [maven](https://maven.apache.org/)
 * [Hazelcast](https://hazelcast.com/)
 * [PolishAPI](https://app.swaggerhub.com/apis/ZBP/polish-api/2_1_2)
-* [curl](https://github.com/curl/curl) [curl for windows](https://curl.haxx.se/windows/)
+* [curl](https://github.com/curl/curl) or [curl for windows](https://curl.haxx.se/windows/)
 ## Getting Started
 * After installing jdk 11 and Maven you should check minimal system requirements, simply run:
 ```
@@ -58,22 +58,22 @@ and then build swagger codegen:
 ```
 {workspace_path}\swagger\swagger-codegen>mvn clean package -DskipTests
 ```
-tests fail in the version of swagger I installed on Win10pro, so I skipped them.
-* Is good to know all possible swagger codegen [parameters for spring](https://generator.swagger.io/api/gen/servers/spring).
+tests fail in the swagger version I installed on my Win10pro, so I skipped them.
+* Is good to know and understand all possible swagger codegen [parameters for spring](https://generator.swagger.io/api/gen/servers/spring).
 * Download the ZBP-polish-api-2_1_2-swagger.json file from [PolishAPI](https://app.swaggerhub.com/apis/ZBP/polish-api/2_1_2).
 * In polishAPI_Options.json file I created, I included some parameters for swagger codegen. The most important are:
 ```
 {
 .....
     "dateLibrary": "java8",
-	"java8": "true",
-	"delegatePattern": "true",
-	"bigDecimalAsString": "true",
-	"useTags": "true",
-	"serializableModel": "true"
+    "java8": "true",
+    "delegatePattern": "true",
+    "bigDecimalAsString": "true",
+    "useTags": "true",
+    "serializableModel": "true"
 }
 ```
-* Next step is to generate the spring-boot application:
+* Next step is to generate the spring-boot server:
 ```
 {workspace_path}\swagger\swagger-codegen\java -jar modules/swagger-codegen-cli/target/swagger-codegen-cli.jar generate -i {workspace_path}\PolishAPI_2_1_2_sample\ZBP-polish-api-2_1_2-swagger.json -l spring -o {workspace_path}\PolishAPI_2_1_2_sample\server -c {workspace_path}\PolishAPI_2_1_2_sample\polishAPI_Options.json
 ```
@@ -86,11 +86,12 @@ executing the following command is a must:
 ```
 curl  -X POST  http://localhost:8080/makeFakeData
 ```
-this way we generate RANDOM fake data. 
+this way, we generate RANDOM fake data. 
 * When spring started, you can test its functionality. The best is using curl, for example:
 ```
 curl  -X POST -H "Accept: application/json" -H "Accept-Language: PL-pl"  -H "Referer: http://localhost:8080/swagger-ui.html" -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoidXNlcnMvSmFudXN6IGkgR3Jhxbx5bmEiLCJhdWQiOiJzb21ldGhpbmciLCJleHAiOjE1NTE4NjY1OTIsIm5hbWUiOiJKYW51c3ogaSBHcmHFvHluYSBOb3NhY3oiLCJzY29wZSI6InNlbGYgZ3JvdXBzL2FkbWlucyJ9.kfhkYfgXFstJe5Ws4UXGYtEQhh5NBg4Sl6Kqn1wkQH4" -H "X-JWS-SIGNATURE: 123" -H "Accept-Charset: utf-8" -H "X-REQUEST-ID: 1391c93e-45af-11e9-b210-d663bd873d93" -H "DNT: 1" -H "Accept-Encoding: gzip" -H "Connection: keep-alive" -d "{  \"accountNumber\": \"string\",  \"requestHeader\": {  \"ipAddress\": \"string\",  \"isDirectPsu\": false,  \"requestId\": \"1391c93e-45af-11e9-b210-d663bd873d93\",  \"sendDate\": \"2019-03-13T14:34:03.777Z\",  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoidXNlcnMvSmFudXN6IGkgR3Jhxbx5bmEiLCJhdWQiOiJzb21ldGhpbmciLCJleHAiOjE1NTE4NjY1OTIsIm5hbWUiOiJKYW51c3ogaSBHcmHFvHluYSBOb3NhY3oiLCJzY29wZSI6InNlbGYgZ3JvdXBzL2FkbWlucyJ9.kfhkYfgXFstJe5Ws4UXGYtEQhh5NBg4Sl6Kqn1wkQH4\",  \"tppId\": \"string\",  \"userAgent\": \"string\"  }   }"  http://localhost:8080/v2_1_2.1/accounts/v2_1_2.1/getAccount
 ```
 the query predicates must be in accordance with generated data. 
+## .. work in progress ...
 ## Authors
 * **Piotr Zerynger** - *Initial work* - [Piotr Zerynger](p.zerynger@gmail.com)
