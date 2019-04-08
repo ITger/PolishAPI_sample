@@ -8,12 +8,14 @@ package pl.itger.PolishAPI.implementation;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-import com.hazelcast.query.EntryObject;
-import com.hazelcast.query.Predicate;
-import com.hazelcast.query.PredicateBuilder;
-import com.hazelcast.query.Predicates;
+//import com.google.common.base.Predicate;
+//import com.google.common.base.Predicates;
+//import com.hazelcast.core.HazelcastInstance;
+//import com.hazelcast.core.IMap;
+//import com.hazelcast.query.EntryObject;
+//import com.hazelcast.query.Predicate;
+//import com.hazelcast.query.PredicateBuilder;
+//import com.hazelcast.query.Predicates;
 import io.swagger.api.AisApiDelegate;
 import static io.swagger.api.AisApiDelegate.log;
 import io.swagger.model.AccountInfo;
@@ -54,8 +56,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class AisApiDelegateImpl
         implements AisApiDelegate {
 
-@Autowired
-private HazelcastInstance hazelcast_Instance;
+//@Autowired
+//private HazelcastInstance hazelcast_Instance;
+
+//@Autowired
+//    private HoldInfoRepository holdInfoRepository;
 
 @Autowired
 private TokenUtils tokenUtils;
@@ -113,44 +118,44 @@ public ResponseEntity<AccountResponse> getAccount(String authorization,
         if (getAcceptHeader().
                 get().
                 contains("application/json")) {
-            try {
-                final String accountNumber = getAccountRequest.
-                        getAccountNumber().
-                        trim();
+//            try {
+//                final String accountNumber = getAccountRequest.
+//                        getAccountNumber().
+//                        trim();
                 //System.out.println("accountNumber: " + accountNumber);
-                IMap<Long, AccountInfo> _map = hazelcast_Instance.
-                        getMap("AccountInfo_map");
-                System.out.println("accountInfo_map: " + _map.size());
-                EntryObject e = new PredicateBuilder().getEntryObject();
-                Predicate predicate = e.get("accountNumber").
-                        equal(accountNumber);
-                Collection<AccountInfo> result = _map.
-                        values(predicate);
-                //System.out.println("result.size: " + result.size());
-                AccountResponse response = new AccountResponse();
-                ResponseHeader responseHeader = new ResponseHeader();
-                responseHeader.setIsCallback(Boolean.FALSE);
-                responseHeader.setRequestId(
-                        getAccountRequest.getRequestHeader().
-                                getRequestId());
-                responseHeader.setSendDate(OffsetDateTime.now());
-                response.setResponseHeader(responseHeader);
-                if (result.size() < 1) {
-                    return new ResponseEntity<>(response,
-                                                HttpStatus.NOT_FOUND);
-                } else if (result.size() > 1) {
-                    return new ResponseEntity<>(response,
-                                                HttpStatus.BAD_REQUEST);
-                }
-                AccountInfo ai = (AccountInfo) result.toArray()[0];
-                response.setAccount(ai);
-                return new ResponseEntity<>(response,
-                                            HttpStatus.OK);
-            } catch (Exception e) {
-                log.error(e.getLocalizedMessage(),
-                          e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+//                IMap<Long, AccountInfo> _map = hazelcast_Instance.
+//                        getMap("AccountInfo_map");
+//                System.out.println("accountInfo_map: " + _map.size());
+//                EntryObject e = new PredicateBuilder().getEntryObject();
+//                Predicate predicate = e.get("accountNumber").
+//                        equal(accountNumber);
+//                Collection<AccountInfo> result = _map.
+//                        values(predicate);
+//                //System.out.println("result.size: " + result.size());
+//                AccountResponse response = new AccountResponse();
+//                ResponseHeader responseHeader = new ResponseHeader();
+//                responseHeader.setIsCallback(Boolean.FALSE);
+//                responseHeader.setRequestId(
+//                        getAccountRequest.getRequestHeader().
+//                                getRequestId());
+//                responseHeader.setSendDate(OffsetDateTime.now());
+//                response.setResponseHeader(responseHeader);
+//                if (result.size() < 1) {
+//                    return new ResponseEntity<>(response,
+//                                                HttpStatus.NOT_FOUND);
+//                } else if (result.size() > 1) {
+//                    return new ResponseEntity<>(response,
+//                                                HttpStatus.BAD_REQUEST);
+//                }
+//                AccountInfo ai = (AccountInfo) result.toArray()[0];
+//                response.setAccount(ai);
+//                return new ResponseEntity<>(response,
+//                                            HttpStatus.OK);
+//            } catch (Exception e) {
+//                log.error(e.getLocalizedMessage(),
+//                          e);
+//                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
         }
     } else {
         log.warn(
@@ -175,7 +180,7 @@ public ResponseEntity<AccountsResponse> getAccounts(String authorization,
                 contains("application/json")) {
             try {
 
-                final List<Predicate<?, ?>> predicates = new LinkedList<>();
+                //final List<Predicate<?, ?>> predicates = new LinkedList<>();
                 // Message ID
 //    if (messageId != null)
 //    {
@@ -292,98 +297,100 @@ public ResponseEntity<HoldInfoResponse> getHolds(String authorization,
     if (getObjectMapper().
             isPresent() && getAcceptHeader().isPresent()) {
         if (getAcceptHeader().get().contains("application/json")) {
-            if (tokenUtils.verify(authorization,
-                                  getHoldsRequest.getRequestHeader().getToken())) {
+            if (!tokenUtils.verify(authorization,
+                                   getHoldsRequest.getRequestHeader().getToken())) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            try {
-                final List<Predicate<String, String>> predicates = new LinkedList<>();
-
-                Optional.ofNullable(
-                        getHoldsRequest.getAccountNumber()).
-                        ifPresent(value -> predicates.add(Predicates.
-                        equal("accountNumber",
-                              value)));
-                Optional.ofNullable(
-                        getHoldsRequest.getBookingDateFrom()).
-                        ifPresent(value -> predicates.add(Predicates.
-                        equal("bookingDateFrom",
-                              value)));
-                Optional.ofNullable(
-                        getHoldsRequest.getBookingDateTo()).
-                        ifPresent(value -> predicates.add(Predicates.
-                        equal("bookingDateTo",
-                              value)));
-                Optional.ofNullable(
-                        getHoldsRequest.getItemIdFrom()).
-                        ifPresent(value -> predicates.add(Predicates.
-                        equal("itemIdFrom",
-                              value)));
-                Optional.ofNullable(
-                        getHoldsRequest.getMaxAmount()).
-                        ifPresent(value -> predicates.add(Predicates.
-                        equal("maxAmount",
-                              value)));
-                Optional.ofNullable(
-                        getHoldsRequest.getMinAmount()).
-                        ifPresent(value -> predicates.add(Predicates.
-                        equal("minAmount",
-                              value)));
-                Optional.ofNullable(
-                        getHoldsRequest.getPageId()).
-                        ifPresent(value -> predicates.add(Predicates.
-                        equal("pageId",
-                              value)));
-                Optional.ofNullable(
-                        getHoldsRequest.getPerPage()).
-                        ifPresent(value -> predicates.add(Predicates.
-                        equal("perPage",
-                              value)));
-                Optional.ofNullable(
-                        getHoldsRequest.getTransactionDateFrom()).
-                        ifPresent(value -> predicates.add(Predicates.
-                        greaterEqual("tradeDate",
-                                     OffsetDateTime.of(value.atStartOfDay(),
-                                                       OffsetDateTime.now().
-                                                               getOffset()
-                                     )
-                        )));
-                Optional.ofNullable(
-                        getHoldsRequest.getTransactionDateTo()).
-                        ifPresent(value -> predicates.add(Predicates.
-                        lessEqual("tradeDate",
-                                  OffsetDateTime.of(value.atStartOfDay(),
-                                                    OffsetDateTime.now().
-                                                            getOffset()
-                                  )
-                        )));
-                IMap<Long, HoldInfo> _map = hazelcast_Instance.
-                        getMap("HoldInfo_map");
-                System.out.println("_map: " + _map.size());
-
-                Collection<HoldInfo> result = _map.
-                        values(Predicates.and(predicates.toArray(
-                                new Predicate[predicates.size()])));
-                ResponseHeader responseHeader = new ResponseHeader();
-                //TODO sprawdzic pole X_REQUEST_ID
-                responseHeader.setRequestId(UUID.fromString(X_REQUEST_ID));
-                responseHeader.setIsCallback(Boolean.FALSE);
-                responseHeader.setSendDate(OffsetDateTime.now());
-                //
-                HoldInfoResponse response = new HoldInfoResponse();
-                response.setResponseHeader(responseHeader);
-                if (result.size() < 1) {
-                    return new ResponseEntity<>(response,
-                                                HttpStatus.NOT_FOUND);
-                }
-                response.setHolds(new ArrayList<>(result));
-                return new ResponseEntity<>(response,
-                                            HttpStatus.OK);
-            } catch (Exception e) {
-                log.error(e.getLocalizedMessage(),
-                          e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+//            try {
+//                final List<Predicate<String, String>> predicates = new LinkedList<>();
+//
+//                Optional.ofNullable(
+//                        getHoldsRequest.getAccountNumber()).
+//                        ifPresent(value -> predicates.add(Predicates.
+//                        equal("accountNumber",
+//                              value)));
+//                Optional.ofNullable(
+//                        getHoldsRequest.getBookingDateFrom()).
+//                        ifPresent(value -> predicates.add(Predicates.
+//                        equal("bookingDateFrom",
+//                              value)));
+//                Optional.ofNullable(
+//                        getHoldsRequest.getBookingDateTo()).
+//                        ifPresent(value -> predicates.add(Predicates.
+//                        equal("bookingDateTo",
+//                              value)));
+//                Optional.ofNullable(
+//                        getHoldsRequest.getItemIdFrom()).
+//                        ifPresent(value -> predicates.add(Predicates.
+//                        equal("itemIdFrom",
+//                              value)));
+//                Optional.ofNullable(
+//                        getHoldsRequest.getMaxAmount()).
+//                        ifPresent(value -> predicates.add(Predicates.
+//                        equal("maxAmount",
+//                              value)));
+//                Optional.ofNullable(
+//                        getHoldsRequest.getMinAmount()).
+//                        ifPresent(value -> predicates.add(Predicates.
+//                        equal("minAmount",
+//                              value)));
+//                Optional.ofNullable(
+//                        getHoldsRequest.getPageId()).
+//                        ifPresent(value -> predicates.add(Predicates.
+//                        equal("pageId",
+//                              value)));
+//                Optional.ofNullable(
+//                        getHoldsRequest.getPerPage()).
+//                        ifPresent(value -> predicates.add(Predicates.
+//                        equal("perPage",
+//                              value)));
+//                Optional.ofNullable(
+//                        getHoldsRequest.getTransactionDateFrom()).
+//                        ifPresent(value -> predicates.add(Predicates.
+//                        greaterEqual("tradeDate",
+//                                     OffsetDateTime.of(value.atStartOfDay(),
+//                                                       OffsetDateTime.now().
+//                                                               getOffset()
+//                                     )
+//                        )));
+//                Optional.ofNullable(
+//                        getHoldsRequest.getTransactionDateTo()).
+//                        ifPresent(value -> predicates.add(Predicates.
+//                        lessEqual("tradeDate",
+//                                  OffsetDateTime.of(value.atStartOfDay(),
+//                                                    OffsetDateTime.now().
+//                                                            getOffset()
+//                                  )
+//                        )));
+//                System.out.println("predicates: " + predicates.size() + " " + predicates.toString());
+//                //GenericEntity foundEntity = genericEntityRepository.findOne(genericEntity.getId());
+//                IMap<Long, HoldInfo> _map = hazelcast_Instance.
+//                        getMap("HoldInfo_map");
+//                System.out.println("_map: " + _map.size());
+//
+//                Collection<HoldInfo> result = _map.
+//                        values(Predicates.and(predicates.toArray(
+//                                new Predicate[predicates.size()])));
+//                ResponseHeader responseHeader = new ResponseHeader();
+//                //TODO sprawdzic pole X_REQUEST_ID
+//                responseHeader.setRequestId(UUID.fromString(X_REQUEST_ID));
+//                responseHeader.setIsCallback(Boolean.FALSE);
+//                responseHeader.setSendDate(OffsetDateTime.now());
+//                //
+//                HoldInfoResponse response = new HoldInfoResponse();
+//                response.setResponseHeader(responseHeader);
+//                if (result.size() < 1) {
+//                    return new ResponseEntity<>(response,
+//                                                HttpStatus.NOT_FOUND);
+//                }
+//                response.setHolds(new ArrayList<>(result));
+//                return new ResponseEntity<>(response,
+//                                            HttpStatus.OK);
+//            } catch (Exception e) {
+//                log.error(e.getLocalizedMessage(),
+//                          e);
+//                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
         }
     } else {
         log.warn(

@@ -1,4 +1,4 @@
-package pl.itger.PolishAPI.dataFaker;
+package pl.itger.jpaConfig;
 
 import com.github.javafaker.Faker;
 //import com.hazelcast.core.HazelcastInstance;
@@ -15,61 +15,59 @@ import io.swagger.model.HoldInfo;
 import io.swagger.model.NameAddress;
 import io.swagger.model.SenderRecipient;
 import java.time.OffsetDateTime;
-import java.util.concurrent.TimeUnit;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+@Controller
 public class FakeDataGen {
 
-public static void main(String[] args) throws Exception {
-    makeData();
-//    HazelcastInstance hz = HazelCastFactory.getInstance();
-//    System.out.println("Hazelcast Member instance is running!");
-//    //HazelcastInstance hz = Hazelcast.newHazelcastInstance();
-//    Faker faker = new Faker();
-//    makeAccountInfo_data(hz,
-//                         faker);
-//    makeAccountBaseInfo_data(hz,
-//                             faker);
-//    HazelCastFactory.shutDown();
-}
+@Autowired
+//private HazelcastInstance hazelcast_Instance;
 
-public static void makeData() {
-//    HazelcastInstance hz = HazelCastFactory.getInstance();
+@RequestMapping(value = "/makeFakeData")
+@ResponseBody
+public HttpEntity makeFakeData() {
 //    System.out.println("Hazelcast Member instance is running!");
 //    Faker faker = new Faker();
-//    makeAccountInfo_data(hz,
+//    makeAccountInfo_data(hazelcast_Instance,
 //                         faker);
-//    makeAccountBaseInfo_data(hz,
+//    makeAccountBaseInfo_data(hazelcast_Instance,
 //                             faker);
-//    makeHoldInfo_data(hz,
+//    makeHoldInfo_data(hazelcast_Instance,
 //                      faker);
-//    HazelCastFactory.shutDown();
+    return HttpEntity.EMPTY;
 }
 
 //private static void makeHoldInfo_data(HazelcastInstance hz,
 //        Faker faker) {
 //    IdGenerator idGen = hz.getIdGenerator("newId");
-//    IMap<Long, HoldInfo> HoldInfo_map = hz.getMap("HoldInfo_map");
+//    IMap<Long, HoldInfo> HoldInfo_map = hz.getMap(
+//            "HoldInfo_map");
 //    for (int i = 0; i < 50; i++) {
 //        HoldInfo hI = new HoldInfo();
 //        hI.setAmount(Double.toString(faker.number().
 //                randomDouble(2,
 //                             1,
 //                             1000000)));
-//        hI.setCurrency(faker.currency().code());
-//        hI.setDescription(faker.chuckNorris().fact());
-//        hI.setHoldExpirationDate(faker.date().future(90,
-//                                                     TimeUnit.DAYS).
-//                toInstant().atOffset(OffsetDateTime.now().getOffset()));
+//        hI.setCurrency(faker.currency().
+//                code());
+//        hI.setDescription(faker.chuckNorris().
+//                fact());
+//        hI.setHoldExpirationDate(OffsetDateTime.MIN);
 //        hI.setInitiator(fakeNameaddress(faker));
-//        hI.setItemId(faker.idNumber().ssnValid());
-//        hI.setMcc(String.valueOf(faker.number().numberBetween(1000,
-//                                                              6000)));
+//        hI.setItemId(faker.idNumber().
+//                ssnValid());
+//        hI.setMcc(String.valueOf(faker.number().
+//                numberBetween(1000,
+//                              6000)));
 //        hI.setRecipient(fakeSenderRecipient(faker));
 //        hI.setSender(fakeSenderRecipient(faker));
-//        hI.setTradeDate(faker.date().past(90,
-//                                          TimeUnit.DAYS).toInstant().
-//                atOffset(OffsetDateTime.now().getOffset()));
-//        hI.setTransactionType(faker.commerce().productName());
+//        hI.setTradeDate(OffsetDateTime.MAX);
+//        hI.setTransactionType(faker.commerce().
+//                productName());
 //        HoldInfo_map.putIfAbsent(idGen.newId(),
 //                                 hI);
 //        System.out.println(hI);
@@ -81,15 +79,19 @@ public static void makeData() {
 //
 //private static NameAddress fakeNameaddress(Faker faker) {
 //    NameAddress initiator = new NameAddress();
-//    initiator.addValueItem(faker.address().fullAddress());
-//    initiator.addValueItem(faker.address().fullAddress());
+//    initiator.addValueItem(faker.address().
+//            fullAddress());
+//    initiator.addValueItem(faker.address().
+//            fullAddress());
 //    return initiator;
 //}
 //
 //private static SenderRecipient fakeSenderRecipient(Faker faker) {
 //    SenderRecipient recipient = new SenderRecipient();
-//    recipient.setAccountMassPayment(faker.finance().creditCard());
-//    recipient.setAccountNumber(faker.finance().creditCard());
+//    recipient.setAccountMassPayment(faker.finance().
+//            creditCard());
+//    recipient.setAccountNumber(faker.finance().
+//            creditCard());
 //    recipient.setBank(fakeBank(faker));
 //    return recipient;
 //}
@@ -97,10 +99,14 @@ public static void makeData() {
 //private static Bank fakeBank(Faker faker) {
 //    Bank bank = new Bank();
 //    bank.setAddress(fakeAddress(faker));
-//    bank.setBicOrSwift(faker.finance().bic());
-//    bank.setCode(faker.finance().iban());
-//    bank.setCountryCode(faker.address().countryCode());
-//    bank.setName(faker.company().name());
+//    bank.setBicOrSwift(faker.finance().
+//            bic());
+//    bank.setCode(faker.finance().
+//            iban());
+//    bank.setCountryCode(faker.address().
+//            countryCode());
+//    bank.setName(faker.company().
+//            name());
 //    return bank;
 //}
 //
@@ -113,14 +119,24 @@ public static void makeData() {
 //            "DictionaryItem_AccountBaseInfo");
 //    for (int i = 0; i < 50; i++) {
 //        AccountBaseInfo aBI = new AccountBaseInfo();
-//        aBI.setAccountNumber(faker.finance().creditCard());
+//        aBI.setAccountNumber(faker.finance().
+//                creditCard());
 //        DictionaryItem di = new DictionaryItem();
-//        di.setCode(faker.commerce().productName());
-//        di.setDescription(faker.chuckNorris().fact());
+//        di.setCode(faker.commerce().
+//                productName());
+//        di.setDescription(faker.chuckNorris().
+//                fact());
 //        dictionaryItem_map.put(idGen.newId(),
 //                               di);
 //        aBI.setAccountType(di);
-//        aBI.setAccountTypeName(faker.company().buzzword());
+//        aBI.setAccountTypeName(faker.company().
+//                buzzword());
+////        PageInfo pageInfo = new PageInfo();
+////        pageInfo.setNextPage(Integer.toString(faker.number().numberBetween(5,
+////                              10)));
+////        pageInfo.setPreviousPage(Integer.toString(faker.number().numberBetween(1,
+////                              4)));
+////        aBI.set
 //        aBI.addPsuRelationsItem(fakeAccountPsuRelation(faker));
 //        System.out.println(aBI);
 //        AccountBaseInfo_map.putIfAbsent(idGen.newId(),
@@ -135,14 +151,17 @@ public static void makeData() {
 //private static AccountPsuRelation fakeAccountPsuRelation(Faker faker) {
 //    AccountPsuRelation acountPsuRelation = new AccountPsuRelation();
 //    acountPsuRelation.setTypeOfRelation(
-//            AccountPsuRelation.TypeOfRelationEnum.values()[faker.number().
-//            numberBetween(0,
-//                          5)]);
+//            AccountPsuRelation.TypeOfRelationEnum.
+//                    values()[faker.number().
+//                    numberBetween(0,
+//                                  5)]);
 //    acountPsuRelation.setTypeOfProxy(
-//            AccountPsuRelation.TypeOfProxyEnum.values()[faker.number().
-//            numberBetween(0,
-//                          3)]);
-//    acountPsuRelation.setStake(faker.number().randomDigit());
+//            AccountPsuRelation.TypeOfProxyEnum.
+//                    values()[faker.number().
+//                    numberBetween(0,
+//                                  3)]);
+//    acountPsuRelation.setStake(faker.number().
+//            randomDigit());
 //    return acountPsuRelation;
 //}
 //
@@ -156,17 +175,23 @@ public static void makeData() {
 //        AccountInfo accI = new AccountInfo();
 //        accI.setAccountHolderType(
 //                AccountInfo.AccountHolderTypeEnum.
-//                        values()[faker.number().numberBetween(0,
-//                                                              1)]);
-//        accI.setAccountNameClient(faker.name().nameWithMiddle());
-//        accI.setAccountNumber(faker.finance().creditCard());
+//                        values()[faker.number().
+//                        numberBetween(0,
+//                                      1)]);
+//        accI.setAccountNameClient(faker.name().
+//                nameWithMiddle());
+//        accI.setAccountNumber(faker.finance().
+//                creditCard());
 //        DictionaryItem di = new DictionaryItem();
-//        di.setCode(faker.commerce().productName());
-//        di.setDescription(faker.chuckNorris().fact());
+//        di.setCode(faker.commerce().
+//                productName());
+//        di.setDescription(faker.chuckNorris().
+//                fact());
 //        dictionaryItem_map.put(idGen.newId(),
 //                               di);
 //        accI.setAccountType(di);
-//        accI.setAccountTypeName(faker.company().buzzword());
+//        accI.setAccountTypeName(faker.company().
+//                buzzword());
 //        accI.setAvailableBalance(Double.toString(faker.number().
 //                randomDouble(2,
 //                             1,
@@ -176,12 +201,15 @@ public static void makeData() {
 //                randomDouble(2,
 //                             1,
 //                             1000000)));
-//        accI.setCurrency(faker.currency().code());
+//        accI.setCurrency(faker.currency().
+//                code());
 //        accI.setNameAddress(fakeNameaddress(faker));
 //        accI.addPsuRelationsItem(fakeAccountPsuRelation(faker));
 //        DictionaryItem dii = new DictionaryItem();
-//        dii.code(faker.hipster().word());
-//        dii.description(faker.hipster().word());
+//        dii.code(faker.hipster().
+//                word());
+//        dii.description(faker.hipster().
+//                word());
 //        dictionaryItem_map.put(idGen.newId(),
 //                               dii);
 //        accI.setAccountType(dii);
@@ -190,7 +218,8 @@ public static void makeData() {
 //        accountInfo_map.put(idGen.newId(),
 //                            accI);
 //    }
-//    System.out.println("accountInfo_map.size: " + accountInfo_map.size());
+//    System.out.
+//            println("accountInfo_map.size: " + accountInfo_map.size());
 //    System.out.println("Adding AccountInfo_map finished!");
 //    accountInfo_map.flush();
 //}
@@ -198,18 +227,25 @@ public static void makeData() {
 //private static BankAccountInfo fakeBankAccountInfo(Faker faker) {
 //    BankAccountInfo bai = new BankAccountInfo();
 //    bai.setAddress(fakeAddress(faker));
-//    bai.setBicOrSwift(faker.finance().bic());
-//    bai.setName(faker.company().name());
+//    bai.setBicOrSwift(faker.finance().
+//            bic());
+//    bai.setName(faker.company().
+//            name());
 //    return bai;
 //}
 //
 //private static Address fakeAddress(Faker faker) {
 //    Address addr = new Address();
-//    addr.add(faker.address().streetName());
-//    addr.add(faker.address().streetAddressNumber());
-//    addr.add(faker.address().zipCode());
-//    addr.add(faker.address().cityName());
-//    addr.add(faker.address().country());
+//    addr.add(faker.address().
+//            streetName());
+//    addr.add(faker.address().
+//            streetAddressNumber());
+//    addr.add(faker.address().
+//            zipCode());
+//    addr.add(faker.address().
+//            cityName());
+//    addr.add(faker.address().
+//            country());
 //    return addr;
 //}
 }

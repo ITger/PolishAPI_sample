@@ -83,6 +83,8 @@ boolean
 
 boolean verify(String authorization,
         String token) {
+    //System.out.println("authorization.startsWith(\"Bearer \": " +authorization.startsWith("Bearer "));
+    //System.out.println("authorization.substring(7).equals(token):" + authorization.substring(7).equals(token));
     return (authorization != null 
             && authorization.startsWith("Bearer ")
             && authorization.substring(7).equals(token)

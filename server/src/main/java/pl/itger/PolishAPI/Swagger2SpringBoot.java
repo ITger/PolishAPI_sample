@@ -5,14 +5,12 @@ import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
-import pl.itger.PolishAPI.dataFaker.FakeDataGen;
-
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
 @ComponentScan(
-        basePackages = {"pl.itger.PolishAPI", "pl.itger.PolishAPI.implementation", "pl.itger.hazelcastConfig", "io.swagger.api", "io.swagger.configuration"})
+        basePackages = {"pl.itger.PolishAPI", "pl.itger.PolishAPI.implementation", "io.swagger.api", "io.swagger.configuration"})
 public class Swagger2SpringBoot
         implements CommandLineRunner {
 
