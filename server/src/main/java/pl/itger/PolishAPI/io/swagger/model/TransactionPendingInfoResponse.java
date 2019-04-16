@@ -1,13 +1,13 @@
-package io.swagger.model;
+package pl.itger.PolishAPI.io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.PageInfo;
-import io.swagger.model.ResponseHeader;
-import io.swagger.model.TransactionPendingInfo;
+import pl.itger.PolishAPI.io.swagger.model.PageInfo;
+import pl.itger.PolishAPI.io.swagger.model.ResponseHeader;
+import pl.itger.PolishAPI.io.swagger.model.TransactionPendingInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;

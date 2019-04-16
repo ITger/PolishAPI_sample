@@ -1,4 +1,4 @@
-package io.swagger.model;
+package pl.itger.PolishAPI.io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.PaymentDomesticRequestBundled;
-import io.swagger.model.PaymentEEARequestBundled;
-import io.swagger.model.PaymentNonEEARequestBundled;
-import io.swagger.model.PaymentTaxRequestBundled;
-import io.swagger.model.RequestHeaderCallback;
+import pl.itger.PolishAPI.io.swagger.model.PaymentDomesticRequestBundled;
+import pl.itger.PolishAPI.io.swagger.model.PaymentEEARequestBundled;
+import pl.itger.PolishAPI.io.swagger.model.PaymentNonEEARequestBundled;
+import pl.itger.PolishAPI.io.swagger.model.PaymentTaxRequestBundled;
+import pl.itger.PolishAPI.io.swagger.model.RequestHeaderCallback;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;

@@ -10,20 +10,19 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.swagger.api.AsApiDelegate;
-import static io.swagger.api.AsApiDelegate.log;
-import io.swagger.model.AuthorizeRequest;
-import io.swagger.model.AuthorizeResponse;
-import io.swagger.model.EatCodeRequest;
-import io.swagger.model.TokenRequest;
-import io.swagger.model.TokenResponse;
+import pl.itger.PolishAPI.io.swagger.api.AsApiDelegate;
+import static pl.itger.PolishAPI.io.swagger.api.AsApiDelegate.log;
+import pl.itger.PolishAPI.io.swagger.model.AuthorizeRequest;
+import pl.itger.PolishAPI.io.swagger.model.AuthorizeResponse;
+import pl.itger.PolishAPI.io.swagger.model.EatCodeRequest;
+import pl.itger.PolishAPI.io.swagger.model.TokenRequest;
+import pl.itger.PolishAPI.io.swagger.model.TokenResponse;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
-import java.time.temporal.Temporal;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -102,16 +101,16 @@ public ResponseEntity<TokenResponse> token(String acceptEncoding,
         if (getAcceptHeader().get().contains("application/json")) {
             try {
                 LocalDate now = LocalDate.now();
-                Date expirationDate = DateUtils.addDays(new Date(),
-                                                        10);
-                long diff = java.time.temporal.ChronoUnit.MILLIS.between(now,
-                                                                         (Temporal) expirationDate);
-                String jwt = "Jwts.builder FAILED";
+                LocalDate expirationDate = now.plusDays(10L);
+                long diff = expirationDate.toEpochDay() - now.toEpochDay();
+                Date date1 = Date.from(expirationDate.atStartOfDay(ZoneId.
+                        systemDefault()).toInstant());
+                String jwt;
                 jwt = Jwts.builder()
                         .setIssuer("http://itger.pl/")
                         .setSubject("users/Janusz i Grażyna")
                         .setAudience("something")
-                        .setExpiration(expirationDate)
+                        .setExpiration(date1)
                         .claim("name",
                                "Janusz i Grażyna Nosacz")
                         .claim("scope",

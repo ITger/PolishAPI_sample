@@ -16,26 +16,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.hazelcast.query.Predicate;
 //import com.hazelcast.query.PredicateBuilder;
 //import com.hazelcast.query.Predicates;
-import io.swagger.api.AisApiDelegate;
-import static io.swagger.api.AisApiDelegate.log;
-import io.swagger.model.AccountInfo;
-import io.swagger.model.AccountInfoRequest;
-import io.swagger.model.AccountResponse;
-import io.swagger.model.AccountsRequest;
-import io.swagger.model.AccountsResponse;
-import io.swagger.model.DeleteConsentRequest;
-import io.swagger.model.HoldInfo;
-import io.swagger.model.HoldInfoResponse;
-import io.swagger.model.HoldRequest;
-import io.swagger.model.ResponseHeader;
-import io.swagger.model.TransactionDetailRequest;
-import io.swagger.model.TransactionDetailResponse;
-import io.swagger.model.TransactionInfoRequest;
-import io.swagger.model.TransactionPendingInfoResponse;
-import io.swagger.model.TransactionRejectedInfoResponse;
-import io.swagger.model.TransactionsCancelledInfoResponse;
-import io.swagger.model.TransactionsDoneInfoResponse;
-import io.swagger.model.TransactionsScheduledInfoResponse;
+import pl.itger.PolishAPI.io.swagger.api.AisApiDelegate;
+import static pl.itger.PolishAPI.io.swagger.api.AisApiDelegate.log;
+import pl.itger.PolishAPI.io.swagger.model.AccountInfo;
+import pl.itger.PolishAPI.io.swagger.model.AccountInfoRequest;
+import pl.itger.PolishAPI.io.swagger.model.AccountResponse;
+import pl.itger.PolishAPI.io.swagger.model.AccountsRequest;
+import pl.itger.PolishAPI.io.swagger.model.AccountsResponse;
+import pl.itger.PolishAPI.io.swagger.model.DeleteConsentRequest;
+import pl.itger.PolishAPI.io.swagger.model.HoldInfo;
+import pl.itger.PolishAPI.io.swagger.model.HoldInfoResponse;
+import pl.itger.PolishAPI.io.swagger.model.HoldRequest;
+import pl.itger.PolishAPI.io.swagger.model.ResponseHeader;
+import pl.itger.PolishAPI.io.swagger.model.TransactionDetailRequest;
+import pl.itger.PolishAPI.io.swagger.model.TransactionDetailResponse;
+import pl.itger.PolishAPI.io.swagger.model.TransactionInfoRequest;
+import pl.itger.PolishAPI.io.swagger.model.TransactionPendingInfoResponse;
+import pl.itger.PolishAPI.io.swagger.model.TransactionRejectedInfoResponse;
+import pl.itger.PolishAPI.io.swagger.model.TransactionsCancelledInfoResponse;
+import pl.itger.PolishAPI.io.swagger.model.TransactionsDoneInfoResponse;
+import pl.itger.PolishAPI.io.swagger.model.TransactionsScheduledInfoResponse;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,10 +58,8 @@ public class AisApiDelegateImpl
 
 //@Autowired
 //private HazelcastInstance hazelcast_Instance;
-
 //@Autowired
 //    private HoldInfoRepository holdInfoRepository;
-
 @Autowired
 private TokenUtils tokenUtils;
 
@@ -122,7 +120,7 @@ public ResponseEntity<AccountResponse> getAccount(String authorization,
 //                final String accountNumber = getAccountRequest.
 //                        getAccountNumber().
 //                        trim();
-                //System.out.println("accountNumber: " + accountNumber);
+            //System.out.println("accountNumber: " + accountNumber);
 //                IMap<Long, AccountInfo> _map = hazelcast_Instance.
 //                        getMap("AccountInfo_map");
 //                System.out.println("accountInfo_map: " + _map.size());
@@ -186,7 +184,6 @@ public ResponseEntity<AccountsResponse> getAccounts(String authorization,
 //    {
 //        predicates.add(Predicates.greaterEqual("id", messageId));
 //    }
-
                 // Topic
 //    if (topic != null)
 //    {
@@ -447,6 +444,27 @@ public ResponseEntity<TransactionsDoneInfoResponse> getTransactionsDone(
         String X_REQUEST_ID,
         TransactionInfoRequest getTransactionsDoneRequest
 ) {
+    if (getObjectMapper().
+            isPresent() && getAcceptHeader().isPresent()) {
+        if (getAcceptHeader().get().contains("application/json")) {
+            if (!tokenUtils.verify(authorization,
+                                   getTransactionsDoneRequest.getRequestHeader().
+                                           getToken())) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+            getTransactionsDoneRequest.getAccountNumber();
+            getTransactionsDoneRequest.getBookingDateFrom();
+            getTransactionsDoneRequest.getBookingDateTo();
+            getTransactionsDoneRequest.getItemIdFrom();
+            getTransactionsDoneRequest.getMaxAmount();
+            getTransactionsDoneRequest.getMinAmount();
+            getTransactionsDoneRequest.getPageId();
+            getTransactionsDoneRequest.getPerPage();
+            getTransactionsDoneRequest.getTransactionDateFrom();
+            getTransactionsDoneRequest.getTransactionDateTo();
+            getTransactionsDoneRequest.getType();
+        }
+    }
     return AisApiDelegate.super.getTransactionsDone(authorization,
                                                     acceptEncoding,
                                                     acceptLanguage,

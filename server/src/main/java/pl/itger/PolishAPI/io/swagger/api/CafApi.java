@@ -3,11 +3,11 @@
  * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
-package io.swagger.api;
+package pl.itger.PolishAPI.io.swagger.api;
 
-import io.swagger.model.ConfirmationOfFundsRequest;
-import io.swagger.model.ConfirmationOfFundsResponse;
-import io.swagger.model.Error;
+import pl.itger.PolishAPI.io.swagger.model.ConfirmationOfFundsRequest;
+import pl.itger.PolishAPI.io.swagger.model.ConfirmationOfFundsResponse;
+import pl.itger.PolishAPI.io.swagger.model.Error;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

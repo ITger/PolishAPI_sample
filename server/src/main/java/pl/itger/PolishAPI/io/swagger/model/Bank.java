@@ -1,15 +1,16 @@
-package io.swagger.model;
+package pl.itger.PolishAPI.io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.Address;
+import pl.itger.PolishAPI.io.swagger.model.Address;
 import java.io.Serializable;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import org.springframework.data.annotation.Id;
 
 /**
  * Klasa zawierająca dane banku używana w żądaniach AIS / AIS Bank Data Class
@@ -21,6 +22,8 @@ import javax.validation.constraints.*;
 public class Bank  implements Serializable {
   private static final long serialVersionUID = 1L;
 
+  @Id
+private String id;
   @JsonProperty("bicOrSwift")
   private String bicOrSwift = null;
 

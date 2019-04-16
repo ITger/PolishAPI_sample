@@ -1,12 +1,12 @@
-package io.swagger.model;
+package pl.itger.PolishAPI.io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.PaymentTokenEntry;
-import io.swagger.model.RequestHeaderWithoutToken;
+import pl.itger.PolishAPI.io.swagger.model.PaymentTokenEntry;
+import pl.itger.PolishAPI.io.swagger.model.RequestHeaderWithoutToken;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;

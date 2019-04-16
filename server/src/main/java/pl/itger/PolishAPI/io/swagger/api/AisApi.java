@@ -3,24 +3,24 @@
  * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
-package io.swagger.api;
+package pl.itger.PolishAPI.io.swagger.api;
 
-import io.swagger.model.AccountInfoRequest;
-import io.swagger.model.AccountResponse;
-import io.swagger.model.AccountsRequest;
-import io.swagger.model.AccountsResponse;
-import io.swagger.model.DeleteConsentRequest;
-import io.swagger.model.Error;
-import io.swagger.model.HoldInfoResponse;
-import io.swagger.model.HoldRequest;
-import io.swagger.model.TransactionDetailRequest;
-import io.swagger.model.TransactionDetailResponse;
-import io.swagger.model.TransactionInfoRequest;
-import io.swagger.model.TransactionPendingInfoResponse;
-import io.swagger.model.TransactionRejectedInfoResponse;
-import io.swagger.model.TransactionsCancelledInfoResponse;
-import io.swagger.model.TransactionsDoneInfoResponse;
-import io.swagger.model.TransactionsScheduledInfoResponse;
+import pl.itger.PolishAPI.io.swagger.model.AccountInfoRequest;
+import pl.itger.PolishAPI.io.swagger.model.AccountResponse;
+import pl.itger.PolishAPI.io.swagger.model.AccountsRequest;
+import pl.itger.PolishAPI.io.swagger.model.AccountsResponse;
+import pl.itger.PolishAPI.io.swagger.model.DeleteConsentRequest;
+import pl.itger.PolishAPI.io.swagger.model.Error;
+import pl.itger.PolishAPI.io.swagger.model.HoldInfoResponse;
+import pl.itger.PolishAPI.io.swagger.model.HoldRequest;
+import pl.itger.PolishAPI.io.swagger.model.TransactionDetailRequest;
+import pl.itger.PolishAPI.io.swagger.model.TransactionDetailResponse;
+import pl.itger.PolishAPI.io.swagger.model.TransactionInfoRequest;
+import pl.itger.PolishAPI.io.swagger.model.TransactionPendingInfoResponse;
+import pl.itger.PolishAPI.io.swagger.model.TransactionRejectedInfoResponse;
+import pl.itger.PolishAPI.io.swagger.model.TransactionsCancelledInfoResponse;
+import pl.itger.PolishAPI.io.swagger.model.TransactionsDoneInfoResponse;
+import pl.itger.PolishAPI.io.swagger.model.TransactionsScheduledInfoResponse;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

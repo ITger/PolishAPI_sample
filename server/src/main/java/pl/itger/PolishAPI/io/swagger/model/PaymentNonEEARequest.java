@@ -1,4 +1,4 @@
-package io.swagger.model;
+package pl.itger.PolishAPI.io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.Bank;
-import io.swagger.model.RecipientPISForeign;
-import io.swagger.model.RequestHeaderCallback;
-import io.swagger.model.SenderPISForeign;
-import io.swagger.model.TransferDataCurrencyRequired;
+import pl.itger.PolishAPI.io.swagger.model.Bank;
+import pl.itger.PolishAPI.io.swagger.model.RecipientPISForeign;
+import pl.itger.PolishAPI.io.swagger.model.RequestHeaderCallback;
+import pl.itger.PolishAPI.io.swagger.model.SenderPISForeign;
+import pl.itger.PolishAPI.io.swagger.model.TransferDataCurrencyRequired;
 import java.io.Serializable;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;

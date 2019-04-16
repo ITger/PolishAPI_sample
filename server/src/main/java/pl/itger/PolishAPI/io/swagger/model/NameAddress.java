@@ -1,8 +1,7 @@
-package io.swagger.model;
+package pl.itger.PolishAPI.io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
@@ -11,86 +10,97 @@ import java.io.Serializable;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Klasa zawierająca dane nazwy i adresu w postaci czterech linii danych / Simple name and  postal address Class
+ * Klasa zawierająca dane nazwy i adresu w postaci czterech linii danych /
+ * Simple name and postal address Class
  */
-@ApiModel(description = "Klasa zawierająca dane nazwy i adresu w postaci czterech linii danych / Simple name and  postal address Class")
+@ApiModel(
+        description = "Klasa zawierająca dane nazwy i adresu w postaci czterech linii danych / Simple name and  postal address Class")
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-03-14T19:37:54.479+01:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen",
+                            date = "2019-03-14T19:37:54.479+01:00")
+@Document
+public class NameAddress
+        implements Serializable {
 
-public class NameAddress  implements Serializable {
-  private static final long serialVersionUID = 1L;
+private static final long serialVersionUID = 1L;
+@Id
+private String id;
+@JsonProperty("value")
+@Valid
+private List<String> value = null;
 
-  @JsonProperty("value")
-  @Valid
-  private List<String> value = null;
-
-  public NameAddress value(List<String> value) {
+public NameAddress value(List<String> value) {
     this.value = value;
     return this;
-  }
+}
 
-  public NameAddress addValueItem(String valueItem) {
+public NameAddress addValueItem(String valueItem) {
     if (this.value == null) {
-      this.value = new ArrayList<>();
+        this.value = new ArrayList<>();
     }
     this.value.add(valueItem);
     return this;
-  }
+}
 
-  /**
-   * Get value
-   * @return value
-  **/
-  @ApiModelProperty(value = "")
+/**
+ * Get value
+ *
+ * @return value
+ *
+ */
+@ApiModelProperty(value = "")
 
-@Size(min=1,max=4) 
-  public List<String> getValue() {
+@Size(min = 1,
+      max = 4)
+public List<String> getValue() {
     return value;
-  }
+}
 
-  public void setValue(List<String> value) {
+public void setValue(List<String> value) {
     this.value = value;
-  }
+}
 
-
-  @Override
-  public boolean equals(java.lang.Object o) {
+@Override
+public boolean equals(java.lang.Object o) {
     if (this == o) {
-      return true;
+        return true;
     }
     if (o == null || getClass() != o.getClass()) {
-      return false;
+        return false;
     }
     NameAddress nameAddress = (NameAddress) o;
-    return Objects.equals(this.value, nameAddress.value);
-  }
+    return Objects.equals(this.value,
+                          nameAddress.value);
+}
 
-  @Override
-  public int hashCode() {
+@Override
+public int hashCode() {
     return Objects.hash(value);
-  }
+}
 
-  @Override
-  public String toString() {
+@Override
+public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class NameAddress {\n");
-    
+
     sb.append("    value: ").append(toIndentedString(value)).append("\n");
     sb.append("}");
     return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
 }
 
+/**
+ * Convert the given object to string with each line indented by 4 spaces
+ * (except the first line).
+ */
+private String toIndentedString(java.lang.Object o) {
+    if (o == null) {
+        return "null";
+    }
+    return o.toString().replace("\n",
+                                "\n    ");
+}
+}

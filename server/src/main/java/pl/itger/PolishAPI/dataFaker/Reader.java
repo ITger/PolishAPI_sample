@@ -10,7 +10,7 @@ package pl.itger.PolishAPI.dataFaker;
 //import com.hazelcast.query.EntryObject;
 //import com.hazelcast.query.Predicate;
 //import com.hazelcast.query.PredicateBuilder;
-import io.swagger.model.AccountInfo;
+import pl.itger.PolishAPI.io.swagger.model.AccountInfo;
 import java.util.Collection;
 
 /**

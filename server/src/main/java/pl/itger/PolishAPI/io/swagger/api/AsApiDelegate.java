@@ -1,11 +1,11 @@
-package io.swagger.api;
+package pl.itger.PolishAPI.io.swagger.api;
 
-import io.swagger.model.AuthorizeRequest;
-import io.swagger.model.AuthorizeResponse;
-import io.swagger.model.EatCodeRequest;
-import io.swagger.model.Error;
-import io.swagger.model.TokenRequest;
-import io.swagger.model.TokenResponse;
+import pl.itger.PolishAPI.io.swagger.model.AuthorizeRequest;
+import pl.itger.PolishAPI.io.swagger.model.AuthorizeResponse;
+import pl.itger.PolishAPI.io.swagger.model.EatCodeRequest;
+import pl.itger.PolishAPI.io.swagger.model.Error;
+import pl.itger.PolishAPI.io.swagger.model.TokenRequest;
+import pl.itger.PolishAPI.io.swagger.model.TokenResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;

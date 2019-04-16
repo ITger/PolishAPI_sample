@@ -1,8 +1,8 @@
-package io.swagger.api;
+package pl.itger.PolishAPI.io.swagger.api;
 
-import io.swagger.model.ConfirmationOfFundsRequest;
-import io.swagger.model.ConfirmationOfFundsResponse;
-import io.swagger.model.Error;
+import pl.itger.PolishAPI.io.swagger.model.ConfirmationOfFundsRequest;
+import pl.itger.PolishAPI.io.swagger.model.ConfirmationOfFundsResponse;
+import pl.itger.PolishAPI.io.swagger.model.Error;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;

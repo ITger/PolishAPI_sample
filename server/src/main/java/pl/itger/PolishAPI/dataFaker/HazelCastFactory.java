@@ -10,7 +10,7 @@ package pl.itger.PolishAPI.dataFaker;
 //import com.hazelcast.client.config.ClientNetworkConfig;
 //import com.hazelcast.config.Config;
 //import com.hazelcast.core.HazelcastInstance;
-import io.swagger.model.AccountBaseInfo;
+import pl.itger.PolishAPI.io.swagger.model.AccountBaseInfo;
 
 public class HazelCastFactory {
 

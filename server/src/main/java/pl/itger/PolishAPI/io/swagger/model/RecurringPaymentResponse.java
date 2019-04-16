@@ -1,4 +1,4 @@
-package io.swagger.model;
+package pl.itger.PolishAPI.io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.RecurringTransferParameters;
-import io.swagger.model.ResponseHeader;
+import pl.itger.PolishAPI.io.swagger.model.RecurringTransferParameters;
+import pl.itger.PolishAPI.io.swagger.model.ResponseHeader;
 import java.io.Serializable;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;

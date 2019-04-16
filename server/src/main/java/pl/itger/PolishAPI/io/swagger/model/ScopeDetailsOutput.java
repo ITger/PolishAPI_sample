@@ -1,4 +1,4 @@
-package io.swagger.model;
+package pl.itger.PolishAPI.io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.ScopeDetailsOutputPrivilegeList;
+import pl.itger.PolishAPI.io.swagger.model.ScopeDetailsOutputPrivilegeList;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;

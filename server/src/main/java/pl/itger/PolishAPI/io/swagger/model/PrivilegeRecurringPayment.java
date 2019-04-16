@@ -1,4 +1,4 @@
-package io.swagger.model;
+package pl.itger.PolishAPI.io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.RecurringDomesticPayment;
-import io.swagger.model.RecurringEEAPayment;
-import io.swagger.model.RecurringNonEEAPayment;
-import io.swagger.model.RecurringTaxPayment;
-import io.swagger.model.RecurringTransferParameters;
+import pl.itger.PolishAPI.io.swagger.model.RecurringDomesticPayment;
+import pl.itger.PolishAPI.io.swagger.model.RecurringEEAPayment;
+import pl.itger.PolishAPI.io.swagger.model.RecurringNonEEAPayment;
+import pl.itger.PolishAPI.io.swagger.model.RecurringTaxPayment;
+import pl.itger.PolishAPI.io.swagger.model.RecurringTransferParameters;
 import java.io.Serializable;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;

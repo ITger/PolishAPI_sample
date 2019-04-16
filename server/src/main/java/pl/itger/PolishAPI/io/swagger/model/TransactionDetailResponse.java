@@ -1,16 +1,16 @@
-package io.swagger.model;
+package pl.itger.PolishAPI.io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.CurrencyRate;
-import io.swagger.model.ResponseHeader;
-import io.swagger.model.TransactionInfo;
-import io.swagger.model.TransactionInfoCard;
-import io.swagger.model.TransactionInfoTax;
-import io.swagger.model.TransactionInfoZUS;
+import pl.itger.PolishAPI.io.swagger.model.CurrencyRate;
+import pl.itger.PolishAPI.io.swagger.model.ResponseHeader;
+import pl.itger.PolishAPI.io.swagger.model.TransactionInfo;
+import pl.itger.PolishAPI.io.swagger.model.TransactionInfoCard;
+import pl.itger.PolishAPI.io.swagger.model.TransactionInfoTax;
+import pl.itger.PolishAPI.io.swagger.model.TransactionInfoZUS;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
