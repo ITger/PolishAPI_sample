@@ -26,7 +26,6 @@ public class HoldInfo
 
 private static final long serialVersionUID = 1L;
 
-@Id
 @JsonProperty("itemId")
 private String itemId = null;
 

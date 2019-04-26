@@ -6,15 +6,18 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import pl.itger.PolishAPI.repository.AccountInfoRepository;
 import pl.itger.PolishAPI.repository.HoldInfoRepository;
+import pl.itger.PolishAPI.repository.TransactionInfoRepository;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@EnableMongoRepositories(basePackages = {"pl.itger.PolishAPI.repository"})
+//@EnableMongoRepositories(
+//            basePackageClasses = {AccountInfoRepository.class, HoldInfoRepository.class, TransactionInfoRepository.class})
 @SpringBootApplication
 @EnableSwagger2
 @ComponentScan(
         basePackages = {"pl.itger.PolishAPI",
-             "pl.itger.PolishAPI.implementation", "pl.itger.PolishAPI.io.swagger.api", "pl.itger.PolishAPI.io.swagger.configuration"}
+            "pl.itger.PolishAPI.implementation", "pl.itger.PolishAPI.io.swagger.api", "pl.itger.PolishAPI.io.swagger.configuration"}
 )
 public class Swagger2SpringBoot
         implements CommandLineRunner {

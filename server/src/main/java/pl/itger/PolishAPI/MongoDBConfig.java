@@ -1,21 +1,25 @@
 package pl.itger.PolishAPI;
 
 import com.github.javafaker.Faker;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.client.ClientSession;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.bson.BSONObject;
-import org.bson.types.ObjectId;
+import lombok.var;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
+import org.bson.Document;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import pl.itger.PolishAPI.converters.OffsetDateTimeReadConverter;
 import pl.itger.PolishAPI.converters.OffsetDateTimeWriteConverter;
@@ -28,12 +32,12 @@ import pl.itger.PolishAPI.io.swagger.model.DictionaryItem;
 import pl.itger.PolishAPI.io.swagger.model.HoldInfo;
 import pl.itger.PolishAPI.io.swagger.model.NameAddress;
 import pl.itger.PolishAPI.io.swagger.model.SenderRecipient;
-import pl.itger.PolishAPI.io.swagger.model.TransactionInfo;
 import pl.itger.PolishAPI.repository.AccountInfoRepository;
 import pl.itger.PolishAPI.repository.HoldInfoRepository;
 import pl.itger.PolishAPI.repository.TransactionInfoRepository;
 
-@EnableMongoRepositories(basePackageClasses = HoldInfo.class)
+@EnableMongoRepositories(
+        basePackageClasses = {AccountInfoRepository.class, HoldInfoRepository.class, TransactionInfoRepository.class})
 @Configuration
 public class MongoDBConfig
         extends AbstractMongoConfiguration {
@@ -41,146 +45,127 @@ public class MongoDBConfig
 private final List<Converter<?, ?>> converters = new ArrayList<>();
 
 @Bean
-CommandLineRunner commandLineRunner(
-        AccountInfoRepository accountInfoRepository) {
-    Iterable<AccountInfo> iter = accountInfoRepository.findAll();
-    //accountInfoRepository.
-    int size = 0;
-    if (iter instanceof Collection) {
-        size = ((Collection<AccountInfo>) iter).size();
-    }
-    if (size > 0) {
-        //return null;
-    }
-    return strings -> {
-        Faker faker = new Faker();
-        for (int i = 0; i < 50; i++) {
-            AccountInfo document = new AccountInfo();
-            document.setAccountHolderType(
-                    AccountInfo.AccountHolderTypeEnum.
-                            values()[faker.number().numberBetween(0,
-                                                                  1)]);
-            document.setAccountNameClient(faker.name().nameWithMiddle());
-            document.setAccountNumber(faker.finance().creditCard());
-            DictionaryItem di = new DictionaryItem();
-            di.setCode(faker.commerce().productName());
-            di.setDescription(faker.chuckNorris().fact());
-            document.setAccountType(di);
-            document.setAccountTypeName(faker.company().buzzword());
-            document.setAvailableBalance(Double.toString(faker.number().
-                    randomDouble(2,
-                                 1,
-                                 1000000)));
-            document.setBank(fakeBankAccountInfo(faker));
-            document.setBookingBalance(Double.toString(faker.number().
-                    randomDouble(2,
-                                 1,
-                                 1000000)));
-            document.setCurrency(faker.currency().code());
-            document.setNameAddress(fakeNameaddress(faker));
-            document.addPsuRelationsItem(fakeAccountPsuRelation(faker));
-            DictionaryItem dii = new DictionaryItem();
-            dii.code(faker.hipster().word());
-            dii.description(faker.hipster().word());
-            document.setAccountType(dii);
-System.out.println(document);
-            accountInfoRepository.save(document);
-        }
-    };
-}
-
-@Bean
 CommandLineRunner commandLineRunner(AccountInfoRepository accountInfoRepository,
         HoldInfoRepository holdInfoRepository) {
-    Iterable<HoldInfo> iter = holdInfoRepository.findAll();
+    Iterable<AccountInfo> ACCI_iter = accountInfoRepository.findAll();
+    Iterable<HoldInfo> HoldI_iter = holdInfoRepository.findAll();
+
+    //accountInfoRepository.
     int size = 0;
-    if (iter instanceof Collection) {
-        size = ((Collection<HoldInfo>) iter).size();
+    if (ACCI_iter instanceof Collection) {
+        size = ((Collection<AccountInfo>) ACCI_iter).size();
     }
     if (size > 0) {
         //return null;
     }
+    Faker faker = new Faker();
     return strings -> {
-        Faker faker = new Faker();
-        Iterable<AccountInfo> iterAccountInfo = accountInfoRepository.findAll();
-        iterAccountInfo.forEach(cnsmr -> {
-            for (int i = 0; i < 5; i++) {
-                HoldInfo document = new HoldInfo();
-                document.setAmount(Double.toString(faker.number().
-                        randomDouble(2,
-                                     1,
-                                     1000000)));
-                document.setCurrency(faker.currency().code());
-                document.setDescription(faker.chuckNorris().fact());
-                document.setHoldExpirationDate(faker.date().future(90,
-                                                                   TimeUnit.DAYS).
-                        toInstant().atOffset(OffsetDateTime.now().getOffset()));
-                document.setInitiator(fakeNameaddress(faker));
-                document.setItemId(faker.idNumber().ssnValid());
-                document.setMcc(String.valueOf(faker.number().
-                        numberBetween(1000,
-                                      6000)));
-                document.setRecipient(fakeSenderRecipient(faker));
-                document.setSender(fakeSenderRecipient(faker));
-                document.setTradeDate(faker.date().past(90,
-                                                        TimeUnit.DAYS).
-                        toInstant().
-                        atOffset(OffsetDateTime.now().getOffset()));
-                document.setTransactionType(faker.commerce().productName());
-                //((DBObject) document).
-                //accountInfoRepository.save(document);
-                //holdInfoRepository.save(document);
-                ((DBObject) cnsmr).putAll((DBObject) document);//get("_id");
+        createAccounts(accountInfoRepository,
+                       faker);
+        MongoDatabase mdb = this.mongoClient().getDatabase("PolishAPI");
+        MongoCollection<Document> accI_d = mdb.getCollection("accountInfo");
+        try (ClientSession clientSession = this.mongoClient().startSession()) {
+//            clientSession.startTransaction();
+//            collection.insertOne(clientSession,
+//                                 docOne);
+//            collection.insertOne(clientSession,
+//                                 docTwo);
+//            clientSession.commitTransaction();
+        }
+
+        for (Document doc : accI_d.find()) {
+            System.out.println(doc);
+            //doc.
+            for (int ii = 0; ii < 5; ii++) {
+                HoldInfo holdInfo = new HoldInfo();
+                createHold(holdInfo,
+                           faker);
+                //((DBObject) accI).
+                //accountInfoRepository.save(accI);
+                try (ClientSession clientSession = this.mongoClient().
+                        startSession()) {
+                    var hi = holdInfoRepository.insert(holdInfo);
+                    System.out.println(hi);
+                    // hi._id.toString();
+                    // DBObject query = new BasicDBObject(hi.getInteger("_id"), "Zen");
+                    //holdInfoRepository.findOne(exmpl);
+                }
+                //Document bo = (Document) accI;
+                //BasicDBObjectBuilder b = new BasicDBObjectBuilder();
+                //System.out.println("Document: " + bo.toString());
+
+                //holdI_doc;
+                //((BSONObject) accI).putAll((BSONObject) holdI_doc);//get("_id");
+                //Document bo = (Document) accI;
+                //BasicDBObjectBuilder b = new BasicDBObjectBuilder();
+                //System.out.println("Document: " + bo.toString());
+                //holdI_doc;
+                //((BSONObject) accI).putAll((BSONObject) holdInfo);//get("_id");
             }
-        });
+        }
+        //});
     };
 }
 
-@Bean
-CommandLineRunner commandLineRunner(
-        TransactionInfoRepository transactionInfoRepository) {
-    Iterable<TransactionInfo> iter = transactionInfoRepository.findAll();
-    int size = 0;
-    if (iter instanceof Collection) {
-        size = ((Collection<TransactionInfo>) iter).size();
+private void createHold(HoldInfo holdI_doc,
+        Faker faker) {
+    holdI_doc.setAmount(Double.toString(faker.number().
+            randomDouble(2,
+                         1,
+                         1000000)));
+    holdI_doc.setCurrency(faker.currency().code());
+    holdI_doc.setDescription(faker.chuckNorris().fact());
+    holdI_doc.setHoldExpirationDate(faker.date().future(90,
+                                                        TimeUnit.DAYS).
+            toInstant().atOffset(OffsetDateTime.now().getOffset()));
+    holdI_doc.setInitiator(fakeNameaddress(faker));
+    holdI_doc.setItemId(faker.idNumber().ssnValid());
+    holdI_doc.setMcc(String.valueOf(faker.number().
+            numberBetween(1000,
+                          6000)));
+    holdI_doc.setRecipient(fakeSenderRecipient(faker));
+    holdI_doc.setSender(fakeSenderRecipient(faker));
+    holdI_doc.setTradeDate(faker.date().past(90,
+                                             TimeUnit.DAYS).
+            toInstant().
+            atOffset(OffsetDateTime.now().getOffset()));
+    holdI_doc.setTransactionType(faker.commerce().productName());
+}
+
+private void createAccounts(AccountInfoRepository accountInfoRepository,
+        Faker faker) {
+    for (int i = 0; i < 50; i++) {
+        AccountInfo accI = new AccountInfo();
+        accI.setAccountHolderType(
+                AccountInfo.AccountHolderTypeEnum.
+                        values()[faker.number().numberBetween(0,
+                                                              1)]);
+        accI.setAccountNameClient(faker.name().nameWithMiddle());
+        accI.setAccountNumber(faker.finance().creditCard());
+        DictionaryItem di = new DictionaryItem();
+        di.setCode(faker.commerce().productName());
+        di.setDescription(faker.chuckNorris().fact());
+        accI.setAccountType(di);
+        accI.setAccountTypeName(faker.company().buzzword());
+        accI.setAvailableBalance(Double.toString(faker.number().
+                randomDouble(2,
+                             1,
+                             1000000)));
+        accI.setBank(fakeBankAccountInfo(faker));
+        accI.setBookingBalance(Double.toString(faker.number().
+                randomDouble(2,
+                             1,
+                             1000000)));
+        accI.setCurrency(faker.currency().code());
+        accI.setNameAddress(fakeNameaddress(faker));
+        accI.addPsuRelationsItem(fakeAccountPsuRelation(faker));
+        DictionaryItem dii = new DictionaryItem();
+        dii.code(faker.hipster().word());
+        dii.description(faker.hipster().word());
+        accI.setAccountType(dii);
+        //System.out.println(accI);
+        accountInfoRepository.save(accI);
     }
-    if (size > 0) {
-        return null;
-    }
-    return strings -> {
-        Faker faker = new Faker();
-        for (int i = 0; i < 50; i++) {
-            TransactionInfo document = new TransactionInfo();
-            document.setAmount(Double.toString(faker.number().
-                    randomDouble(2,
-                                 1,
-                                 1000000)));
-            //document.setAuxData(auxData);
-            document.setBookingDate(faker.date().past(90,
-                                                      TimeUnit.DAYS).toInstant().
-                    atOffset(OffsetDateTime.now().getOffset()));
-            document.setCurrency(faker.currency().code());
-            document.setDescription(faker.chuckNorris().fact());
-            document.setInitiator(fakeNameaddress(faker));
-            document.setItemId(faker.idNumber().ssnValid());
-            document.setMcc(String.valueOf(faker.number().numberBetween(1000,
-                                                                        6000)));
-            document.setPostTransactionBalance(Double.toString(faker.number().
-                    randomDouble(2,
-                                 1,
-                                 1000000)));
-            document.setRecipient(fakeSenderRecipient(faker));
-            document.setSender(fakeSenderRecipient(faker));
-            document.setTradeDate(faker.date().past(90,
-                                                    TimeUnit.DAYS).toInstant().
-                    atOffset(OffsetDateTime.now().getOffset()));
-            document.setTransactionCategory(
-                    TransactionInfo.TransactionCategoryEnum.CREDIT);
-            document.setTransactionStatus(fakeDictionaryItem(faker));
-            document.setTransactionType(faker.commerce().productName());
-            transactionInfoRepository.save(document);
-        }
-    };
 }
 
 private NameAddress fakeNameaddress(Faker faker) {
@@ -249,7 +234,7 @@ private DictionaryItem fakeDictionaryItem(Faker faker) {
 
 @Override
 protected String getDatabaseName() {
-    return "mongo";
+    return "PolishAPI";
 }
 
 @Override
