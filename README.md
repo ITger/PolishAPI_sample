@@ -7,7 +7,7 @@ In this case study I tried to get the best from Swagger code generator and the b
 * [JDK 11](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * [swagger-codegen](https://github.com/swagger-api/swagger-codegen)
 * [maven](https://maven.apache.org/)
-* [Hazelcast](https://hazelcast.com/)
+* [MongoDB](https://www.mongodb.com/)
 * [PolishAPI](https://app.swaggerhub.com/apis/ZBP/polish-api/2_1_2)
 * [curl](https://github.com/curl/curl) or [curl for windows](https://curl.haxx.se/windows/)
 ## Getting Started
@@ -81,8 +81,7 @@ tests fail in the swagger version I installed on my Win10pro, so I skipped them.
 * Because I configured swagger-codegen with "delegatePattern": "true", after successful generation in previous step, I wrote classes that implemented AisApiDelegate, AsApiDelegate, CafApiDelegate, PisApiDelegate interfaces. In that classes I am implementing the business logic for all services.
 * Start your server as an simple java application. You can view the PolishAPI documentation in swagger-ui by pointing to  
 http://localhost:8080/  
-* I opted for Hazelcast as data cache but for now I'm not implementing persistance, so every time the server is restarted, 
-executing the following command is a must:
+* I opted for MongoDB as data base, to fill mongo with fake data you should execute the following command:
 ```
 curl  -X POST  http://localhost:8080/makeFakeData
 ```
