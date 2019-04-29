@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.itger.PolishAPI.dataFaker;
+package pl.itger.PolishAPI.utils.dataFaker;
 
 //import com.hazelcast.core.HazelcastInstance;
 //import com.hazelcast.core.IMap;

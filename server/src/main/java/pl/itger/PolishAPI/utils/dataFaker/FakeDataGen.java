@@ -1,21 +1,16 @@
-package pl.itger.PolishAPI.dataFaker;
+package pl.itger.PolishAPI.utils.dataFaker;
 
 import com.github.javafaker.Faker;
 //import com.hazelcast.core.HazelcastInstance;
 //import com.hazelcast.core.IMap;
 //import com.hazelcast.core.IdGenerator;
-import pl.itger.PolishAPI.io.swagger.model.AccountBaseInfo;
-import pl.itger.PolishAPI.io.swagger.model.AccountInfo;
 import pl.itger.PolishAPI.io.swagger.model.AccountPsuRelation;
 import pl.itger.PolishAPI.io.swagger.model.Address;
 import pl.itger.PolishAPI.io.swagger.model.Bank;
 import pl.itger.PolishAPI.io.swagger.model.BankAccountInfo;
 import pl.itger.PolishAPI.io.swagger.model.DictionaryItem;
-import pl.itger.PolishAPI.io.swagger.model.HoldInfo;
 import pl.itger.PolishAPI.io.swagger.model.NameAddress;
 import pl.itger.PolishAPI.io.swagger.model.SenderRecipient;
-import java.time.OffsetDateTime;
-import java.util.concurrent.TimeUnit;
 
 public class FakeDataGen {
 
@@ -212,4 +207,67 @@ public static void makeData() {
 //    addr.add(faker.address().country());
 //    return addr;
 //}
+static public NameAddress fakeNameaddress(Faker faker) {
+    NameAddress initiator = new NameAddress();
+    initiator.addValueItem(faker.address().fullAddress());
+    initiator.addValueItem(faker.address().fullAddress());
+    return initiator;
+}
+
+static public AccountPsuRelation fakeAccountPsuRelation(Faker faker) {
+    AccountPsuRelation acountPsuRelation = new AccountPsuRelation();
+    acountPsuRelation.setTypeOfRelation(AccountPsuRelation.TypeOfRelationEnum.
+            values()[faker.number().
+                    numberBetween(0,
+                                  5)]);
+    acountPsuRelation.setTypeOfProxy(
+            AccountPsuRelation.TypeOfProxyEnum.values()[faker.number().
+            numberBetween(0,
+                          3)]);
+    acountPsuRelation.setStake(faker.number().randomDigit());
+    return acountPsuRelation;
+}
+
+static public SenderRecipient fakeSenderRecipient(Faker faker) {
+    SenderRecipient recipient = new SenderRecipient();
+    recipient.setAccountMassPayment(faker.finance().creditCard());
+    recipient.setAccountNumber(faker.finance().creditCard());
+    recipient.setBank(fakeBank(faker));
+    return recipient;
+}
+
+static public DictionaryItem fakeDictionaryItem(Faker faker) {
+    DictionaryItem diccItem = new DictionaryItem();
+    diccItem.setCode(faker.idNumber().valid());
+    diccItem.setDescription(faker.beer().name());
+    return diccItem;
+}
+
+static public Address fakeAddress(Faker faker) {
+    Address addr = new Address();
+    addr.add(faker.address().streetName());
+    addr.add(faker.address().streetAddressNumber());
+    addr.add(faker.address().zipCode());
+    addr.add(faker.address().cityName());
+    addr.add(faker.address().country());
+    return addr;
+}
+
+static public BankAccountInfo fakeBankAccountInfo(Faker faker) {
+    BankAccountInfo bai = new BankAccountInfo();
+    bai.setAddress(fakeAddress(faker));
+    bai.setBicOrSwift(faker.finance().bic());
+    bai.setName(faker.company().name());
+    return bai;
+}
+
+static public Bank fakeBank(Faker faker) {
+    Bank bank = new Bank();
+    bank.setAddress(fakeAddress(faker));
+    bank.setBicOrSwift(faker.finance().bic());
+    bank.setCode(faker.finance().iban());
+    bank.setCountryCode(faker.address().countryCode());
+    bank.setName(faker.company().name());
+    return bank;
+}
 }
