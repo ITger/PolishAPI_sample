@@ -1,19 +1,15 @@
 package pl.itger.PolishAPI.io.swagger.api;
 
-import pl.itger.PolishAPI.io.swagger.model.ConfirmationOfFundsRequest;
-import pl.itger.PolishAPI.io.swagger.model.ConfirmationOfFundsResponse;
-import pl.itger.PolishAPI.io.swagger.model.Error;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
+import pl.itger.PolishAPI.io.swagger.model.ConfirmationOfFundsRequest;
+import pl.itger.PolishAPI.io.swagger.model.ConfirmationOfFundsResponse;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -41,13 +37,13 @@ public interface CafApiDelegate {
     /**
      * @see CafApi#getConfirmationOfFunds
      */
-    default ResponseEntity<ConfirmationOfFundsResponse> getConfirmationOfFunds( String  acceptEncoding,
-         String  acceptLanguage,
-         String  acceptCharset,
-         String  X_JWS_SIGNATURE,
-         String  X_REQUEST_ID,
-         ConfirmationOfFundsRequest  confirmationOfFundsRequest) {
-        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+    default ResponseEntity<ConfirmationOfFundsResponse> getConfirmationOfFunds(String acceptEncoding,
+                                                                               String acceptLanguage,
+                                                                               String acceptCharset,
+                                                                               String X_JWS_SIGNATURE,
+                                                                               String X_REQUEST_ID,
+                                                                               ConfirmationOfFundsRequest confirmationOfFundsRequest) {
+        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
                     return new ResponseEntity<>(getObjectMapper().get().readValue("{  \"fundsAvailable\" : true,  \"responseHeader\" : {    \"sendDate\" : \"2000-01-23T04:56:07.000+00:00\",    \"requestId\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\",    \"isCallback\" : true  }}", ConfirmationOfFundsResponse.class), HttpStatus.NOT_IMPLEMENTED);

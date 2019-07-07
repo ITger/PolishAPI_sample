@@ -8,6 +8,21 @@ package pl.itger.PolishAPI.implementation;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import pl.itger.PolishAPI.io.swagger.api.AisApiDelegate;
+import pl.itger.PolishAPI.io.swagger.model.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
+
 //import com.google.common.base.Predicate;
 //import com.google.common.base.Predicates;
 //import com.hazelcast.core.HazelcastInstance;
@@ -16,111 +31,78 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.hazelcast.query.Predicate;
 //import com.hazelcast.query.PredicateBuilder;
 //import com.hazelcast.query.Predicates;
-import pl.itger.PolishAPI.io.swagger.api.AisApiDelegate;
-import static pl.itger.PolishAPI.io.swagger.api.AisApiDelegate.log;
-import pl.itger.PolishAPI.io.swagger.model.AccountInfo;
-import pl.itger.PolishAPI.io.swagger.model.AccountInfoRequest;
-import pl.itger.PolishAPI.io.swagger.model.AccountResponse;
-import pl.itger.PolishAPI.io.swagger.model.AccountsRequest;
-import pl.itger.PolishAPI.io.swagger.model.AccountsResponse;
-import pl.itger.PolishAPI.io.swagger.model.DeleteConsentRequest;
-import pl.itger.PolishAPI.io.swagger.model.HoldInfo;
-import pl.itger.PolishAPI.io.swagger.model.HoldInfoResponse;
-import pl.itger.PolishAPI.io.swagger.model.HoldRequest;
-import pl.itger.PolishAPI.io.swagger.model.ResponseHeader;
-import pl.itger.PolishAPI.io.swagger.model.TransactionDetailRequest;
-import pl.itger.PolishAPI.io.swagger.model.TransactionDetailResponse;
-import pl.itger.PolishAPI.io.swagger.model.TransactionInfoRequest;
-import pl.itger.PolishAPI.io.swagger.model.TransactionPendingInfoResponse;
-import pl.itger.PolishAPI.io.swagger.model.TransactionRejectedInfoResponse;
-import pl.itger.PolishAPI.io.swagger.model.TransactionsCancelledInfoResponse;
-import pl.itger.PolishAPI.io.swagger.model.TransactionsDoneInfoResponse;
-import pl.itger.PolishAPI.io.swagger.model.TransactionsScheduledInfoResponse;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 public class AisApiDelegateImpl
         implements AisApiDelegate {
 
-//@Autowired
-//private HazelcastInstance hazelcast_Instance;
-//@Autowired
-//    private HoldInfoRepository holdInfoRepository;
-@Autowired
-private TokenUtils tokenUtils;
+    private final MongoDbFactory mongoDbFactory;
+    @Autowired
+    private TokenUtils tokenUtils;
 
-@Override
-public Optional<ObjectMapper> getObjectMapper() {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                     false);
-    mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION,
-                     true);
-    return Optional.of(mapper);
-}
 
-@Override
-public Optional<HttpServletRequest> getRequest() {
-    RequestAttributes reqAttr = RequestContextHolder.getRequestAttributes();
-    ServletRequestAttributes servlReqAttr = (ServletRequestAttributes) reqAttr;
-    HttpServletRequest req = servlReqAttr.getRequest();
-    return Optional.of(req);
-}
+    @Autowired
+    public AisApiDelegateImpl(MongoDbFactory dbFactory) {
+        this.mongoDbFactory = dbFactory;
+    }
 
-@Override
-public Optional<String> getAcceptHeader() {
-    return getRequest().
-            map(r -> r.getHeader("Accept"));
-}
+    @Override
+    public Optional<ObjectMapper> getObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                false);
+        mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION,
+                true);
+        return Optional.of(mapper);
+    }
 
-@Override
-public ResponseEntity<Void> deleteConsent(String acceptEncoding,
-        String acceptLanguage,
-        String acceptCharset,
-        String X_JWS_SIGNATURE,
-        String X_REQUEST_ID,
-        DeleteConsentRequest deleteConsentRequest) {
-    return AisApiDelegate.super.deleteConsent(acceptEncoding,
-                                              acceptLanguage,
-                                              acceptCharset,
-                                              X_JWS_SIGNATURE,
-                                              X_REQUEST_ID,
-                                              deleteConsentRequest); //To change body of generated methods, choose Tools | Templates.
-}
+    @Override
+    public Optional<HttpServletRequest> getRequest() {
+        RequestAttributes reqAttr = RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes servlReqAttr = (ServletRequestAttributes) reqAttr;
+        HttpServletRequest req = servlReqAttr.getRequest();
+        return Optional.of(req);
+    }
 
-@Override
-public ResponseEntity<AccountResponse> getAccount(String authorization,
-        String acceptEncoding,
-        String acceptLanguage,
-        String acceptCharset,
-        String X_JWS_SIGNATURE,
-        String X_REQUEST_ID,
-        AccountInfoRequest getAccountRequest) {
-    if (getObjectMapper().
-            isPresent() && getAcceptHeader().
-                    isPresent()) {
-        if (getAcceptHeader().
-                get().
-                contains("application/json")) {
-//            try {
-//                final String accountNumber = getAccountRequest.
-//                        getAccountNumber().
-//                        trim();
-            //System.out.println("accountNumber: " + accountNumber);
+    @Override
+    public Optional<String> getAcceptHeader() {
+        return getRequest().
+                map(r -> r.getHeader("Accept"));
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteConsent(String acceptEncoding,
+                                              String acceptLanguage,
+                                              String acceptCharset,
+                                              String X_JWS_SIGNATURE,
+                                              String X_REQUEST_ID,
+                                              DeleteConsentRequest deleteConsentRequest) {
+        return AisApiDelegate.super.deleteConsent(acceptEncoding,
+                acceptLanguage,
+                acceptCharset,
+                X_JWS_SIGNATURE,
+                X_REQUEST_ID,
+                deleteConsentRequest); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ResponseEntity<AccountResponse> getAccount(String authorization,
+                                                      String acceptEncoding,
+                                                      String acceptLanguage,
+                                                      String acceptCharset,
+                                                      String X_JWS_SIGNATURE,
+                                                      String X_REQUEST_ID,
+                                                      AccountInfoRequest getAccountRequest) {
+        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+
+                Query query = new Query();
+                //query.addCriteria(Criteria.where("name").is("Eric"));
+                // mongoTemplate.find(query, User.class);
+                try {
+                    final String accountNumber = getAccountRequest.
+                            getAccountNumber();
+                    //System.out.println("accountNumber: " + accountNumber);
 //                IMap<Long, AccountInfo> _map = hazelcast_Instance.
 //                        getMap("AccountInfo_map");
 //                System.out.println("accountInfo_map: " + _map.size());
@@ -149,42 +131,41 @@ public ResponseEntity<AccountResponse> getAccount(String authorization,
 //                response.setAccount(ai);
 //                return new ResponseEntity<>(response,
 //                                            HttpStatus.OK);
-//            } catch (Exception e) {
-//                log.error(e.getLocalizedMessage(),
-//                          e);
-//                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//            }
+                } catch (Exception e) {
+                    log.error(e.getLocalizedMessage(), e);
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        } else {
+            log.warn(
+                    "AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
-    } else {
-        log.warn(
-                "AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-}
 
-@Override
-public ResponseEntity<AccountsResponse> getAccounts(String authorization,
-        String acceptEncoding,
-        String acceptLanguage,
-        String acceptCharset,
-        String X_JWS_SIGNATURE,
-        String X_REQUEST_ID,
-        AccountsRequest getAccountsRequest) {
-    if (getObjectMapper().
-            isPresent() && getAcceptHeader().
-                    isPresent()) {
-        if (getAcceptHeader().
-                get().
-                contains("application/json")) {
-            try {
+    @Override
+    public ResponseEntity<AccountsResponse> getAccounts(String authorization,
+                                                        String acceptEncoding,
+                                                        String acceptLanguage,
+                                                        String acceptCharset,
+                                                        String X_JWS_SIGNATURE,
+                                                        String X_REQUEST_ID,
+                                                        AccountsRequest getAccountsRequest) {
+        if (getObjectMapper().
+                isPresent() && getAcceptHeader().
+                isPresent()) {
+            if (getAcceptHeader().
+                    get().
+                    contains("application/json")) {
+                try {
 
-                //final List<Predicate<?, ?>> predicates = new LinkedList<>();
-                // Message ID
+                    //final List<Predicate<?, ?>> predicates = new LinkedList<>();
+                    // Message ID
 //    if (messageId != null)
 //    {
 //        predicates.add(Predicates.greaterEqual("id", messageId));
 //    }
-                // Topic
+                    // Topic
 //    if (topic != null)
 //    {
 //        predicates.add(Predicates.equal("topic", topic));
@@ -196,11 +177,11 @@ public ResponseEntity<AccountsResponse> getAccounts(String authorization,
 //            predicates.add(Predicates.equal(e.getKey(), e.getValue()));
 //        }
 //    }
-                //return Predicates.and(predicates.toArray(new Predicate[predicates.size()]));
+                    //return Predicates.and(predicates.toArray(new Predicate[predicates.size()]));
 //                final String accountNumber = getAccountsRequest.
 //                        getAccountNumber().
 //                        trim();
-                //System.out.println("accountNumber: " + accountNumber);
+                    //System.out.println("accountNumber: " + accountNumber);
 //                getAccountsRequest.getPageId();
 //                if (getAccountsRequest.getPageId() != null) {
 //                    predicates.add(Predicates.greaterEqual("id",
@@ -269,35 +250,35 @@ public ResponseEntity<AccountsResponse> getAccounts(String authorization,
 //                    return new ResponseEntity<>(response,
 //                                                HttpStatus.OK);
 //                }
-            } catch (Exception e) {
-                log.error(e.getLocalizedMessage(),
-                          e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                } catch (Exception e) {
+                    log.error(e.getLocalizedMessage(),
+                            e);
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
+                }
             }
+        } else {
+            log.warn(
+                    "AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
-    } else {
-        log.warn(
-                "AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-}
 
-@Override
-public ResponseEntity<HoldInfoResponse> getHolds(String authorization,
-        String acceptEncoding,
-        String acceptLanguage,
-        String acceptCharset,
-        String X_JWS_SIGNATURE,
-        String X_REQUEST_ID,
-        HoldRequest getHoldsRequest) {
-    if (getObjectMapper().
-            isPresent() && getAcceptHeader().isPresent()) {
-        if (getAcceptHeader().get().contains("application/json")) {
-            if (!tokenUtils.verify(authorization,
-                                   getHoldsRequest.getRequestHeader().getToken())) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
+    @Override
+    public ResponseEntity<HoldInfoResponse> getHolds(String authorization,
+                                                     String acceptEncoding,
+                                                     String acceptLanguage,
+                                                     String acceptCharset,
+                                                     String X_JWS_SIGNATURE,
+                                                     String X_REQUEST_ID,
+                                                     HoldRequest getHoldsRequest) {
+        if (getObjectMapper().
+                isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+                if (!tokenUtils.verify(authorization,
+                        getHoldsRequest.getRequestHeader().getToken())) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
 //            try {
 //                final List<Predicate<String, String>> predicates = new LinkedList<>();
 //
@@ -388,147 +369,147 @@ public ResponseEntity<HoldInfoResponse> getHolds(String authorization,
 //                          e);
 //                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 //            }
-        }
-    } else {
-        log.warn(
-                "AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
-    }
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-}
-
-@Override
-public ResponseEntity<TransactionDetailResponse> getTransactionDetail(
-        String authorization,
-        String acceptEncoding,
-        String acceptLanguage,
-        String acceptCharset,
-        String X_JWS_SIGNATURE,
-        String X_REQUEST_ID,
-        TransactionDetailRequest getTransationDetailRequest
-) {
-    return AisApiDelegate.super.getTransactionDetail(authorization,
-                                                     acceptEncoding,
-                                                     acceptLanguage,
-                                                     acceptCharset,
-                                                     X_JWS_SIGNATURE,
-                                                     X_REQUEST_ID,
-                                                     getTransationDetailRequest); //To change body of generated methods, choose Tools | Templates.
-}
-
-@Override
-public ResponseEntity<TransactionsCancelledInfoResponse> getTransactionsCancelled(
-        String authorization,
-        String acceptEncoding,
-        String acceptLanguage,
-        String acceptCharset,
-        String X_JWS_SIGNATURE,
-        String X_REQUEST_ID,
-        TransactionInfoRequest getTransactionsCancelledRequest
-) {
-    return AisApiDelegate.super.getTransactionsCancelled(authorization,
-                                                         acceptEncoding,
-                                                         acceptLanguage,
-                                                         acceptCharset,
-                                                         X_JWS_SIGNATURE,
-                                                         X_REQUEST_ID,
-                                                         getTransactionsCancelledRequest); //To change body of generated methods, choose Tools | Templates.
-}
-
-@Override
-public ResponseEntity<TransactionsDoneInfoResponse> getTransactionsDone(
-        String authorization,
-        String acceptEncoding,
-        String acceptLanguage,
-        String acceptCharset,
-        String X_JWS_SIGNATURE,
-        String X_REQUEST_ID,
-        TransactionInfoRequest getTransactionsDoneRequest
-) {
-    if (getObjectMapper().
-            isPresent() && getAcceptHeader().isPresent()) {
-        if (getAcceptHeader().get().contains("application/json")) {
-            if (!tokenUtils.verify(authorization,
-                                   getTransactionsDoneRequest.getRequestHeader().
-                                           getToken())) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            getTransactionsDoneRequest.getAccountNumber();
-            getTransactionsDoneRequest.getBookingDateFrom();
-            getTransactionsDoneRequest.getBookingDateTo();
-            getTransactionsDoneRequest.getItemIdFrom();
-            getTransactionsDoneRequest.getMaxAmount();
-            getTransactionsDoneRequest.getMinAmount();
-            getTransactionsDoneRequest.getPageId();
-            getTransactionsDoneRequest.getPerPage();
-            getTransactionsDoneRequest.getTransactionDateFrom();
-            getTransactionsDoneRequest.getTransactionDateTo();
-            getTransactionsDoneRequest.getType();
+        } else {
+            log.warn(
+                    "AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
-    return AisApiDelegate.super.getTransactionsDone(authorization,
-                                                    acceptEncoding,
-                                                    acceptLanguage,
-                                                    acceptCharset,
-                                                    X_JWS_SIGNATURE,
-                                                    X_REQUEST_ID,
-                                                    getTransactionsDoneRequest); //To change body of generated methods, choose Tools | Templates.
-}
 
-@Override
-public ResponseEntity<TransactionPendingInfoResponse> getTransactionsPending(
-        String authorization,
-        String acceptEncoding,
-        String acceptLanguage,
-        String acceptCharset,
-        String X_JWS_SIGNATURE,
-        String X_REQUEST_ID,
-        TransactionInfoRequest getTransactionsPendingRequest
-) {
-    return AisApiDelegate.super.getTransactionsPending(authorization,
-                                                       acceptEncoding,
-                                                       acceptLanguage,
-                                                       acceptCharset,
-                                                       X_JWS_SIGNATURE,
-                                                       X_REQUEST_ID,
-                                                       getTransactionsPendingRequest); //To change body of generated methods, choose Tools | Templates.
-}
+    @Override
+    public ResponseEntity<TransactionDetailResponse> getTransactionDetail(
+            String authorization,
+            String acceptEncoding,
+            String acceptLanguage,
+            String acceptCharset,
+            String X_JWS_SIGNATURE,
+            String X_REQUEST_ID,
+            TransactionDetailRequest getTransationDetailRequest
+    ) {
+        return AisApiDelegate.super.getTransactionDetail(authorization,
+                acceptEncoding,
+                acceptLanguage,
+                acceptCharset,
+                X_JWS_SIGNATURE,
+                X_REQUEST_ID,
+                getTransationDetailRequest); //To change body of generated methods, choose Tools | Templates.
+    }
 
-@Override
-public ResponseEntity<TransactionRejectedInfoResponse> getTransactionsRejected(
-        String authorization,
-        String acceptEncoding,
-        String acceptLanguage,
-        String acceptCharset,
-        String X_JWS_SIGNATURE,
-        String X_REQUEST_ID,
-        TransactionInfoRequest getTransactionsRejectedRequest
-) {
-    return AisApiDelegate.super.getTransactionsRejected(authorization,
-                                                        acceptEncoding,
-                                                        acceptLanguage,
-                                                        acceptCharset,
-                                                        X_JWS_SIGNATURE,
-                                                        X_REQUEST_ID,
-                                                        getTransactionsRejectedRequest); //To change body of generated methods, choose Tools | Templates.
-}
+    @Override
+    public ResponseEntity<TransactionsCancelledInfoResponse> getTransactionsCancelled(
+            String authorization,
+            String acceptEncoding,
+            String acceptLanguage,
+            String acceptCharset,
+            String X_JWS_SIGNATURE,
+            String X_REQUEST_ID,
+            TransactionInfoRequest getTransactionsCancelledRequest
+    ) {
+        return AisApiDelegate.super.getTransactionsCancelled(authorization,
+                acceptEncoding,
+                acceptLanguage,
+                acceptCharset,
+                X_JWS_SIGNATURE,
+                X_REQUEST_ID,
+                getTransactionsCancelledRequest); //To change body of generated methods, choose Tools | Templates.
+    }
 
-@Override
-public ResponseEntity<TransactionsScheduledInfoResponse> getTransactionsScheduled(
-        String authorization,
-        String acceptEncoding,
-        String acceptLanguage,
-        String acceptCharset,
-        String X_JWS_SIGNATURE,
-        String X_REQUEST_ID,
-        TransactionInfoRequest getTransactionsScheduledRequest
-) {
-    return AisApiDelegate.super.getTransactionsScheduled(authorization,
-                                                         acceptEncoding,
-                                                         acceptLanguage,
-                                                         acceptCharset,
-                                                         X_JWS_SIGNATURE,
-                                                         X_REQUEST_ID,
-                                                         getTransactionsScheduledRequest); //To change body of generated methods, choose Tools | Templates.
-}
+    @Override
+    public ResponseEntity<TransactionsDoneInfoResponse> getTransactionsDone(
+            String authorization,
+            String acceptEncoding,
+            String acceptLanguage,
+            String acceptCharset,
+            String X_JWS_SIGNATURE,
+            String X_REQUEST_ID,
+            TransactionInfoRequest getTransactionsDoneRequest
+    ) {
+        if (getObjectMapper().
+                isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+                if (!tokenUtils.verify(authorization,
+                        getTransactionsDoneRequest.getRequestHeader().
+                                getToken())) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+                getTransactionsDoneRequest.getAccountNumber();
+                getTransactionsDoneRequest.getBookingDateFrom();
+                getTransactionsDoneRequest.getBookingDateTo();
+                getTransactionsDoneRequest.getItemIdFrom();
+                getTransactionsDoneRequest.getMaxAmount();
+                getTransactionsDoneRequest.getMinAmount();
+                getTransactionsDoneRequest.getPageId();
+                getTransactionsDoneRequest.getPerPage();
+                getTransactionsDoneRequest.getTransactionDateFrom();
+                getTransactionsDoneRequest.getTransactionDateTo();
+                getTransactionsDoneRequest.getType();
+            }
+        }
+        return AisApiDelegate.super.getTransactionsDone(authorization,
+                acceptEncoding,
+                acceptLanguage,
+                acceptCharset,
+                X_JWS_SIGNATURE,
+                X_REQUEST_ID,
+                getTransactionsDoneRequest); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ResponseEntity<TransactionPendingInfoResponse> getTransactionsPending(
+            String authorization,
+            String acceptEncoding,
+            String acceptLanguage,
+            String acceptCharset,
+            String X_JWS_SIGNATURE,
+            String X_REQUEST_ID,
+            TransactionInfoRequest getTransactionsPendingRequest
+    ) {
+        return AisApiDelegate.super.getTransactionsPending(authorization,
+                acceptEncoding,
+                acceptLanguage,
+                acceptCharset,
+                X_JWS_SIGNATURE,
+                X_REQUEST_ID,
+                getTransactionsPendingRequest); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ResponseEntity<TransactionRejectedInfoResponse> getTransactionsRejected(
+            String authorization,
+            String acceptEncoding,
+            String acceptLanguage,
+            String acceptCharset,
+            String X_JWS_SIGNATURE,
+            String X_REQUEST_ID,
+            TransactionInfoRequest getTransactionsRejectedRequest
+    ) {
+        return AisApiDelegate.super.getTransactionsRejected(authorization,
+                acceptEncoding,
+                acceptLanguage,
+                acceptCharset,
+                X_JWS_SIGNATURE,
+                X_REQUEST_ID,
+                getTransactionsRejectedRequest); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ResponseEntity<TransactionsScheduledInfoResponse> getTransactionsScheduled(
+            String authorization,
+            String acceptEncoding,
+            String acceptLanguage,
+            String acceptCharset,
+            String X_JWS_SIGNATURE,
+            String X_REQUEST_ID,
+            TransactionInfoRequest getTransactionsScheduledRequest
+    ) {
+        return AisApiDelegate.super.getTransactionsScheduled(authorization,
+                acceptEncoding,
+                acceptLanguage,
+                acceptCharset,
+                X_JWS_SIGNATURE,
+                X_REQUEST_ID,
+                getTransactionsScheduledRequest); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

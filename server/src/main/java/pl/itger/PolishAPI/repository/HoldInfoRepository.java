@@ -1,14 +1,13 @@
 package pl.itger.PolishAPI.repository;
 
-import pl.itger.PolishAPI.io.swagger.model.HoldInfo;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import pl.itger.PolishAPI.io.swagger.model.HoldInfo;
 
 /**
- *
  * @author new
  */
 public interface HoldInfoRepository
-        extends MongoRepository<HoldInfo, String>{
+        extends MongoRepository<HoldInfo, String> {
 
 //List<HoldInfo> findByAmount(String amount);
 //

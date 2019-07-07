@@ -46,14 +46,14 @@ F:\workspace\swagger>cd swagger-codegen
 5.
 budowa swaggera:
 F:\workspace\swagger\swagger-codegen>mvn clean package -DskipTests
-Testy na windows 10 w tej wersji swaggera nie przechodza.
+Testy na windows 10 w tej wersji swaggera nie przechodza dlatego trzeba je wyłączyć.
 
 6.
-mozliwe parametry dla generatora spring:
+tutaj możemy zapoznac się z mozliwymi parametrami dla generatora spring:
 https://generator.swagger.io/api/gen/servers/spring
 
 7.
-parametry generatora:
+wg mnie optymalne parametry generatora sa te:
 {
 "groupId":"pl.itger.PolishAPI",
   "artifactId":"PolishAPI_2_1_2_sample",
@@ -62,7 +62,6 @@ parametry generatora:
 "modelPackage" : "pl.itger.PolishAPI.model",
 "apiPackage" : "pl.itger.PolishAPI.api",
 "sourceFolder" : "F:\workspace\PolishAPI_2_1_2_sample",
-
  "dateLibrary": "java8",
  "java8" : "true",
  "delegatePattern": "true",
@@ -70,16 +69,24 @@ parametry generatora:
  "useTags" : "true"
 }
 
+najwazniejsze są delegatePattern, java8, bigDecimalAsString.
+Dzieki Delegation pattern uzyskamy Loose Coupling oraz Separation of Responsibilities.
+
 8.
+Po ściągnieciu definicji polish-api przystepujemy do wygenerowania:
 java -jar modules/swagger-codegen-cli/target/swagger-codegen-cli.jar generate -i F:\workspace\PolishAPI_2_1_2_sample\ZBP-polish-api-2_1_2-swagger.json -l spring -o F:\workspace\PolishAPI_2_1_2_sample\server -c F:\workspace\PolishAPI_2_1_2_sample\polishAPI_Options.json
+
+polishAPI_Options.json jest to plik zawierający parametry opisane w punkcie 7.
 
 9.
 w netbeans : New Project/Maven/Project with Existing POM
 
 10.
 Ponieważ wśród parametrów generatora swagger zaznaczyliśmy iz interesuje nas wzorzec Delegate,
-wystarczy teraz utworzyć klasy implementujące interfejsy AisApiDelegate, AsApiDelegate,CafApiDelegate,PisApiDelegate. W tych klasach zawrzemy logikę biznesowa i bedziemy
-uniezaleznieni od generowanego kodu
+wystarczy teraz utworzyć klasy implementujące interfejsy AisApiDelegate, AsApiDelegate, CafApiDelegate, PisApiDelegate. W tych klasach zawrzemy logikę biznesowa i bedziemy
+uniezaleznieni od generowanego kodu, tj bedziemy mogli regenerować Polish API nie zmieniając klas 
+z logika biznesową.
+
 Np. na poczatek moze być jedna klasa:
 
 @Service
@@ -91,7 +98,7 @@ Ważne aby miała adnotację "org.springframework.stereotype.Service"!
 nastepnie czyścimy, budujemy mavenem nasz projekt i uruchamiamy go:
 w netBeans są to komendy clean and build, a nastepnie run.
 
-Spring boot powinien się odpalić i nasłuchiwać na porcie 8080
+Spring boot powinien się odpalić i nasłuchiwać na porcie 8080.
 
 11.
 oto przykładowe wywołanie usługi getAccount:

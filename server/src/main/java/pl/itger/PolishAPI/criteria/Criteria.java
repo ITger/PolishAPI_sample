@@ -8,12 +8,11 @@ package pl.itger.PolishAPI.criteria;
 import java.util.List;
 
 /**
- *
  * @author new
  */
 public interface Criteria {
 
-public <T> List<T> meetCriteria(List<T> elementy);
+    public <T> List<T> meetCriteria(List<T> elementy);
 
 //public <T> T meetCriteria(List<T> elementy);
 

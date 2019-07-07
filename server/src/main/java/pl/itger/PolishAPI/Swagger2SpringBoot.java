@@ -1,5 +1,6 @@
 package pl.itger.PolishAPI;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
@@ -9,37 +10,31 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 //@EnableMongoRepositories(
 //            basePackageClasses = {AccountInfoRepository.class, HoldInfoRepository.class, TransactionInfoRepository.class})
+
 @SpringBootApplication
+@ComponentScan(basePackages = {"pl.itger.dataFaker", "pl.itger.PolishAPI"})
 @EnableSwagger2
-@ComponentScan(
-        basePackages = {"pl.itger.PolishAPI",
-            "pl.itger.PolishAPI.implementation", "pl.itger.PolishAPI.io.swagger.api", "pl.itger.PolishAPI.io.swagger.configuration"}
-)
-public class Swagger2SpringBoot
-        implements CommandLineRunner {
+public class Swagger2SpringBoot implements CommandLineRunner {
 
-@Override
-public void run(String... arg0) throws Exception {
-    if (arg0.length > 0 && arg0[0].equals("exitcode")) {
-        throw new ExitException();
+    public static void main(String[] args) {
+        new SpringApplication(Swagger2SpringBoot.class).run(args);
     }
-}
 
-public static void main(String[] args) throws Exception {
-    //FakeDataGen.makeData();
-    new SpringApplication(Swagger2SpringBoot.class).run(args);
-}
+    @Override
+    public void run(@NotNull String... arg0) {
+        if (arg0.length > 0 && arg0[0].equals("exitcode")) {
+            throw new ExitException();
+        }
+    }
 
-class ExitException
-        extends RuntimeException
-        implements ExitCodeGenerator {
+    class ExitException
+            extends RuntimeException
+            implements ExitCodeGenerator {
+        private static final long serialVersionUID = 1L;
 
-private static final long serialVersionUID = 1L;
-
-@Override
-public int getExitCode() {
-    return 10;
-}
-
-}
+        @Override
+        public int getExitCode() {
+            return 10;
+        }
+    }
 }

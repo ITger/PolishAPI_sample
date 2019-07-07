@@ -1,35 +1,24 @@
 package pl.itger.jpaConfig;
 
-import com.github.javafaker.Faker;
-//import com.hazelcast.core.HazelcastInstance;
-//import com.hazelcast.core.IMap;
-//import com.hazelcast.core.IdGenerator;
-import pl.itger.PolishAPI.io.swagger.model.AccountBaseInfo;
-import pl.itger.PolishAPI.io.swagger.model.AccountInfo;
-import pl.itger.PolishAPI.io.swagger.model.AccountPsuRelation;
-import pl.itger.PolishAPI.io.swagger.model.Address;
-import pl.itger.PolishAPI.io.swagger.model.Bank;
-import pl.itger.PolishAPI.io.swagger.model.BankAccountInfo;
-import pl.itger.PolishAPI.io.swagger.model.DictionaryItem;
-import pl.itger.PolishAPI.io.swagger.model.HoldInfo;
-import pl.itger.PolishAPI.io.swagger.model.NameAddress;
-import pl.itger.PolishAPI.io.swagger.model.SenderRecipient;
-import java.time.OffsetDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+//import com.hazelcast.core.HazelcastInstance;
+//import com.hazelcast.core.IMap;
+//import com.hazelcast.core.IdGenerator;
+
 @Controller
 public class FakeDataGen {
 
-@Autowired
+    @Autowired
 //private HazelcastInstance hazelcast_Instance;
 
-@RequestMapping(value = "/makeFakeData")
-@ResponseBody
-public HttpEntity makeFakeData() {
+    @RequestMapping(value = "/makeFakeData")
+    @ResponseBody
+    public HttpEntity makeFakeData() {
 //    System.out.println("Hazelcast Member instance is running!");
 //    Faker faker = new Faker();
 //    makeAccountInfo_data(hazelcast_Instance,
@@ -38,8 +27,8 @@ public HttpEntity makeFakeData() {
 //                             faker);
 //    makeHoldInfo_data(hazelcast_Instance,
 //                      faker);
-    return HttpEntity.EMPTY;
-}
+        return HttpEntity.EMPTY;
+    }
 
 //private static void makeHoldInfo_data(HazelcastInstance hz,
 //        Faker faker) {

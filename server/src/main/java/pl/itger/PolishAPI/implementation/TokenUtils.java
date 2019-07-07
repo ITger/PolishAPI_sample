@@ -16,79 +16,74 @@
  */
 package pl.itger.PolishAPI.implementation;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
+import org.springframework.stereotype.Component;
+
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Component("tokenUtils")
 public class TokenUtils {
 
-boolean
-        verify(String token) {
-    String subject = "Something very bad! ";
-    System.out.println(token);
-    try {
-        Jws<Claims> jwtClaims = Jwts
-                .parser().
-                setSigningKey("secretPassword".getBytes("UTF-8")).
-                parseClaimsJws(token);
-        subject = jwtClaims
-                .getBody().
-                getSubject();
-        //System.out.println(subject);
-    } catch (ExpiredJwtException ex) {
-        //subject = subject.concat(ex.getLocalizedMessage());
-        Logger.getLogger(TokenUtils.class.getName()).
-                log(Level.SEVERE,
-                    null,
-                    ex);
-        return Boolean.FALSE;
-    } catch (MalformedJwtException ex) {
-        //subject = subject.concat(ex.getLocalizedMessage());
-        Logger.getLogger(TokenUtils.class.getName()).
-                log(Level.SEVERE,
-                    null,
-                    ex);
-        return Boolean.FALSE;
-    } catch (io.jsonwebtoken.SignatureException ex) {
-        //subject = subject.concat(ex.getLocalizedMessage());
-        Logger.getLogger(TokenUtils.class.getName()).
-                log(Level.SEVERE,
-                    null,
-                    ex);
-        return Boolean.FALSE;
-    } catch (UnsupportedJwtException ex) {
-        //subject = subject.concat(ex.getLocalizedMessage());
-        Logger.getLogger(TokenUtils.class.getName()).
-                log(Level.SEVERE,
-                    null,
-                    ex);
-        return Boolean.FALSE;
-    } catch (UnsupportedEncodingException ex) {
-        Logger.getLogger(TokenUtils.class.getName()).
-                log(Level.SEVERE,
-                    null,
-                    ex);
+    boolean
+    verify(String token) {
+        String subject = "Something very bad! ";
+        System.out.println(token);
+        try {
+            Jws<Claims> jwtClaims = Jwts
+                    .parser().
+                            setSigningKey("secretPassword".getBytes("UTF-8")).
+                            parseClaimsJws(token);
+            subject = jwtClaims
+                    .getBody().
+                            getSubject();
+            //System.out.println(subject);
+        } catch (ExpiredJwtException ex) {
+            //subject = subject.concat(ex.getLocalizedMessage());
+            Logger.getLogger(TokenUtils.class.getName()).
+                    log(Level.SEVERE,
+                            null,
+                            ex);
+            return Boolean.FALSE;
+        } catch (MalformedJwtException ex) {
+            //subject = subject.concat(ex.getLocalizedMessage());
+            Logger.getLogger(TokenUtils.class.getName()).
+                    log(Level.SEVERE,
+                            null,
+                            ex);
+            return Boolean.FALSE;
+        } catch (io.jsonwebtoken.SignatureException ex) {
+            //subject = subject.concat(ex.getLocalizedMessage());
+            Logger.getLogger(TokenUtils.class.getName()).
+                    log(Level.SEVERE,
+                            null,
+                            ex);
+            return Boolean.FALSE;
+        } catch (UnsupportedJwtException ex) {
+            //subject = subject.concat(ex.getLocalizedMessage());
+            Logger.getLogger(TokenUtils.class.getName()).
+                    log(Level.SEVERE,
+                            null,
+                            ex);
+            return Boolean.FALSE;
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(TokenUtils.class.getName()).
+                    log(Level.SEVERE,
+                            null,
+                            ex);
+        }
+        return Boolean.TRUE;
     }
-    return Boolean.TRUE;
-}
 
-boolean verify(String authorization,
-        String token) {
-    //System.out.println("authorization.startsWith(\"Bearer \": " +authorization.startsWith("Bearer "));
-    //System.out.println("authorization.substring(7).equals(token):" + authorization.substring(7).equals(token));
-    return (authorization != null 
-            && authorization.startsWith("Bearer ")
-            && authorization.substring(7).equals(token)
-            && verify(authorization.substring(7))
-            && verify(token));
-}
+    boolean verify(String authorization,
+                   String token) {
+        //System.out.println("authorization.startsWith(\"Bearer \": " +authorization.startsWith("Bearer "));
+        //System.out.println("authorization.substring(7).equals(token):" + authorization.substring(7).equals(token));
+        return (authorization != null
+                && authorization.startsWith("Bearer ")
+                && authorization.substring(7).equals(token)
+                && verify(authorization.substring(7))
+                && verify(token));
+    }
 }

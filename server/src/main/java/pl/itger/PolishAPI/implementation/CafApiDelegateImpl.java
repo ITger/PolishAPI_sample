@@ -6,13 +6,14 @@
 package pl.itger.PolishAPI.implementation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import pl.itger.PolishAPI.io.swagger.api.CafApiDelegate;
 import org.springframework.stereotype.Service;
+import pl.itger.PolishAPI.io.swagger.api.CafApiDelegate;
 import pl.itger.PolishAPI.io.swagger.model.ConfirmationOfFundsRequest;
 import pl.itger.PolishAPI.io.swagger.model.ConfirmationOfFundsResponse;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 @Service
 public class CafApiDelegateImpl implements CafApiDelegate {
@@ -41,11 +42,11 @@ public class CafApiDelegateImpl implements CafApiDelegate {
             String X_REQUEST_ID,
             ConfirmationOfFundsRequest confirmationOfFundsRequest) {
         return CafApiDelegate.super.getConfirmationOfFunds(acceptEncoding,
-                                                           acceptLanguage,
-                                                           acceptCharset,
-                                                           X_JWS_SIGNATURE,
-                                                           X_REQUEST_ID,
-                                                           confirmationOfFundsRequest); //To change body of generated methods, choose Tools | Templates.
+                acceptLanguage,
+                acceptCharset,
+                X_JWS_SIGNATURE,
+                X_REQUEST_ID,
+                confirmationOfFundsRequest); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
