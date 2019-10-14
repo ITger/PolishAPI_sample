@@ -80,15 +80,19 @@ tests fail in the swagger version I installed on my Win10pro, so I skipped them.
 * Next, in NetBeans (or any other IDE), create a New Project/Maven/Project with Existing POM.
 * Because I configured swagger-codegen with "delegatePattern": "true", after successful generation in previous step, I wrote classes that implemented AisApiDelegate, AsApiDelegate, CafApiDelegate, PisApiDelegate interfaces. In that classes I am implementing the business logic for all services.
 * Start your server as an simple java application. You can view the PolishAPI documentation in swagger-ui by pointing to
-http://localhost:8080/
-* I opted for MongoDB as data base, to fill mongo with fake data you should execute the following command:
+https://localhost:8443/
+* I opted for MongoDB as data base. To fill MongoDB with fake data you should execute the following command:
 ```
-curl  -X POST  http://localhost:8080/makeFakeData
+curl -k -X GET  https://localhost:8443/generateFakeData
 ```
 this way, we generate RANDOM fake data.
+* To generate JWK invoke:
+```
+curl -k -v https://localhost:8443/jwts -H "Accept: application/json" -H "Accept-Language: en_US" -d client_id=cID -d secret=abcd
+```
 * When spring started, you can test its functionality. The best is using curl, for example:
 ```
-curl  -X POST -H "Accept: application/json" -H "Accept-Language: PL-pl"  -H "Referer: http://localhost:8080/swagger-ui.html" -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoidXNlcnMvSmFudXN6IGkgR3Jhxbx5bmEiLCJhdWQiOiJzb21ldGhpbmciLCJleHAiOjE1NTE4NjY1OTIsIm5hbWUiOiJKYW51c3ogaSBHcmHFvHluYSBOb3NhY3oiLCJzY29wZSI6InNlbGYgZ3JvdXBzL2FkbWlucyJ9.kfhkYfgXFstJe5Ws4UXGYtEQhh5NBg4Sl6Kqn1wkQH4" -H "X-JWS-SIGNATURE: 123" -H "Accept-Charset: utf-8" -H "X-REQUEST-ID: 1391c93e-45af-11e9-b210-d663bd873d93" -H "DNT: 1" -H "Accept-Encoding: gzip" -H "Connection: keep-alive" -d "{  \"accountNumber\": \"string\",  \"requestHeader\": {  \"ipAddress\": \"string\",  \"isDirectPsu\": false,  \"requestId\": \"1391c93e-45af-11e9-b210-d663bd873d93\",  \"sendDate\": \"2019-03-13T14:34:03.777Z\",  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoidXNlcnMvSmFudXN6IGkgR3Jhxbx5bmEiLCJhdWQiOiJzb21ldGhpbmciLCJleHAiOjE1NTE4NjY1OTIsIm5hbWUiOiJKYW51c3ogaSBHcmHFvHluYSBOb3NhY3oiLCJzY29wZSI6InNlbGYgZ3JvdXBzL2FkbWlucyJ9.kfhkYfgXFstJe5Ws4UXGYtEQhh5NBg4Sl6Kqn1wkQH4\",  \"tppId\": \"string\",  \"userAgent\": \"string\"  }   }"  http://localhost:8080/v2_1_2.1/accounts/v2_1_2.1/getAccount
+curl -k -X POST -H "Accept: application/json" -H "Accept-Language: PL-pl"  -H "Referer: https://localhost:8443/swagger-ui.html" -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoidXNlcnMvSmFudXN6IGkgR3Jhxbx5bmEiLCJhdWQiOiJzb21ldGhpbmciLCJleHAiOjE1NTE4NjY1OTIsIm5hbWUiOiJKYW51c3ogaSBHcmHFvHluYSBOb3NhY3oiLCJzY29wZSI6InNlbGYgZ3JvdXBzL2FkbWlucyJ9.kfhkYfgXFstJe5Ws4UXGYtEQhh5NBg4Sl6Kqn1wkQH4" -H "X-JWS-SIGNATURE: 123" -H "Accept-Charset: utf-8" -H "X-REQUEST-ID: 1391c93e-45af-11e9-b210-d663bd873d93" -H "DNT: 1" -H "Accept-Encoding: gzip" -H "Connection: keep-alive" -d "{  \"accountNumber\": \"string\",  \"requestHeader\": {  \"ipAddress\": \"string\",  \"isDirectPsu\": false,  \"requestId\": \"1391c93e-45af-11e9-b210-d663bd873d93\",  \"sendDate\": \"2019-03-13T14:34:03.777Z\",  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoidXNlcnMvSmFudXN6IGkgR3Jhxbx5bmEiLCJhdWQiOiJzb21ldGhpbmciLCJleHAiOjE1NTE4NjY1OTIsIm5hbWUiOiJKYW51c3ogaSBHcmHFvHluYSBOb3NhY3oiLCJzY29wZSI6InNlbGYgZ3JvdXBzL2FkbWlucyJ9.kfhkYfgXFstJe5Ws4UXGYtEQhh5NBg4Sl6Kqn1wkQH4\",  \"tppId\": \"string\",  \"userAgent\": \"string\"  }   }"  https://localhost:8443/v2_1_2.1/accounts/v2_1_2.1/getAccount
 ```
 the query predicates must be in accordance with generated data.
 ## .. work in progress ...

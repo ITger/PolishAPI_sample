@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 //            basePackageClasses = {AccountInfoRepository.class, HoldInfoRepository.class, TransactionInfoRepository.class})
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"pl.itger.dataFaker", "pl.itger.PolishAPI"})
+@ComponentScan(basePackages = {"pl.itger.dataFaker", "pl.itger.JWTokens", "pl.itger.PolishAPI"})
 @EnableSwagger2
 public class Swagger2SpringBoot implements CommandLineRunner {
 

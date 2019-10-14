@@ -21,27 +21,26 @@ import java.util.List;
         basePackageClasses = {AccountInfoRepository.class, HoldInfoRepository.class, TransactionInfoRepository.class})
 
 @Configuration
-public class MongoDBConfig
-        extends AbstractMongoConfiguration {
+public class MongoDBConfig extends AbstractMongoConfiguration {
+
+    private final static String dbName = "PolishAPI";
 
     public @Bean
     MongoTemplate mongoTemplate() {
-        return new MongoTemplate(mongoClient(), "PolishAPI");
+        return new MongoTemplate(mongoClient(), MongoDBConfig.dbName);
     }
 
     @Override
     protected String getDatabaseName() {
-        return "PolishAPI";
+        return MongoDBConfig.dbName;
     }
 
     @Override
     @Bean
     public MongoClient mongoClient() {
         System.out.println("MongoClient");
-        return new MongoClient("127.0.0.1",
-                27017);
+        return new MongoClient("127.0.0.1", 27017);
     }
-
 
     @Override
     public MongoCustomConversions customConversions() {

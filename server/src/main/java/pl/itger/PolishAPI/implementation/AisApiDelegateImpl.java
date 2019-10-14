@@ -8,8 +8,12 @@ package pl.itger.PolishAPI.implementation;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.MongoClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import pl.itger.JWTokens.JWT_verify;
 import pl.itger.PolishAPI.io.swagger.api.AisApiDelegate;
 import pl.itger.PolishAPI.io.swagger.model.*;
 
@@ -33,13 +38,18 @@ import java.util.Optional;
 //import com.hazelcast.query.Predicates;
 
 @Service
-public class AisApiDelegateImpl
-        implements AisApiDelegate {
+public class AisApiDelegateImpl implements AisApiDelegate {
 
     private final MongoDbFactory mongoDbFactory;
+
     @Autowired
     private TokenUtils tokenUtils;
 
+    @Autowired
+    private JWT_verify jwt_verify;
+
+    @Autowired
+    private MongoClient mongoClient;
 
     @Autowired
     public AisApiDelegateImpl(MongoDbFactory dbFactory) {
@@ -85,6 +95,19 @@ public class AisApiDelegateImpl
                 deleteConsentRequest); //To change body of generated methods, choose Tools | Templates.
     }
 
+
+    /**
+     *
+     * @param authorization
+     * @param acceptEncoding
+     * @param acceptLanguage
+     * @param acceptCharset
+     * @param X_JWS_SIGNATURE
+     * @param X_REQUEST_ID
+     * @param getAccountRequest
+     * @return
+     * curl -X POST "http://localhost:8080/v2_1_2.1/accounts/v2_1_2.1/getAccount" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer btvgfd" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{  \"accountNumber\": \"6541-6286-8685-9161-4552\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-07-15T20:59:12.601Z\",    \"token\": \"string\",    \"tppId\": \"string\",    \"userAgent\": \"string\"  }}"
+     */
     @Override
     public ResponseEntity<AccountResponse> getAccount(String authorization,
                                                       String acceptEncoding,
@@ -95,22 +118,16 @@ public class AisApiDelegateImpl
                                                       AccountInfoRequest getAccountRequest) {
         if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
-
+                System.out.println(jwt_verify.verify(authorization));
                 Query query = new Query();
-                //query.addCriteria(Criteria.where("name").is("Eric"));
-                // mongoTemplate.find(query, User.class);
+                query.addCriteria(Criteria.where("accountNumber").is(getAccountRequest.getAccountNumber()));
+
+                MongoOperations mongoOps = new MongoTemplate(mongoDbFactory);//mongoClient, "database")
+                AccountInfo accountInfo = mongoOps.findOne(query, AccountInfo.class);
+                System.out.println("accountInfo: " + accountInfo.toString());
                 try {
-                    final String accountNumber = getAccountRequest.
-                            getAccountNumber();
+                    final String accountNumber = getAccountRequest.getAccountNumber();
                     //System.out.println("accountNumber: " + accountNumber);
-//                IMap<Long, AccountInfo> _map = hazelcast_Instance.
-//                        getMap("AccountInfo_map");
-//                System.out.println("accountInfo_map: " + _map.size());
-//                EntryObject e = new PredicateBuilder().getEntryObject();
-//                Predicate predicate = e.get("accountNumber").
-//                        equal(accountNumber);
-//                Collection<AccountInfo> result = _map.
-//                        values(predicate);
 //                //System.out.println("result.size: " + result.size());
 //                AccountResponse response = new AccountResponse();
 //                ResponseHeader responseHeader = new ResponseHeader();

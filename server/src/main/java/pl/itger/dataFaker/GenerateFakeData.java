@@ -34,10 +34,13 @@ import java.util.concurrent.TimeUnit;
 public class GenerateFakeData {
 
     private final Faker faker = new Faker();
-    private final MongoDbFactory mongoDbFactory;
+
     @Autowired
     protected AccountInfoRepository accountInfoRepository;
+
     Logger logger = LoggerFactory.getLogger(GenerateFakeData.class);
+
+    private final MongoDbFactory mongoDbFactory;
 
     @Autowired
     public GenerateFakeData(MongoDbFactory dbFactory) {
