@@ -18,21 +18,29 @@ package pl.itger.JWTokens;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.var;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
- * curl -k -v https://localhost:8443/jwts -H "Accept: application/json" -H "Accept-Language: en_US" -d client_id=cID -d secret=abcd
+ * curl -k -v https://localhost:8443/jwts -H "Accept: application/json" -H "Accept-Language: en_US" -d client_id=cID -d secret=abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd -d username=user -d password=password
  */
 @RestController
 @RequestMapping("/")
@@ -42,15 +50,22 @@ public class TokenProvider_controller {
 
     @RequestMapping(value = "jwts", method = RequestMethod.POST)
     @ResponseBody
-    public String get(@NotNull String client_id, @NotNull String secret) {
+    public String get(@NotNull String client_id, @NotNull String secret, Authentication authentication) {
         Date expirationDate = DateUtils.addDays(new Date(), 10);
         String jwt = "Jwts.builder FAILED";
+        //User user = ((User) authentication.getPrincipal());
+//        List<String> roles = user.getAuthorities()
+//                .stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.toList());
+        List<String> roles = Arrays.asList(new String[]{"Hello", "World"});
         try {
             jwt = Jwts.builder()
                     .setIssuer("http://itger.pl/")
                     .setSubject("subject")
                     .setAudience("audience")
                     .setExpiration(expirationDate)
+                    .claim("rol", roles)
                     .claim("name", "client_id")
                     .claim("scope", "itger_polishAPI_2_1_2")
                     .signWith(
@@ -61,7 +76,7 @@ public class TokenProvider_controller {
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(TokenProvider_controller.class.getName())
                     .log(Level.SEVERE,ex.getMessage(),  ex);
-            return null;
+            return jwt;
         }
         respJWT.access_token = jwt;
         return jwt;

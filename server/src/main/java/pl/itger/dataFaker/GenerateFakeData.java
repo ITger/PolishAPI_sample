@@ -42,11 +42,17 @@ public class GenerateFakeData {
 
     private final MongoDbFactory mongoDbFactory;
 
+    /**
+     * @param dbFactory
+     */
     @Autowired
     public GenerateFakeData(MongoDbFactory dbFactory) {
         this.mongoDbFactory = dbFactory;
     }
 
+    /**
+     * @return
+     */
     @RequestMapping(value = "generateFakeData", method = RequestMethod.GET)
     public ResponseEntity generateFakeData() {
         logger.info("generateFakeData START");
@@ -73,6 +79,10 @@ public class GenerateFakeData {
         return new ResponseEntity(accountNumberList, HttpStatus.OK);
     }
 
+    /**
+     * @param accInfo_coll
+     * @param holdInfo_coll
+     */
     private void createHolds(@NotNull MongoCollection<Document> accInfo_coll, MongoCollection<Document> holdInfo_coll) {
         logger.info("Creating Holds");
         for (Document doc : accInfo_coll.find()) {
@@ -89,6 +99,10 @@ public class GenerateFakeData {
         }
     }
 
+    /**
+     * @param accInfo_coll
+     * @param transactionInfo_coll
+     */
     private void createTransactions(@NotNull MongoCollection<Document> accInfo_coll, MongoCollection<Document> transactionInfo_coll) {
         logger.info("Creating Transactions");
         for (Document doc : accInfo_coll.find()) {
@@ -104,6 +118,9 @@ public class GenerateFakeData {
         }
     }
 
+    /**
+     * @param ti
+     */
     private void createTransactionInfo(@NotNull TransactionInfo ti) {
         ti.setAmount(Double.toString(faker.number().randomDouble(2, 1, 1000000)));
         ti.setBookingDate(faker.date().past(1000, TimeUnit.DAYS).toInstant().atOffset(OffsetDateTime.now().getOffset()));
@@ -124,12 +141,18 @@ public class GenerateFakeData {
         ti.setTransactionCategory(TransactionInfo.TransactionCategoryEnum.CREDIT);
     }
 
+    /**
+     *
+     */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Error message")
     public void handleError() {
         logger.error("BLAD");
     }
 
+    /**
+     * @param holdInfo
+     */
     private void createHold(@NotNull HoldInfo holdInfo) {
         holdInfo.setAmount(Double.toString(faker.number().randomDouble(2, 1, 1000000)));
         holdInfo.setCurrency(faker.currency().code());
@@ -144,6 +167,9 @@ public class GenerateFakeData {
         holdInfo.setTransactionType(faker.commerce().productName());
     }
 
+    /**
+     * @param accountInfoRepository
+     */
     private void createAccounts(@NotNull AccountInfoRepository accountInfoRepository) {
         logger.info("Creating accounts");
         List<AccountInfo> accIL = new ArrayList();

@@ -16,15 +16,19 @@ import java.util.logging.Logger;
 
 @Component
 public class JWT_verify {
-
+    /**
+     * TODO: remove println, multiple returns.
+     * @param token
+     * @return
+     */
     public ResponseEntity<String>  verify(String token) {
-        String subject = "Something Wrong! ";
+        String subject = "authorization failed! ";
         System.out.println(token);
         try {
             Jws<Claims> jwtClaims = Jwts
                     .parser()
-                    .setSigningKey("secret".getBytes("UTF-8"))
-                    .parseClaimsJws(token);
+                    .setSigningKey("abcd".getBytes("UTF-8"))
+                    .parseClaimsJws(token.replaceAll("Bearer ", ""));
             subject = jwtClaims
                     .getBody()
                     .getSubject();
@@ -32,6 +36,7 @@ public class JWT_verify {
         } catch (SignatureException | UnsupportedEncodingException ex) {
             subject = subject.concat(ex.getLocalizedMessage());
             Logger.getLogger(TokenProvider_controller.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>("GET Response : " + subject, HttpStatus.UNAUTHORIZED);
         }
         return new ResponseEntity<>("GET Response : " + subject, HttpStatus.OK);
     }

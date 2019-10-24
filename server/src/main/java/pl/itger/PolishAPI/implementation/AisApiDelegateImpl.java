@@ -70,7 +70,10 @@ public class AisApiDelegateImpl implements AisApiDelegate {
     public Optional<HttpServletRequest> getRequest() {
         RequestAttributes reqAttr = RequestContextHolder.getRequestAttributes();
         ServletRequestAttributes servlReqAttr = (ServletRequestAttributes) reqAttr;
-        HttpServletRequest req = servlReqAttr.getRequest();
+        HttpServletRequest req = null;
+        if(servlReqAttr != null) {
+            req = servlReqAttr.getRequest();
+        }
         return Optional.of(req);
     }
 
@@ -107,6 +110,7 @@ public class AisApiDelegateImpl implements AisApiDelegate {
      * @param getAccountRequest
      * @return
      * curl -X POST "http://localhost:8080/v2_1_2.1/accounts/v2_1_2.1/getAccount" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer btvgfd" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{  \"accountNumber\": \"6541-6286-8685-9161-4552\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-07-15T20:59:12.601Z\",    \"token\": \"string\",    \"tppId\": \"string\",    \"userAgent\": \"string\"  }}"
+     * curl -k -v -X POST "https://localhost:8443/v2_1_2.1/accounts/v2_1_2.1/getAccount" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{  \"accountNumber\": \"6541-6286-8685-9161-4552\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-10-15T20:59:12.601Z\", \"tppId\": \"string\",    \"userAgent\": \"string\", \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*\"  }}"
      */
     @Override
     public ResponseEntity<AccountResponse> getAccount(String authorization,
@@ -118,7 +122,6 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                                                       AccountInfoRequest getAccountRequest) {
         if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
-                System.out.println(jwt_verify.verify(authorization));
                 Query query = new Query();
                 query.addCriteria(Criteria.where("accountNumber").is(getAccountRequest.getAccountNumber()));
 
