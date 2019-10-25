@@ -73,6 +73,7 @@ tests fail in the swagger version I installed on my Win10pro, so I skipped them.
     "serializableModel": "true"
 }
 ```
+Unfortunately, certain Polish financial institutions opted for basic swagger default options, obtaining a lower quality solution.
 * Next step is to generate the spring-boot server:
 ```
 {workspace_path}\swagger\swagger-codegen\java -jar modules/swagger-codegen-cli/target/swagger-codegen-cli.jar generate -i {workspace_path}\PolishAPI_2_1_2_sample\ZBP-polish-api-2_1_2-swagger.json -l spring -o {workspace_path}\PolishAPI_2_1_2_sample\server -c {workspace_path}\PolishAPI_2_1_2_sample\polishAPI_Options.json
