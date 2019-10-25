@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pl.itger.PolishAPI.implementation;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -24,19 +19,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.itger.JWTokens.JWT_verify;
 import pl.itger.PolishAPI.io.swagger.api.AisApiDelegate;
 import pl.itger.PolishAPI.io.swagger.model.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.Optional;
-
-//import com.google.common.base.Predicate;
-//import com.google.common.base.Predicates;
-//import com.hazelcast.core.HazelcastInstance;
-//import com.hazelcast.core.IMap;
-//import com.hazelcast.query.EntryObject;
-//import com.hazelcast.query.Predicate;
-//import com.hazelcast.query.PredicateBuilder;
-//import com.hazelcast.query.Predicates;
 
 @Service
 public class AisApiDelegateImpl implements AisApiDelegate {
@@ -101,7 +86,6 @@ public class AisApiDelegateImpl implements AisApiDelegate {
 
 
     /**
-     * curl -k -v -X POST "http://localhost:8080/v2_1_2.1/accounts/v2_1_2.1/getAccount" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer btvgfd" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{  \"accountNumber\": \"6541-6286-8685-9161-4552\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-07-15T20:59:12.601Z\",    \"token\": \"string\",    \"tppId\": \"string\",    \"userAgent\": \"string\"  }}"
      * curl -k -v -X POST "https://localhost:8443/v2_1_2.1/accounts/v2_1_2.1/getAccount" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{  \"accountNumber\": \"3528-3503-4301-0498\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-10-15T20:59:12.601Z\", \"tppId\": \"string\",    \"userAgent\": \"string\", \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*\"  }}"
      */
     @Override
@@ -119,7 +103,7 @@ public class AisApiDelegateImpl implements AisApiDelegate {
             if (getAcceptHeader().get().contains("application/json")) {
                 Query query = new Query();
                 query.addCriteria(Criteria.where("accountNumber").is(getAccountRequest.getAccountNumber()));
-                MongoOperations mongoOps = new MongoTemplate(mongoDbFactory);//mongoClient, "database")
+                MongoOperations mongoOps = new MongoTemplate(mongoDbFactory);
                 AccountInfo accountInfo = mongoOps.findOne(query, AccountInfo.class);
                 try {
                     responseHeader.setIsCallback(Boolean.FALSE);
