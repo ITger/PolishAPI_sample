@@ -61,7 +61,7 @@ and then build swagger codegen:
 tests fail in the swagger version I installed on my Win10pro, so I skipped them.
 * Is good to know and understand all possible swagger codegen [parameters for spring](https://generator.swagger.io/api/gen/servers/spring).
 * Download the ZBP-polish-api-2_1_2-swagger.json file from [PolishAPI](https://app.swaggerhub.com/apis/ZBP/polish-api/2_1_2).
-* In polishAPI_Options.json file I created, I included some parameters for swagger codegen. The most important are:
+* In polishAPI_Options.json file I created, I included some parameters for swagger codegen. The most important are the following:
 ```
 {
 .....
