@@ -85,7 +85,7 @@ https://localhost:8443/
 ```
 curl -k -X GET  https://localhost:8443/generateFakeData
 ```
-this way, we generate RANDOM fake data.
+this way, we generate RANDOM fake data. 
 * To generate JWT invoke:
 ```
 curl -k -v https://localhost:8443/jwts -H "Accept: application/json" -H "Accept-Language: en_US" -d rol=rola -d client_id=cID -d secret=abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd -d username=user -d password=password
