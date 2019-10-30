@@ -8,22 +8,17 @@ package pl.itger.PolishAPI.implementation;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.itger.PolishAPI.io.swagger.api.AsApiDelegate;
-import pl.itger.PolishAPI.io.swagger.model.*;
+import pl.itger.PolishAPI.io.swagger.model.AuthorizeRequest;
+import pl.itger.PolishAPI.io.swagger.model.AuthorizeResponse;
+import pl.itger.PolishAPI.io.swagger.model.EatCodeRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -84,7 +79,7 @@ public class AsApiDelegateImpl
                 eatCodeRequest); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
+    /*@Override
     public ResponseEntity<TokenResponse> token(String acceptEncoding,
                                                String acceptLanguage,
                                                String acceptCharset,
@@ -135,6 +130,6 @@ public class AsApiDelegateImpl
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
-    }
+    }*/
 
 }

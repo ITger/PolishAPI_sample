@@ -3,6 +3,7 @@ package pl.itger.PolishAPI.io.swagger.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -20,7 +21,7 @@ import java.util.Objects;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen",
         date = "2019-03-14T19:37:54.479+01:00")
-
+@Document
 public class AccountBaseInfo
         implements Serializable {
 

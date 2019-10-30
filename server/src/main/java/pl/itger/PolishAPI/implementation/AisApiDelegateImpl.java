@@ -19,8 +19,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.itger.JWTokens.JWT_verify;
 import pl.itger.PolishAPI.io.swagger.api.AisApiDelegate;
 import pl.itger.PolishAPI.io.swagger.model.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -86,7 +88,7 @@ public class AisApiDelegateImpl implements AisApiDelegate {
 
 
     /**
-     * curl -k -v -X POST "https://localhost:8443/v2_1_2.1/accounts/v2_1_2.1/getAccount" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{  \"accountNumber\": \"3528-3503-4301-0498\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-10-15T20:59:12.601Z\", \"tppId\": \"string\",    \"userAgent\": \"string\", \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*\"  }}"
+     * curl -k -v -X POST "https://localhost:8443/v2_1_2.1/accounts/v2_1_2.1/getAccount" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{  \"accountNumber\": \"6304047473731215\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-10-15T20:59:12.601Z\", \"tppId\": \"string\",    \"userAgent\": \"string\", \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*\"  }}"
      */
     @Override
     public ResponseEntity<AccountResponse> getAccount(String authorization,
@@ -111,7 +113,7 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                     responseHeader.setSendDate(OffsetDateTime.now());
                     response.setResponseHeader(responseHeader);
                     response.setAccount(accountInfo);
-                    responseEntity = new ResponseEntity<AccountResponse>(response, HttpStatus.OK);
+                    responseEntity = new ResponseEntity<>(response, HttpStatus.OK);
                 } catch (Exception e) {
                     log.error(e.getLocalizedMessage(), e);
                     responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -126,6 +128,9 @@ public class AisApiDelegateImpl implements AisApiDelegate {
         return responseEntity;
     }
 
+    /**
+     * curl -k -v -X POST "https://localhost:8443/v2_1_2.1/accounts/v2_1_2.1/getAccounts" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{ \"perPage\":\"10\", \"pageId\": \"1\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-10-15T20:59:12.601Z\", \"tppId\": \"string\",    \"userAgent\": \"string\", \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*\"  }}
+     */
     @Override
     public ResponseEntity<AccountsResponse> getAccounts(String authorization,
                                                         String acceptEncoding,
@@ -134,117 +139,34 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                                                         String X_JWS_SIGNATURE,
                                                         String X_REQUEST_ID,
                                                         AccountsRequest getAccountsRequest) {
-        if (getObjectMapper().
-                isPresent() && getAcceptHeader().
-                isPresent()) {
-            if (getAcceptHeader().
-                    get().
-                    contains("application/json")) {
+        AccountsResponse response = new AccountsResponse();
+        ResponseHeader responseHeader = new ResponseHeader();
+        ResponseEntity<AccountsResponse> responseEntity;
+        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+                Query query = new Query();
+                query.addCriteria(Criteria.where("accountNumber").is(getAccountsRequest.getPageId()));
+                MongoOperations mongoOps = new MongoTemplate(mongoDbFactory);
+                List<AccountBaseInfo> accountInfo = mongoOps.findAll(AccountBaseInfo.class);
                 try {
-
-                    //final List<Predicate<?, ?>> predicates = new LinkedList<>();
-                    // Message ID
-//    if (messageId != null)
-//    {
-//        predicates.add(Predicates.greaterEqual("id", messageId));
-//    }
-                    // Topic
-//    if (topic != null)
-//    {
-//        predicates.add(Predicates.equal("topic", topic));
-//    }
-//    if (! propertyMatch.isEmpty())
-//    {
-//        for (Entry<String, Comparable> e : propertyMatch.entrySet())
-//        {
-//            predicates.add(Predicates.equal(e.getKey(), e.getValue()));
-//        }
-//    }
-                    //return Predicates.and(predicates.toArray(new Predicate[predicates.size()]));
-//                final String accountNumber = getAccountsRequest.
-//                        getAccountNumber().
-//                        trim();
-                    //System.out.println("accountNumber: " + accountNumber);
-//                getAccountsRequest.getPageId();
-//                if (getAccountsRequest.getPageId() != null) {
-//                    predicates.add(Predicates.greaterEqual("id",
-//                                                           getAccountsRequest.getPageId()));
-//                }
-//                getAccountsRequest.getPerPage();
-//                getAccountsRequest.getTypeOfPsuRelation().
-//                        name();
-//                //Predicate<String, LogBean> tmp = Predicates.equal(field, value);
-//                PredicateBuilder predicateBuilder = new PredicateBuilder();
-//                EntryObject e = new PredicateBuilder().getEntryObject();
-//                Predicate<String, String> predicate
-//                        = e.get("isbn").
-//                                equal(getAccountsRequest.getPageId()).
-//                                and(e.get("price").
-//                                        greaterEqual(3000));
-//
-//                KeyValueQuery<Predicate<String, Book>> query = new KeyValueQuery<>(
-//                        predicate);
-//
-//                Iterable<Book> books = keyValueOperations.find(query,
-//                                                               Book.class);
-//
-//                predicateBuilder.and(predicateBuilder)
-//                        = new PredicateBuilder().getEntryObject();
-//                //PredicateBuilder.a Predicate predicate = e.get("accountNumber").equal("6767-2827-4794-3486-48");
-//                if (predicate == null) {
-//                    predicate = tmp;
-//                } else {
-//                    predicate = Predicates.and(predicate,
-//                                               tmp);
-//
-//                    PagingPredicate pagingPredicate = new PagingPredicate(
-//                            predicate,
-//                            salaryComparator,
-//                            pageSize);
-//
-//                    IMap<Long, AccountInfo> accountInfo_map = hazelcast_Instance.
-//                            getMap("AccountInfo_map");
-//                    System.out.println("accountInfo_map: " + accountInfo_map.
-//                            size());
-//                    EntryObject e = new PredicateBuilder().getEntryObject();
-//                    Predicate predicate = e.get("accountNumber").
-//                            equal("1");
-//                    Collection<AccountInfo> result = accountInfo_map.
-//                            values(predicate);
-//                    //System.out.println("result.size: " + result.size());
-//                    AccountsResponse response = new AccountsResponse();
-//                    ResponseHeader responseHeader = new ResponseHeader();
-//                    responseHeader.setIsCallback(Boolean.FALSE);
-//                    responseHeader.setRequestId(getAccountsRequest.
-//                            getRequestHeader().
-//                            getRequestId());
-//                    responseHeader.setSendDate(OffsetDateTime.now());
-//                    response.setResponseHeader(responseHeader);
-//                    if (result.size() < 1) {
-//                        return new ResponseEntity<>(response,
-//                                                    HttpStatus.NOT_FOUND);
-//                    }
-////                else if (result.size() > 1) {
-////                    return new ResponseEntity<>(response,
-////                                                HttpStatus.BAD_REQUEST);
-////                }
-//                    AccountInfo ai = (AccountInfo) result.toArray()[0];
-//                    //response.setAccounts(accounts);
-//                    return new ResponseEntity<>(response,
-//                                                HttpStatus.OK);
-//                }
+                    responseHeader.setIsCallback(Boolean.FALSE);
+                    responseHeader.setRequestId(getAccountsRequest.getRequestHeader().getRequestId());
+                    responseHeader.setSendDate(OffsetDateTime.now());
+                    response.setResponseHeader(responseHeader);
+                    response.setAccounts(accountInfo);
+                    responseEntity = new ResponseEntity<AccountsResponse>(response, HttpStatus.OK);
                 } catch (Exception e) {
-                    log.error(e.getLocalizedMessage(),
-                            e);
-                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
+                    log.error(e.getLocalizedMessage(), e);
+                    responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
+            } else {
+                responseEntity = new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
             }
         } else {
-            log.warn(
-                    "AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
+            log.warn("AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return responseEntity;
     }
 
     @Override

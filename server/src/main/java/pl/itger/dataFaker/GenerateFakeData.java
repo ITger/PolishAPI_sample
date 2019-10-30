@@ -10,13 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.itger.PolishAPI.io.swagger.model.AccountInfo;
-import pl.itger.PolishAPI.io.swagger.model.DictionaryItem;
-import pl.itger.PolishAPI.io.swagger.model.HoldInfo;
-import pl.itger.PolishAPI.io.swagger.model.TransactionInfo;
+import pl.itger.PolishAPI.io.swagger.model.*;
 import pl.itger.PolishAPI.repository.AccountInfoRepository;
 
 import java.time.OffsetDateTime;
@@ -34,13 +35,11 @@ import java.util.concurrent.TimeUnit;
 public class GenerateFakeData {
 
     private final Faker faker = new Faker();
-
+    private final MongoDbFactory mongoDbFactory;
     @Autowired
     protected AccountInfoRepository accountInfoRepository;
-
     Logger logger = LoggerFactory.getLogger(GenerateFakeData.class);
-
-    private final MongoDbFactory mongoDbFactory;
+    private Object AccountBaseInfo;
 
     /**
      * @param dbFactory
@@ -59,13 +58,16 @@ public class GenerateFakeData {
         Iterable<AccountInfo> accI_iter;
         MongoDatabase mdb = mongoDbFactory.getDb();
         MongoCollection<Document> accInfo_coll = mdb.getCollection("accountInfo");
+        MongoCollection<Document> accBaseInfo_coll = mdb.getCollection("accountBaseInfo");
         MongoCollection<Document> holdInfo_coll = mdb.getCollection("holdInfo");
         MongoCollection<Document> transactionInfo_coll = mdb.getCollection("transactionInfo");
         holdInfo_coll.drop();
+        accBaseInfo_coll.drop();
         accInfo_coll.drop();
         transactionInfo_coll.drop();
-        logger.info("accountInfo, holdInfo  DROPPED");
+        logger.info("accountInfo, accountBaseInfo, holdInfo, transactionInfo DROPPED");
         createAccounts(accountInfoRepository);
+        createBaseInfoAccounts(accInfo_coll, accBaseInfo_coll);
         createHolds(accInfo_coll, holdInfo_coll);
         createTransactions(accInfo_coll, transactionInfo_coll);
         accI_iter = accountInfoRepository.findAll();
@@ -79,6 +81,30 @@ public class GenerateFakeData {
         return new ResponseEntity(accountNumberList, HttpStatus.OK);
     }
 
+    private void createBaseInfoAccounts(MongoCollection<Document> accInfo_coll, MongoCollection<Document> accBaseInfo_coll) {
+        logger.info("Creating BaseInfoAccounts");
+        List<AccountBaseInfo> accBIL = new ArrayList<>();
+        for (Document doc : accInfo_coll.find()) {
+            //int i = faker.number().numberBetween(0, 4);
+            //for (int ii = 0; ii <= i; ii++) {
+            Query query = new Query();
+            query.addCriteria(Criteria.where("accountNumber").is(doc.get("accountNumber").toString()));
+            MongoOperations mongoOps = new MongoTemplate(mongoDbFactory);
+            AccountInfo accountInfo = mongoOps.findOne(query, AccountInfo.class);
+            AccountBaseInfo accBI = new AccountBaseInfo();
+            accBI.setAccountNumber(accountInfo.getAccountNumber());
+            accBI.setAccountType(accountInfo.getAccountType());
+            accBI.setAccountTypeName(accountInfo.getAccountTypeName());
+            accBI.setPsuRelations(accountInfo.getPsuRelations());
+            accBIL.add(accBI);
+            Gson gson = new Gson();
+            Document gDoc = Document.parse(gson.toJson(accBI));
+            gDoc.append("accountInfo_id", doc.get("_id"));
+            accBaseInfo_coll.insertOne(gDoc);
+        }
+    }
+
+
     /**
      * @param accInfo_coll
      * @param holdInfo_coll
@@ -91,10 +117,10 @@ public class GenerateFakeData {
                 HoldInfo holdInfo = new HoldInfo();
                 createHold(holdInfo);
                 Gson gson = new Gson();
-                Document holdInfo_document = Document.parse(gson.
+                Document gDoc = Document.parse(gson.
                         toJson(holdInfo));
-                holdInfo_document.append("accountInfo_id", doc.get("_id"));
-                holdInfo_coll.insertOne(holdInfo_document);
+                gDoc.append("accountInfo_id", doc.get("_id"));
+                holdInfo_coll.insertOne(gDoc);
             }
         }
     }
@@ -111,9 +137,9 @@ public class GenerateFakeData {
                 TransactionInfo ti = new TransactionInfo();
                 createTransactionInfo(ti);
                 Gson gson = new Gson();
-                Document transactionInfo_doc = Document.parse(gson.toJson(ti));
-                transactionInfo_doc.append("accountInfo_id", doc.get("_id"));
-                transactionInfo_coll.insertOne(transactionInfo_doc);
+                Document gDoc = Document.parse(gson.toJson(ti));
+                gDoc.append("accountInfo_id", doc.get("_id"));
+                transactionInfo_coll.insertOne(gDoc);
             }
         }
     }
