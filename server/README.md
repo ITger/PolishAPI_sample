@@ -102,4 +102,4 @@ curl -k -v -X POST "https://localhost:8443/v2_1_2.1/accounts/v2_1_2.1/getAccount
 obviously, the query predicates and the token must be in accordance with previously generated data.
 ## .. work in progress ...
 ## Authors
-* **Piotr Zerynger** - *Initial work* - [Piotr Zerynger](p.zerynger@gmail.com)
+* **[Piotr Zerynger](p.zerynger@gmail.com)**
