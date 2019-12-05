@@ -1,6 +1,7 @@
 package pl.itger.PolishAPI.io.swagger.model;
 
 import io.swagger.annotations.ApiModel;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.Serializable;
@@ -13,10 +14,9 @@ import java.util.Objects;
 @ApiModel(description = "Klasa zawierająca dane adresu pocztowego / Postal address Class")
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-03-14T19:37:54.479+01:00")
-
+@Document
 public class Address extends ArrayList<String> implements Serializable {
     private static final long serialVersionUID = 1L;
-
 
     @Override
     public boolean equals(java.lang.Object o) {

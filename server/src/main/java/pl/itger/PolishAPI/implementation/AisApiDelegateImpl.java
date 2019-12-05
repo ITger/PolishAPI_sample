@@ -3,7 +3,20 @@ package pl.itger.PolishAPI.implementation;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.MongoClient;
+import com.google.gson.Gson;
+import com.mongodb.BasicDBObject;
+import com.mongodb.Block;
+import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+import org.mongojack.JacksonCodecRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -16,28 +29,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import pl.itger.JWTokens.JWT_verify;
 import pl.itger.PolishAPI.io.swagger.api.AisApiDelegate;
 import pl.itger.PolishAPI.io.swagger.model.*;
+import pl.itger.PolishAPI.utils.Const;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AisApiDelegateImpl implements AisApiDelegate {
-
-    private final MongoDbFactory mongoDbFactory;
-
-    @Autowired
-    private TokenUtils tokenUtils;
-
-    @Autowired
-    private JWT_verify jwt_verify;
-
-    @Autowired
-    private MongoClient mongoClient;
+    private MongoDbFactory mongoDbFactory;
 
     @Autowired
     public AisApiDelegateImpl(MongoDbFactory dbFactory) {
@@ -88,7 +91,7 @@ public class AisApiDelegateImpl implements AisApiDelegate {
 
 
     /**
-     * curl -k -v -X POST "https://localhost:8443/v2_1_2.1/accounts/v2_1_2.1/getAccount" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{  \"accountNumber\": \"6304047473731215\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-10-15T20:59:12.601Z\", \"tppId\": \"string\",    \"userAgent\": \"string\", \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*\"  }}"
+     * curl -k -v -X POST "https://localhost:8443/v2_1_2.1/accounts/v2_1_2.1/getAccount" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTc1OTE2OTg5LCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.K18f4CplNAUViZ00n87AEmddt3Q7GjIZQa_dbRxyne4*" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{  \"accountNumber\": \"6011-4221-0209-2707\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-10-15T20:59:12.601Z\", \"tppId\": \"string\",    \"userAgent\": \"string\", \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTc1OTE2OTg5LCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.K18f4CplNAUViZ00n87AEmddt3Q7GjIZQa_dbRxyne4*\"  }}"
      */
     @Override
     public ResponseEntity<AccountResponse> getAccount(String authorization,
@@ -115,21 +118,24 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                     response.setAccount(accountInfo);
                     responseEntity = new ResponseEntity<>(response, HttpStatus.OK);
                 } catch (Exception e) {
-                    log.error(e.getLocalizedMessage(), e);
+                    LOG.error(e.getLocalizedMessage(), e);
                     responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
                 responseEntity = new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
             }
         } else {
-            log.warn("AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
+            LOG.warn("AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
         }
         return responseEntity;
     }
 
+
     /**
-     * curl -k -v -X POST "https://localhost:8443/v2_1_2.1/accounts/v2_1_2.1/getAccounts" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{ \"perPage\":\"10\", \"pageId\": \"1\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-10-15T20:59:12.601Z\", \"tppId\": \"string\",    \"userAgent\": \"string\", \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTcyODE4NzgxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.ZLJBKnRrQxecJrRXLJ-etZq4g52-bxgB-JFVVPo8YwA*\"  }}
+     * curl -k -v -X POST "https://localhost:8443/v2_1_2.1/accounts/v2_1_2.1/getAccounts" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTc1OTE2OTg5LCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.K18f4CplNAUViZ00n87AEmddt3Q7GjIZQa_dbRxyne4*" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{ \"perPage\":\"2\", \"pageId\": \"0\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-10-15T20:59:12.601Z\", \"tppId\": \"string\",    \"userAgent\": \"string\", \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTc1OTE2OTg5LCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.K18f4CplNAUViZ00n87AEmddt3Q7GjIZQa_dbRxyne4*\"  }}
+     * <p>
+     * sample response:
      */
     @Override
     public ResponseEntity<AccountsResponse> getAccounts(String authorization,
@@ -142,33 +148,109 @@ public class AisApiDelegateImpl implements AisApiDelegate {
         AccountsResponse response = new AccountsResponse();
         ResponseHeader responseHeader = new ResponseHeader();
         ResponseEntity<AccountsResponse> responseEntity;
+        List<AccountBaseInfo> listABI = new ArrayList<>();
+        Block printBlock = o -> System.out.println(o);
+        PageInfo pageInfo = new PageInfo();
+        HttpStatus hs = HttpStatus.OK;
         if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
-                Query query = new Query();
-                query.addCriteria(Criteria.where("accountNumber").is(getAccountsRequest.getPageId()));
-                MongoOperations mongoOps = new MongoTemplate(mongoDbFactory);
-                List<AccountBaseInfo> accountInfo = mongoOps.findAll(AccountBaseInfo.class);
+                String pageId = getAccountsRequest.getPageId();
+                Integer perPage = getAccountsRequest.getPerPage();
+                MongoTemplate mongoTmpl = new MongoTemplate(mongoDbFactory);
+                Bson filter;
+                Bson filter_check_exist = new BasicDBObject();
+                Bson sortOrder;
+                if (pageId == null || pageId.trim().isEmpty() || (!pageId.contains(Const.NEXT) && !pageId.contains(Const.PREV))) {
+                    filter = new BasicDBObject();
+                    sortOrder = new BasicDBObject("$natural", 1);
+                } else {
+                    String p_id = pageId.substring(6);
+                    String flt = pageId.substring(0, 6);
+                    filter_check_exist = Filters.eq("_id", new ObjectId(p_id));
+                    switch (flt) {
+                        case Const.NEXT: {
+                            filter = Filters.gt("_id", new ObjectId(p_id));
+                            sortOrder = new BasicDBObject("$natural", 1);
+                            break;
+                        }
+                        case Const.PREV: {
+                            filter = Filters.lt("_id", new ObjectId(p_id));
+                            sortOrder = new BasicDBObject("$natural", -1);
+                            break;
+                        }
+                        default: {
+                            filter = new BasicDBObject();
+                            sortOrder = new BasicDBObject("$natural", 1);
+                            break;
+                        }
+                    }
+                }
+                JacksonCodecRegistry jacksonCodecRegistry = JacksonCodecRegistry.withDefaultObjectMapper();
+                jacksonCodecRegistry.addCodecForClass(AccountBaseInfo.class);
+                MongoCollection<?> coll = mongoTmpl.getDb().getCollection("accountBaseInfo");
+                MongoCollection collection_2 = coll.withCodecRegistry(jacksonCodecRegistry);
+                List<Document> list = new ArrayList<>();
+                boolean exist = collection_2.countDocuments(filter_check_exist) > 0 ? true : false;
+                if (exist) {
+                    FindIterable xx_2 = collection_2.find(filter).sort(sortOrder).limit(perPage);//.iterator().forEachRemaining(list::add);
+                    //xx_2.forEach(printBlock);
+                    Iterator<Document> documentIterator = xx_2.iterator();
+                    documentIterator.forEachRemaining(list::add);
+                    if (list.size() > 0) {
+                        String first_id = Const.PREV + list.get(0).get("_id").toString();
+                        String last_id = Const.NEXT + list.get(list.size() - 1).get("_id").toString();
+                        pageInfo.setNextPage(last_id);
+                        pageInfo.setPreviousPage(first_id);
+                        MongoCursor cursor = xx_2.iterator();
+                        while (cursor.hasNext()) {
+                            Object obj = cursor.next();
+                            try {
+                                String jdoc = ((Document) obj).toJson();
+                                AccountBaseInfo accountBaseInfo = getObjectMapper().get().readValue(jdoc, AccountBaseInfo.class);
+                                listABI.add(accountBaseInfo);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                hs = HttpStatus.INTERNAL_SERVER_ERROR;
+                                break;
+                            }
+                            hs = HttpStatus.OK;
+                        }
+                    }
+                } else {
+                    hs = HttpStatus.BAD_REQUEST;
+                }
                 try {
                     responseHeader.setIsCallback(Boolean.FALSE);
                     responseHeader.setRequestId(getAccountsRequest.getRequestHeader().getRequestId());
                     responseHeader.setSendDate(OffsetDateTime.now());
                     response.setResponseHeader(responseHeader);
-                    response.setAccounts(accountInfo);
-                    responseEntity = new ResponseEntity<AccountsResponse>(response, HttpStatus.OK);
+                    response.setAccounts(listABI);
+                    response.setPageInfo(pageInfo);
+                    responseEntity = new ResponseEntity<AccountsResponse>(response, hs);
                 } catch (Exception e) {
-                    log.error(e.getLocalizedMessage(), e);
+                    LOG.error(e.getLocalizedMessage(), e);
                     responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
-                responseEntity = new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+                responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
-            log.warn("AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
+            LOG.warn("AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
         }
         return responseEntity;
     }
 
+    /**
+     * @param authorization
+     * @param acceptEncoding
+     * @param acceptLanguage
+     * @param acceptCharset
+     * @param X_JWS_SIGNATURE
+     * @param X_REQUEST_ID
+     * @param getHoldsRequest
+     * @return
+     */
     @Override
     public ResponseEntity<HoldInfoResponse> getHolds(String authorization,
                                                      String acceptEncoding,
@@ -177,109 +259,93 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                                                      String X_JWS_SIGNATURE,
                                                      String X_REQUEST_ID,
                                                      HoldRequest getHoldsRequest) {
-        if (getObjectMapper().
-                isPresent() && getAcceptHeader().isPresent()) {
+        ResponseHeader responseHeader = new ResponseHeader();
+        HoldInfoResponse response = new HoldInfoResponse();
+        ResponseEntity<HoldInfoResponse> responseEntity;
+        PageInfo pageInfo = new PageInfo();
+        List<HoldInfo> listHI = new ArrayList<>();
+        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
-                if (!tokenUtils.verify(authorization,
-                        getHoldsRequest.getRequestHeader().getToken())) {
-                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                try {
+                    String pageId = getHoldsRequest.getPageId();
+                    Integer perPage = getHoldsRequest.getPerPage();
+                    List<Bson> pipeline = new LinkedList<>();
+                    MongoTemplate mongoTmpl = new MongoTemplate(mongoDbFactory);
+                    Optional.ofNullable(getHoldsRequest.getAccountNumber()).ifPresent(value -> pipeline.add(Aggregates.match(Filters.eq("AccountNumber", value))));
+                    //Optional.ofNullable(getHoldsRequest.getBookingDateFrom()).ifPresent(value -> pipeline.add( Filters.gte("tradeDate", value)));
+                    //Optional.ofNullable(getHoldsRequest.getBookingDateTo()).ifPresent(value -> pipeline.add( Filters.lte("tradeDate", value)));
+                    Optional.ofNullable(getHoldsRequest.getItemIdFrom()).ifPresent(value -> pipeline.add(Aggregates.match(Filters.gte("itemId", value))));
+                    Optional.ofNullable(getHoldsRequest.getMaxAmount()).ifPresent(value -> pipeline.add(Aggregates.match(Filters.lte("amount", value))));
+                    Optional.ofNullable(getHoldsRequest.getMinAmount()).ifPresent(value -> pipeline.add(Aggregates.match(Filters.gte("amount", value))));
+                    Optional.ofNullable(getHoldsRequest.getTransactionDateFrom()).ifPresent(value -> pipeline.add(Aggregates.match(Filters.gte("transactionDateFrom", value))));
+                    Optional.ofNullable(getHoldsRequest.getTransactionDateTo()).ifPresent(value -> pipeline.add(Aggregates.match(Filters.lte("transactionDateTo", value))));
+                    Optional.ofNullable(getHoldsRequest.getType()).ifPresent(value -> pipeline.add(Aggregates.match(Filters.gte("type", value))));
+                    if (pageId != null && !pageId.trim().isEmpty() && (pageId.contains(Const.NEXT) || pageId.contains(Const.PREV))) {
+                        String p_id = pageId.substring(6);
+                        String flt = pageId.substring(0, 6);
+                        //filter_check_exist = Filters.eq("_id", new ObjectId(p_id));
+                        switch (flt) {
+                            case Const.NEXT: {
+                                pipeline.add(Aggregates.match(Filters.gt("_id", new ObjectId(p_id))));
+                                pipeline.add(Aggregates.sort(Sorts.ascending("_id")));
+                                break;
+                            }
+                            case Const.PREV: {
+                                pipeline.add(Aggregates.match(Filters.lt("_id", new ObjectId(p_id))));
+                                pipeline.add(Aggregates.sort(Sorts.ascending("_id")));
+                                break;
+                            }
+                            default: {
+                                pipeline.add(Aggregates.sort(Sorts.ascending("_id")));
+                                break;
+                            }
+                        }
+                    } else {
+                        pipeline.add(Aggregates.sort(Sorts.ascending("_id")));
+                    }
+                    if (perPage != null && perPage > 0) {
+                        pipeline.add(Aggregates.limit(perPage));
+                    }
+                    pipeline.forEach(o -> LOG.debug(o.toString()));
+                    JacksonCodecRegistry jacksonCodecRegistry = JacksonCodecRegistry.withDefaultObjectMapper();
+                    jacksonCodecRegistry.addCodecForClass(HoldInfo.class);
+                    MongoCollection<Document> coll = mongoTmpl.getDb().getCollection("holdInfo");
+                    MongoCollection<Document> collection_2 = coll.withCodecRegistry(jacksonCodecRegistry);
+                    AggregateIterable<Document> aggIter = collection_2.aggregate(pipeline);
+                    List<Document> holds = new ArrayList<>();
+                    aggIter.iterator().forEachRemaining(holds::add);
+                    holds.forEach(o -> LOG.debug(o.toJson()));
+                    if (holds.size() > 0) {
+                        String first_id = Const.PREV + holds.get(0).get("_id").toString();
+                        String last_id = Const.NEXT + holds.get(holds.size() - 1).get("_id").toString();
+                        pageInfo.setNextPage(last_id);
+                        pageInfo.setPreviousPage(first_id);
+                        MongoCursor<Document> cursor = aggIter.iterator();
+                        Gson gson = new Gson();
+                        while (cursor.hasNext()) {
+                            Document obj = cursor.next();
+                            listHI.add(gson.fromJson(obj.toJson(), HoldInfo.class));
+                        }
+                    }
+                    responseHeader.setIsCallback(Boolean.FALSE);
+                    responseHeader.setRequestId(getHoldsRequest.getRequestHeader().getRequestId());
+                    responseHeader.setSendDate(OffsetDateTime.now());
+                    response.setResponseHeader(responseHeader);
+                    response.setHolds(listHI);
+                    response.setPageInfo(pageInfo);
+                    responseEntity = new ResponseEntity<HoldInfoResponse>(response, HttpStatus.OK);
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
-//            try {
-//                final List<Predicate<String, String>> predicates = new LinkedList<>();
-//
-//                Optional.ofNullable(
-//                        getHoldsRequest.getAccountNumber()).
-//                        ifPresent(value -> predicates.add(Predicates.
-//                        equal("accountNumber",
-//                              value)));
-//                Optional.ofNullable(
-//                        getHoldsRequest.getBookingDateFrom()).
-//                        ifPresent(value -> predicates.add(Predicates.
-//                        equal("bookingDateFrom",
-//                              value)));
-//                Optional.ofNullable(
-//                        getHoldsRequest.getBookingDateTo()).
-//                        ifPresent(value -> predicates.add(Predicates.
-//                        equal("bookingDateTo",
-//                              value)));
-//                Optional.ofNullable(
-//                        getHoldsRequest.getItemIdFrom()).
-//                        ifPresent(value -> predicates.add(Predicates.
-//                        equal("itemIdFrom",
-//                              value)));
-//                Optional.ofNullable(
-//                        getHoldsRequest.getMaxAmount()).
-//                        ifPresent(value -> predicates.add(Predicates.
-//                        equal("maxAmount",
-//                              value)));
-//                Optional.ofNullable(
-//                        getHoldsRequest.getMinAmount()).
-//                        ifPresent(value -> predicates.add(Predicates.
-//                        equal("minAmount",
-//                              value)));
-//                Optional.ofNullable(
-//                        getHoldsRequest.getPageId()).
-//                        ifPresent(value -> predicates.add(Predicates.
-//                        equal("pageId",
-//                              value)));
-//                Optional.ofNullable(
-//                        getHoldsRequest.getPerPage()).
-//                        ifPresent(value -> predicates.add(Predicates.
-//                        equal("perPage",
-//                              value)));
-//                Optional.ofNullable(
-//                        getHoldsRequest.getTransactionDateFrom()).
-//                        ifPresent(value -> predicates.add(Predicates.
-//                        greaterEqual("tradeDate",
-//                                     OffsetDateTime.of(value.atStartOfDay(),
-//                                                       OffsetDateTime.now().
-//                                                               getOffset()
-//                                     )
-//                        )));
-//                Optional.ofNullable(
-//                        getHoldsRequest.getTransactionDateTo()).
-//                        ifPresent(value -> predicates.add(Predicates.
-//                        lessEqual("tradeDate",
-//                                  OffsetDateTime.of(value.atStartOfDay(),
-//                                                    OffsetDateTime.now().
-//                                                            getOffset()
-//                                  )
-//                        )));
-//                System.out.println("predicates: " + predicates.size() + " " + predicates.toString());
-//                //GenericEntity foundEntity = genericEntityRepository.findOne(genericEntity.getId());
-//                IMap<Long, HoldInfo> _map = hazelcast_Instance.
-//                        getMap("HoldInfo_map");
-//                System.out.println("_map: " + _map.size());
-//
-//                Collection<HoldInfo> result = _map.
-//                        values(Predicates.and(predicates.toArray(
-//                                new Predicate[predicates.size()])));
-//                ResponseHeader responseHeader = new ResponseHeader();
-//                //TODO sprawdzic pole X_REQUEST_ID
-//                responseHeader.setRequestId(UUID.fromString(X_REQUEST_ID));
-//                responseHeader.setIsCallback(Boolean.FALSE);
-//                responseHeader.setSendDate(OffsetDateTime.now());
-//                //
-//                HoldInfoResponse response = new HoldInfoResponse();
-//                response.setResponseHeader(responseHeader);
-//                if (result.size() < 1) {
-//                    return new ResponseEntity<>(response,
-//                                                HttpStatus.NOT_FOUND);
-//                }
-//                response.setHolds(new ArrayList<>(result));
-//                return new ResponseEntity<>(response,
-//                                            HttpStatus.OK);
-//            } catch (Exception e) {
-//                log.error(e.getLocalizedMessage(),
-//                          e);
-//                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//            }
+            } else {
+                responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
-            log.warn(
-                    "AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
+            LOG.warn("AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return responseEntity;
     }
 
     @Override
@@ -333,11 +399,7 @@ public class AisApiDelegateImpl implements AisApiDelegate {
         if (getObjectMapper().
                 isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
-                if (!tokenUtils.verify(authorization,
-                        getTransactionsDoneRequest.getRequestHeader().
-                                getToken())) {
-                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-                }
+
                 getTransactionsDoneRequest.getAccountNumber();
                 getTransactionsDoneRequest.getBookingDateFrom();
                 getTransactionsDoneRequest.getBookingDateTo();

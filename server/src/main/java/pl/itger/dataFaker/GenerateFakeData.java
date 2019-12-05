@@ -1,19 +1,22 @@
 package pl.itger.dataFaker;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import com.google.gson.Gson;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Indexes;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +26,15 @@ import pl.itger.PolishAPI.repository.AccountInfoRepository;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import static com.mongodb.client.model.Projections.*;
 
 /**
  * @author Piotr Zerynger
  * <p>
- * curl  -X GET  http://localhost:8080/generateFakeData
+ * curl  -k -v -X GET  https://localhost:8443/generateFakeData
  */
 @RestController
 @RequestMapping("/")
@@ -38,8 +44,12 @@ public class GenerateFakeData {
     private final MongoDbFactory mongoDbFactory;
     @Autowired
     protected AccountInfoRepository accountInfoRepository;
+    @Value("${spring.data.mongodb.database}")
+    String dbName;
     Logger logger = LoggerFactory.getLogger(GenerateFakeData.class);
-    private Object AccountBaseInfo;
+    @Autowired
+    private MongoClient mongoClient;
+    private MongoDatabase database;
 
     /**
      * @param dbFactory
@@ -49,31 +59,36 @@ public class GenerateFakeData {
         this.mongoDbFactory = dbFactory;
     }
 
+    public Optional<ObjectMapper> getObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                false);
+        mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION,
+                true);
+        return Optional.of(mapper);
+    }
+
     /**
      * @return
      */
     @RequestMapping(value = "generateFakeData", method = RequestMethod.GET)
     public ResponseEntity generateFakeData() {
         logger.info("generateFakeData START");
-        Iterable<AccountInfo> accI_iter;
         MongoDatabase mdb = mongoDbFactory.getDb();
-        MongoCollection<Document> accInfo_coll = mdb.getCollection("accountInfo");
-        MongoCollection<Document> accBaseInfo_coll = mdb.getCollection("accountBaseInfo");
+        database = mongoClient.getDatabase(dbName);
+        MongoCollection<AccountInfo> aiCollection = database.getCollection("accountInfo", AccountInfo.class);
+        MongoCollection<AccountBaseInfo> abiCollection = database.getCollection("accountBaseInfo", AccountBaseInfo.class);
+        abiCollection.drop();
+        aiCollection.drop();
         MongoCollection<Document> holdInfo_coll = mdb.getCollection("holdInfo");
         MongoCollection<Document> transactionInfo_coll = mdb.getCollection("transactionInfo");
         holdInfo_coll.drop();
-        accBaseInfo_coll.drop();
-        accInfo_coll.drop();
         transactionInfo_coll.drop();
         logger.info("accountInfo, accountBaseInfo, holdInfo, transactionInfo DROPPED");
-        createAccounts(accountInfoRepository);
-        createBaseInfoAccounts(accInfo_coll, accBaseInfo_coll);
-        createHolds(accInfo_coll, holdInfo_coll);
-        createTransactions(accInfo_coll, transactionInfo_coll);
-        accI_iter = accountInfoRepository.findAll();
+        accountInfoRepository.deleteAll();
+        createAccounts(aiCollection, abiCollection, holdInfo_coll, transactionInfo_coll);//accountInfoRepository);
+        FindIterable<AccountInfo> accI_iter = aiCollection.find().projection(fields(include("accountNumber"), excludeId()));
         List<String> accountNumberList = new ArrayList<>();
-        transactionInfo_coll.createIndex(new Document("accountInfo_id", 1));
-        holdInfo_coll.createIndex(new Document("accountInfo_id", 1));
         for (AccountInfo cnsmr : accI_iter) {
             accountNumberList.add(cnsmr.getAccountNumber());
         }
@@ -81,66 +96,90 @@ public class GenerateFakeData {
         return new ResponseEntity(accountNumberList, HttpStatus.OK);
     }
 
-    private void createBaseInfoAccounts(MongoCollection<Document> accInfo_coll, MongoCollection<Document> accBaseInfo_coll) {
-        logger.info("Creating BaseInfoAccounts");
+    private void createAccounts(MongoCollection<AccountInfo> collection, MongoCollection<AccountBaseInfo> abiCollection, MongoCollection<Document> holdInfo_coll, MongoCollection<Document> transactionInfo_coll) {
+        logger.info("Creating accounts");
+        List<AccountInfo> accIL = new ArrayList();
         List<AccountBaseInfo> accBIL = new ArrayList<>();
-        for (Document doc : accInfo_coll.find()) {
-            //int i = faker.number().numberBetween(0, 4);
-            //for (int ii = 0; ii <= i; ii++) {
-            Query query = new Query();
-            query.addCriteria(Criteria.where("accountNumber").is(doc.get("accountNumber").toString()));
-            MongoOperations mongoOps = new MongoTemplate(mongoDbFactory);
-            AccountInfo accountInfo = mongoOps.findOne(query, AccountInfo.class);
-            AccountBaseInfo accBI = new AccountBaseInfo();
-            accBI.setAccountNumber(accountInfo.getAccountNumber());
-            accBI.setAccountType(accountInfo.getAccountType());
-            accBI.setAccountTypeName(accountInfo.getAccountTypeName());
-            accBI.setPsuRelations(accountInfo.getPsuRelations());
-            accBIL.add(accBI);
-            Gson gson = new Gson();
-            Document gDoc = Document.parse(gson.toJson(accBI));
-            gDoc.append("accountInfo_id", doc.get("_id"));
-            accBaseInfo_coll.insertOne(gDoc);
+        List<Document> holdInfoList = new ArrayList<>();
+        List<Document> transactionInfoList = new ArrayList<>();
+        int i = faker.number().numberBetween(40, 60);
+        for (int ii = 0; ii <= i; ii++) {
+            AccountInfo accI = new AccountInfo();
+            accI.setAccountHolderType(AccountInfo.AccountHolderTypeEnum.values()[faker.number().numberBetween(0, 1)]);
+            accI.setAccountNameClient(faker.name().nameWithMiddle());
+            accI.setAccountNumber(faker.finance().creditCard());
+            DictionaryItem di = new DictionaryItem();
+            di.setCode(faker.commerce().productName());
+            di.setDescription(faker.chuckNorris().fact());
+            accI.setAccountType(di);
+            accI.setAccountTypeName(faker.company().buzzword());
+            accI.setAvailableBalance(Double.toString(faker.number().randomDouble(2, 1, 1000000)));
+            accI.setBank(FakeDataGen.fakeBankAccountInfo(faker));
+            accI.setBookingBalance(Double.toString(faker.number().randomDouble(2, 1, 1000000)));
+            accI.setCurrency(faker.currency().code());
+            accI.setNameAddress(FakeDataGen.fakeNameaddress(faker));
+            accI.addPsuRelationsItem(FakeDataGen.fakeAccountPsuRelation(faker)).addPsuRelationsItem(FakeDataGen.fakeAccountPsuRelation(faker));
+            DictionaryItem dii = new DictionaryItem();
+            dii.code(faker.hipster().word());
+            dii.description(faker.hipster().word());
+            accI.setAccountType(dii);
+            accIL.add(accI);
+            //
+            createABI(accBIL, accI);
+            createHolds(holdInfoList, accI);
+            createTransactions(transactionInfoList, accI);
         }
+        collection.insertMany(accIL);
+        collection.createIndex(Indexes.ascending("accountNumber"));
+        abiCollection.insertMany(accBIL);
+        abiCollection.createIndex(Indexes.ascending("accountNumber"));
+        holdInfo_coll.insertMany(holdInfoList);
+        holdInfo_coll.createIndex(Indexes.ascending("accountNumber"));
+        transactionInfo_coll.insertMany(transactionInfoList);
+        transactionInfo_coll.createIndex(Indexes.ascending("accountNumber"));
+    }
+
+    private void createABI(@NotNull List<AccountBaseInfo> accBIL, @NotNull AccountInfo accI) {
+        AccountBaseInfo accBI = new AccountBaseInfo();
+        accBI.setAccountNumber(accI.getAccountNumber());
+        accBI.setAccountType(accI.getAccountType());
+        accBI.setAccountTypeName(accI.getAccountTypeName());
+        accBI.setPsuRelations(accI.getPsuRelations());
+        accBIL.add(accBI);
     }
 
 
     /**
-     * @param accInfo_coll
-     * @param holdInfo_coll
+     * @param holdInfoList
+     * @param accI
      */
-    private void createHolds(@NotNull MongoCollection<Document> accInfo_coll, MongoCollection<Document> holdInfo_coll) {
+    private void createHolds(@NotNull List<Document> holdInfoList, @NotNull AccountInfo accI) {
         logger.info("Creating Holds");
-        for (Document doc : accInfo_coll.find()) {
-            int i = faker.number().numberBetween(0, 4);
-            for (int ii = 0; ii <= i; ii++) {
-                HoldInfo holdInfo = new HoldInfo();
-                createHold(holdInfo);
-                Gson gson = new Gson();
-                Document gDoc = Document.parse(gson.
-                        toJson(holdInfo));
-                gDoc.append("accountInfo_id", doc.get("_id"));
-                holdInfo_coll.insertOne(gDoc);
-            }
+        Gson gson = new Gson();
+        int i = faker.number().numberBetween(0, 4);
+        for (int ii = 0; ii <= i; ii++) {
+            HoldInfo holdInfo = new HoldInfo();
+            createHold(holdInfo);
+            Document gDoc = Document.parse(gson.toJson(holdInfo));
+            gDoc.append("accountNumber", accI.getAccountNumber());
+            holdInfoList.add(gDoc);
         }
     }
 
     /**
-     * @param accInfo_coll
-     * @param transactionInfo_coll
+     * @param transactionInfoList
+     * @param accI
      */
-    private void createTransactions(@NotNull MongoCollection<Document> accInfo_coll, MongoCollection<Document> transactionInfo_coll) {
+    private void createTransactions(@NotNull List<Document> transactionInfoList, @NotNull AccountInfo accI) {
         logger.info("Creating Transactions");
-        for (Document doc : accInfo_coll.find()) {
-            int i = faker.number().numberBetween(0, 10);
-            for (int ii = 0; ii <= i; ii++) {
-                TransactionInfo ti = new TransactionInfo();
-                createTransactionInfo(ti);
-                Gson gson = new Gson();
-                Document gDoc = Document.parse(gson.toJson(ti));
-                gDoc.append("accountInfo_id", doc.get("_id"));
-                transactionInfo_coll.insertOne(gDoc);
-            }
+        Gson gson = new Gson();
+        int i = faker.number().numberBetween(0, 10);
+        for (int ii = 0; ii <= i; ii++) {
+            TransactionInfo ti = new TransactionInfo();
+            createTransactionInfo(ti);
+            Document gDoc = Document.parse(gson.toJson(ti));
+            gDoc.append("accountNumber", accI.getAccountNumber());
+            transactionInfoList.add(gDoc);
         }
     }
 
@@ -191,40 +230,6 @@ public class GenerateFakeData {
         holdInfo.setSender(FakeDataGen.fakeSenderRecipient(faker));
         holdInfo.setTradeDate(faker.date().past(90, TimeUnit.DAYS).toInstant().atOffset(OffsetDateTime.now().getOffset()));
         holdInfo.setTransactionType(faker.commerce().productName());
-    }
-
-    /**
-     * @param accountInfoRepository
-     */
-    private void createAccounts(@NotNull AccountInfoRepository accountInfoRepository) {
-        logger.info("Creating accounts");
-        List<AccountInfo> accIL = new ArrayList();
-        int i = faker.number().numberBetween(40, 60);
-        for (int ii = 0; ii <= i; ii++) {
-            AccountInfo accI = new AccountInfo();
-            accI.setAccountHolderType(
-                    AccountInfo.AccountHolderTypeEnum.
-                            values()[faker.number().numberBetween(0, 1)]);
-            accI.setAccountNameClient(faker.name().nameWithMiddle());
-            accI.setAccountNumber(faker.finance().creditCard());
-            DictionaryItem di = new DictionaryItem();
-            di.setCode(faker.commerce().productName());
-            di.setDescription(faker.chuckNorris().fact());
-            accI.setAccountType(di);
-            accI.setAccountTypeName(faker.company().buzzword());
-            accI.setAvailableBalance(Double.toString(faker.number().randomDouble(2, 1, 1000000)));
-            accI.setBank(FakeDataGen.fakeBankAccountInfo(faker));
-            accI.setBookingBalance(Double.toString(faker.number().randomDouble(2, 1, 1000000)));
-            accI.setCurrency(faker.currency().code());
-            accI.setNameAddress(FakeDataGen.fakeNameaddress(faker));
-            accI.addPsuRelationsItem(FakeDataGen.fakeAccountPsuRelation(faker));
-            DictionaryItem dii = new DictionaryItem();
-            dii.code(faker.hipster().word());
-            dii.description(faker.hipster().word());
-            accI.setAccountType(dii);
-            accIL.add(accI);
-        }
-        accountInfoRepository.insert(accIL);
     }
 
 }

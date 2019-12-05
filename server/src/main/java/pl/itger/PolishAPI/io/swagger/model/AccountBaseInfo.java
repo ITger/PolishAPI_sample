@@ -25,8 +25,6 @@ import java.util.Objects;
 public class AccountBaseInfo
         implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @JsonProperty("accountNumber")
     private String accountNumber = null;
 
@@ -37,7 +35,6 @@ public class AccountBaseInfo
     private DictionaryItem accountType = null;
 
     @JsonProperty("psuRelations")
-    @Valid
     private List<AccountPsuRelation> psuRelations = new ArrayList<>();
 
     public AccountBaseInfo accountNumber(String accountNumber) {

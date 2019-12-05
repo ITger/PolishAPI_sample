@@ -1,6 +1,7 @@
 package pl.itger.PolishAPI.io.swagger.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
@@ -52,7 +53,7 @@ public class AccountInfo
     @JsonProperty("bank")
     private BankAccountInfo bank = null;
     @JsonProperty("psuRelations")
-    @Valid
+
     private List<AccountPsuRelation> psuRelations = new ArrayList<>();
     @JsonProperty("auxData")
     private java.util.Map<?, ?> auxData = null;
@@ -436,6 +437,7 @@ public class AccountInfo
      * Rodzaj posiadacza rachunku: osoba fizyczna lub osoba prawna / Account holder
      * type: individual person or corporation
      */
+    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
     public enum AccountHolderTypeEnum {
         INDIVIDUAL("individual"),
 

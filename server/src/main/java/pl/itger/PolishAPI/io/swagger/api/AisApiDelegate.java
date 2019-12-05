@@ -21,7 +21,7 @@ import java.util.Optional;
 
 public interface AisApiDelegate {
 
-    Logger log = LoggerFactory.getLogger(AisApi.class);
+    Logger LOG = LoggerFactory.getLogger(AisApi.class);
 
     default Optional<ObjectMapper> getObjectMapper() {
         return Optional.empty();
@@ -49,7 +49,7 @@ public interface AisApiDelegate {
                 isPresent() && getAcceptHeader().
                 isPresent()) {
         } else {
-            log.warn(
+            LOG.warn(
                     "ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -79,14 +79,14 @@ public interface AisApiDelegate {
                                     AccountResponse.class),
                             HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
-                    log.error(
+                    LOG.error(
                             "Couldn't serialize response for content type application/json",
                             e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         } else {
-            log.warn(
+            LOG.warn(
                     "ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -116,14 +116,14 @@ public interface AisApiDelegate {
                                     AccountsResponse.class),
                             HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
-                    log.error(
+                    LOG.error(
                             "Couldn't serialize response for content type application/json",
                             e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         } else {
-            log.warn(
+            LOG.warn(
                     "ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -153,14 +153,14 @@ public interface AisApiDelegate {
                                     HoldInfoResponse.class),
                             HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
-                    log.error(
+                    LOG.error(
                             "Couldn't serialize response for content type application/json",
                             e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         } else {
-            log.warn(
+            LOG.warn(
                     "ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -191,14 +191,14 @@ public interface AisApiDelegate {
                                     TransactionDetailResponse.class),
                             HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
-                    log.error(
+                    LOG.error(
                             "Couldn't serialize response for content type application/json",
                             e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         } else {
-            log.warn(
+            LOG.warn(
                     "ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -229,14 +229,14 @@ public interface AisApiDelegate {
                                     TransactionsCancelledInfoResponse.class),
                             HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
-                    log.error(
+                    LOG.error(
                             "Couldn't serialize response for content type application/json",
                             e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         } else {
-            log.warn(
+            LOG.warn(
                     "ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -267,14 +267,14 @@ public interface AisApiDelegate {
                                     TransactionsDoneInfoResponse.class),
                             HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
-                    log.error(
+                    LOG.error(
                             "Couldn't serialize response for content type application/json",
                             e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         } else {
-            log.warn(
+            LOG.warn(
                     "ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -305,14 +305,14 @@ public interface AisApiDelegate {
                                     TransactionPendingInfoResponse.class),
                             HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
-                    log.error(
+                    LOG.error(
                             "Couldn't serialize response for content type application/json",
                             e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         } else {
-            log.warn(
+            LOG.warn(
                     "ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -343,14 +343,14 @@ public interface AisApiDelegate {
                                     TransactionRejectedInfoResponse.class),
                             HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
-                    log.error(
+                    LOG.error(
                             "Couldn't serialize response for content type application/json",
                             e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         } else {
-            log.warn(
+            LOG.warn(
                     "ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -381,14 +381,14 @@ public interface AisApiDelegate {
                                     TransactionsScheduledInfoResponse.class),
                             HttpStatus.NOT_IMPLEMENTED);
                 } catch (IOException e) {
-                    log.error(
+                    LOG.error(
                             "Couldn't serialize response for content type application/json",
                             e);
                     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
         } else {
-            log.warn(
+            LOG.warn(
                     "ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);

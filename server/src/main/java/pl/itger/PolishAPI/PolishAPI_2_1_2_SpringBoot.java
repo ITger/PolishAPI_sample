@@ -14,10 +14,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @ComponentScan(basePackages = {"pl.itger.dataFaker", "pl.itger.JWTokens", "pl.itger.PolishAPI"})
 @EnableSwagger2
-public class Swagger2SpringBoot implements CommandLineRunner {
+public class PolishAPI_2_1_2_SpringBoot implements CommandLineRunner {
 
     public static void main(String[] args) {
-        new SpringApplication(Swagger2SpringBoot.class).run(args);
+        new SpringApplication(PolishAPI_2_1_2_SpringBoot.class).run(args);
     }
 
     @Override
@@ -25,6 +25,9 @@ public class Swagger2SpringBoot implements CommandLineRunner {
         if (arg0.length > 0 && arg0[0].equals("exitcode")) {
             throw new ExitException();
         }
+
+        //CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register("pl.itger.PolishAPI.io.swagger.model").build();
+        //CodecRegistry pojoCodecRegistry = fromRegistries( fromProviders(pojoCodecProvider));
     }
 
     class ExitException

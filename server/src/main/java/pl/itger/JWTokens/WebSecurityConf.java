@@ -17,6 +17,19 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConf extends WebSecurityConfigurerAdapter {
+    private static final String[] AUTH_WHITELIST = {
+            // -- swagger ui
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/error",
+            "/", "/jwts", "/generateFakeData"
+            // other public endpoints of your API may be appended to this array
+    };
 
     /**
      * @return
@@ -37,7 +50,18 @@ public class WebSecurityConf extends WebSecurityConfigurerAdapter {
         httpSecurity.cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/jwts", "/generateFakeData")
+                //.antMatchers(HttpMethod.POST)
+                .antMatchers("/v2/api-docs",
+                        "/swagger-resources",
+                        "/swagger-resources/**",
+                        "/configuration/ui",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/api-docs",
+                        "/csrf",
+                        "/error",
+                        "/", "/jwts", "/generateFakeData")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

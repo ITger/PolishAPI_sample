@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Max;
@@ -19,7 +20,7 @@ import java.util.Objects;
 @ApiModel(description = "Klasa opisująca relację PSU do rachunku płatniczego / Class describing relation between PSU and an Account")
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-03-14T19:37:54.479+01:00")
-
+@Document
 public class AccountPsuRelation implements Serializable {
     private static final long serialVersionUID = 1L;
     @JsonProperty("typeOfRelation")
@@ -173,6 +174,7 @@ public class AccountPsuRelation implements Serializable {
         @Override
         @JsonValue
         public String toString() {
+            System.out.println("XXXXX  " + String.valueOf(value));
             return String.valueOf(value);
         }
     }

@@ -210,17 +210,16 @@ public class FakeDataGen {
     }
 
     static public AccountPsuRelation fakeAccountPsuRelation(Faker faker) {
-        AccountPsuRelation acountPsuRelation = new AccountPsuRelation();
-        acountPsuRelation.setTypeOfRelation(AccountPsuRelation.TypeOfRelationEnum.
-                values()[faker.number().
-                numberBetween(0,
-                        5)]);
-        acountPsuRelation.setTypeOfProxy(
-                AccountPsuRelation.TypeOfProxyEnum.values()[faker.number().
-                        numberBetween(0,
-                                3)]);
-        acountPsuRelation.setStake(faker.number().randomDigit());
-        return acountPsuRelation;
+        AccountPsuRelation accountPsuRelation = new AccountPsuRelation();
+
+        AccountPsuRelation.TypeOfRelationEnum tor = AccountPsuRelation.TypeOfRelationEnum.values()[faker.number().numberBetween(0, 5)];
+        accountPsuRelation.setTypeOfRelation(tor);
+
+        AccountPsuRelation.TypeOfProxyEnum top = AccountPsuRelation.TypeOfProxyEnum.values()[faker.number().numberBetween(0, 3)];
+        accountPsuRelation.setTypeOfProxy(top);
+
+        accountPsuRelation.setStake(faker.number().randomDigit());
+        return accountPsuRelation;
     }
 
     static public SenderRecipient fakeSenderRecipient(Faker faker) {
