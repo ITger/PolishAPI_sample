@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import com.google.gson.Gson;
+import com.mongodb.ReadConcern;
+import com.mongodb.ReadPreference;
+import com.mongodb.TransactionOptions;
+import com.mongodb.WriteConcern;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -19,7 +23,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import pl.itger.PolishAPI.io.swagger.model.*;
 import pl.itger.PolishAPI.repository.AccountInfoRepository;
 
@@ -50,6 +57,12 @@ public class GenerateFakeData {
     @Autowired
     private MongoClient mongoClient;
     private MongoDatabase database;
+
+    private static final TransactionOptions txnOptions = TransactionOptions.builder()
+            .readPreference(ReadPreference.primary())
+            .readConcern(ReadConcern.MAJORITY)
+            .writeConcern(WriteConcern.MAJORITY)
+            .build();
 
     /**
      * @param dbFactory
@@ -125,7 +138,7 @@ public class GenerateFakeData {
             accI.setAccountType(dii);
             accIL.add(accI);
             //
-            createABI(accBIL, accI);
+            createAccountBaseInfo(accBIL, accI);
             createHolds(holdInfoList, accI);
             createTransactions(transactionInfoList, accI);
         }
@@ -137,9 +150,17 @@ public class GenerateFakeData {
         holdInfo_coll.createIndex(Indexes.ascending("accountNumber"));
         transactionInfo_coll.insertMany(transactionInfoList);
         transactionInfo_coll.createIndex(Indexes.ascending("accountNumber"));
+
+        /*try (ClientSession clientSession = client.startSession()) {
+            return clientSession.withTransaction(() -> {
+                persons.forEach(p -> p.setId(new ObjectId()));
+                personCollection.insertMany(clientSession, persons);
+                return persons;
+            }, txnOptions);
+        }*/
     }
 
-    private void createABI(@NotNull List<AccountBaseInfo> accBIL, @NotNull AccountInfo accI) {
+    private void createAccountBaseInfo(@NotNull List<AccountBaseInfo> accBIL, @NotNull AccountInfo accI) {
         AccountBaseInfo accBI = new AccountBaseInfo();
         accBI.setAccountNumber(accI.getAccountNumber());
         accBI.setAccountType(accI.getAccountType());
@@ -203,16 +224,21 @@ public class GenerateFakeData {
         di.setCode(faker.commerce().productName());
         di.setDescription(faker.hipster().word());
         ti.setTransactionStatus(di);
-        ti.setTransactionCategory(TransactionInfo.TransactionCategoryEnum.CREDIT);
+        int i = faker.number().numberBetween(0, 1);
+        ti.setTransactionCategory(i == 0 ? TransactionInfo.TransactionCategoryEnum.CREDIT : TransactionInfo.TransactionCategoryEnum.DEBIT);
     }
 
-    /**
-     *
-     */
-    @ExceptionHandler(Exception.class)
+
+ /*   @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Error message")
     public void handleError() {
         logger.error("BLAD");
+    }*/
+
+    @ExceptionHandler(RuntimeException.class)
+    public final ResponseEntity<Exception> handleAllExceptions(RuntimeException e) {
+        logger.error("Internal server error.", e);
+        return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**

@@ -190,7 +190,7 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                 MongoCollection<?> coll = mongoTmpl.getDb().getCollection("accountBaseInfo");
                 MongoCollection collection_2 = coll.withCodecRegistry(jacksonCodecRegistry);
                 List<Document> list = new ArrayList<>();
-                boolean exist = collection_2.countDocuments(filter_check_exist) > 0 ? true : false;
+                boolean exist = collection_2.countDocuments(filter_check_exist) > 0;
                 if (exist) {
                     FindIterable xx_2 = collection_2.find(filter).sort(sortOrder).limit(perPage);//.iterator().forEachRemaining(list::add);
                     //xx_2.forEach(printBlock);
@@ -358,6 +358,7 @@ public class AisApiDelegateImpl implements AisApiDelegate {
             String X_REQUEST_ID,
             TransactionDetailRequest getTransationDetailRequest
     ) {
+        getTransationDetailRequest.getAccountNumber();
         return AisApiDelegate.super.getTransactionDetail(authorization,
                 acceptEncoding,
                 acceptLanguage,
@@ -377,6 +378,7 @@ public class AisApiDelegateImpl implements AisApiDelegate {
             String X_REQUEST_ID,
             TransactionInfoRequest getTransactionsCancelledRequest
     ) {
+        getTransactionsCancelledRequest.getAccountNumber();
         return AisApiDelegate.super.getTransactionsCancelled(authorization,
                 acceptEncoding,
                 acceptLanguage,

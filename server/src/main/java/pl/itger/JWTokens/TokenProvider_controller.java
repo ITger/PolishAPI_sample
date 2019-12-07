@@ -26,7 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import java.io.UnsupportedEncodingException;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -64,10 +65,10 @@ public class TokenProvider_controller {
                     .claim("scope", "itger_polishAPI_2_1_2")
                     .signWith(
                             SignatureAlgorithm.HS256,
-                            secret.getBytes("UTF-8")
+                            secret.getBytes(StandardCharsets.UTF_8)
                     )
                     .compact();
-        } catch (UnsupportedEncodingException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(TokenProvider_controller.class.getName())
                     .log(Level.SEVERE,ex.getMessage(),  ex);
             return jwt;

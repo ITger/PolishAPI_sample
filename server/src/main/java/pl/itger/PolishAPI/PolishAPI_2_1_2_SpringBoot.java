@@ -25,9 +25,6 @@ public class PolishAPI_2_1_2_SpringBoot implements CommandLineRunner {
         if (arg0.length > 0 && arg0[0].equals("exitcode")) {
             throw new ExitException();
         }
-
-        //CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register("pl.itger.PolishAPI.io.swagger.model").build();
-        //CodecRegistry pojoCodecRegistry = fromRegistries( fromProviders(pojoCodecProvider));
     }
 
     class ExitException

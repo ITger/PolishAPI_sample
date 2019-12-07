@@ -12,9 +12,9 @@
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_STRING" value=" -Xlint:unchecked " />
+    <option name="ADDITIONAL_OPTIONS_STRING" value=" -Xlint:unchecked -Djdk.tls.client.protocols=&quot;TLSv1,TLSv1.1,TLSv1.2&quot;" />
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="server" options="-parameters" />
+      <module name="server" options="" />
     </option>
   </component>
 </project>

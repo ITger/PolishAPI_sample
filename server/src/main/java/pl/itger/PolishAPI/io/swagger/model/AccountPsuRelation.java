@@ -174,7 +174,6 @@ public class AccountPsuRelation implements Serializable {
         @Override
         @JsonValue
         public String toString() {
-            System.out.println("XXXXX  " + String.valueOf(value));
             return String.valueOf(value);
         }
     }
