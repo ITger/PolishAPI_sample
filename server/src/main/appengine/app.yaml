@@ -10,3 +10,4 @@ handlers:
     script: this field is required, but ignored
 manual_scaling:
   instances: 1
+
