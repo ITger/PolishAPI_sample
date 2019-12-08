@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pl.itger.PolishAPI_2_1_2_sample</groupId>
     <artifactId>PolishAPI_2_1_2_sample</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>PolishAPI_2_1_2_sample</name>
     <version>1.0.0</version>
     <properties>
