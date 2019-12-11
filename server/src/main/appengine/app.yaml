@@ -1,6 +1,16 @@
-runtime: java8
+runtime: java
+env: flex
+instance_class: F2
 runtime_config:
   jdk: openjdk8
+#env_variables:
+#  SPRING_PROFILES_ACTIVE: "gcp"
 handlers:
   - url: /.*
     script: this field is required, but ignored
+readiness_check:
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+  app_start_timeout_sec: 300

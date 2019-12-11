@@ -35,7 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * curl -k -v https://localhost:8443/jwts -H "Accept: application/json" -H "Accept-Language: en_US" -d client_id=cID -d secret=abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd -d username=user -d password=password
+ * curl -k -v https://localhost:8080/jwts -H "Accept: application/json" -H "Accept-Language: en_US" -d client_id=cID -d secret=abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd -d username=user -d password=password
  */
 @RestController
 @RequestMapping("/")
@@ -46,7 +46,7 @@ public class TokenProvider_controller {
     @RequestMapping(value = "jwts", method = RequestMethod.POST)
     @ResponseBody
     public String get(@NotNull String client_id, @NotNull String secret, Authentication authentication) {
-        Date expirationDate = DateUtils.addDays(new Date(), 10);
+        Date expirationDate = DateUtils.addDays(new Date(), 30);
         String jwt = "Jwts.builder FAILED";
         //User user = ((User) authentication.getPrincipal());
 //        List<String> roles = user.getAuthorities()
