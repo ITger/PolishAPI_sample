@@ -37,10 +37,9 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-
                 <version>2.1.0</version>
                 <configuration>
-                    <deploy.projectId>polish</deploy.projectId>
+                    <deploy.projectId>polish-api-psd2</deploy.projectId>
                     <version>1</version>
                 </configuration>
             </plugin>
