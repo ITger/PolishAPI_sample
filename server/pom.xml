@@ -20,7 +20,7 @@
         <version>2.1.9.RELEASE</version>
     </parent>
     <build>
-        <outpuyDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outpuyDirectory>
+        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
         <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
             <plugin>
