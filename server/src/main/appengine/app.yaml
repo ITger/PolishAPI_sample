@@ -5,12 +5,11 @@ runtime_config:
   jdk: openjdk8
 #env_variables:
 #  SPRING_PROFILES_ACTIVE: "gcp"
-enable_health_check: false
+
 handlers:
   - url: /.*
     script: this field is required, but ignored
 #readiness_check:
-#  enable_health_check: false
 #  check_interval_sec: 15
 #  timeout_sec: 14
 #  failure_threshold: 2
