@@ -3,7 +3,7 @@
     <runtime>java8</runtime>
     <threadsafe>true</threadsafe>
     <version>1</version>
+    <system-properties>
+        <property name="java.util.logging.config.file" value="WEB-INF/classes/logging.properties"/>
+    </system-properties>
 </appengine-web-app>
-<system-properties>
-<property name="java.util.logging.config.file" value="WEB-INF/classes/logging.properties"/>
-</system-properties>
