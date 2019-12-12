@@ -5,10 +5,27 @@ runtime_config:
   jdk: openjdk8
 #env_variables:
 #  SPRING_PROFILES_ACTIVE: "gcp"
-
 handlers:
   - url: /.*
     script: this field is required, but ignored
+  - url: (/.*)
+    static_files: __static__\1
+    upload: __NOT_USED__
+    require_matching_file: True
+    login: optional
+    secure: optional
+  - url: /
+    script: unused
+    login: optional
+    secure: optional
+  - url: /.*/
+    script: unused
+    login: optional
+    secure: optional
+  - url: /_ah/.*
+    script: unused
+    login: optional
+    secure: optional
 liveness_check:
   path: "/liveness_check"
   check_interval_sec: 120
