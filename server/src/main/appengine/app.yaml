@@ -8,9 +8,9 @@ runtime_config:
 handlers:
   - url: /.*
     script: this field is required, but ignored
-readiness_check:
-  check_interval_sec: 15
-  timeout_sec: 14
-  failure_threshold: 2
-  success_threshold: 2
-  app_start_timeout_sec: 1200
+#readiness_check:
+#  check_interval_sec: 15
+#  timeout_sec: 14
+#  failure_threshold: 2
+#  success_threshold: 2
+#  app_start_timeout_sec: 1200
