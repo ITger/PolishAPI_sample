@@ -11,7 +11,7 @@
     <groupId>pl.itger.polishapi-psd2</groupId>
     <artifactId>polishapi-psd2</artifactId>
     <!--    <packaging>jar</packaging>-->
-    <name>polish-api-psd2</name>
+    <name>polishapi-psd2</name>
     <version>0.0.1-SNAPSHOT</version>
     <properties>
         <java.version>1.8</java.version>
@@ -41,6 +41,7 @@
                 <version>2.1.0</version>
                 <configuration>
                     <deploy.projectId>polishapi-psd2</deploy.projectId>
+                    <deploy.version>11</deploy.version>
                 </configuration>
             </plugin>
             <!--            <plugin>-->
