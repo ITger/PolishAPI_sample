@@ -1,8 +1,8 @@
 runtime: java
 env: flex
 
-health_check:
-  enable_health_check: False
+#health_check:
+#  enable_health_check: False
 
 handlers:
   - url: /.*
