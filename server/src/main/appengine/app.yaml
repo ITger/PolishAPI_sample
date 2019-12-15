@@ -1,40 +1,19 @@
 runtime: java
 env: flex
-instance_class: F2
-runtime_config:
-  jdk: openjdk8
-#env_variables:
-#  SPRING_PROFILES_ACTIVE: "gcp"
+
+health_check:
+  enable_health_check: False
+
 handlers:
   - url: /.*
     script: this field is required, but ignored
-  - url: (/.*)
-    static_files: __static__\1
-    upload: __NOT_USED__
-    require_matching_file: True
-    login: optional
-    secure: optional
-  - url: /
-    script: unused
-    login: optional
-    secure: optional
-  - url: /.*/
-    script: unused
-    login: optional
-    secure: optional
-  - url: /_ah/.*
-    script: unused
-    login: optional
-    secure: optional
-liveness_check:
-  path: "/liveness_check"
-  check_interval_sec: 120
-  timeout_sec: 4
+
+manual_scaling:
+  instances: 1
+
+readiness_check:
+  check_interval_sec: 40
+  timeout_sec: 30
   failure_threshold: 2
   success_threshold: 2
-#readiness_check:
-#  check_interval_sec: 15
-#  timeout_sec: 14
-#  failure_threshold: 2
-#  success_threshold: 2
-#  app_start_timeout_sec: 1200
+  app_start_timeout_sec: 180
