@@ -40,7 +40,7 @@
                 <artifactId>appengine-maven-plugin</artifactId>
                 <version>2.1.0</version>
                 <configuration>
-                    <version>1</version>
+                    <deploy.projectId>polishapi-psd2</deploy.projectId>
                 </configuration>
             </plugin>
             <!--            <plugin>-->
