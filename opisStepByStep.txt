@@ -55,12 +55,12 @@ https://generator.swagger.io/api/gen/servers/spring
 7.
 wg mnie optymalne parametry generatora sa te:
 {
-"groupId":"pl.itger.PolishAPI",
+"groupId":"pl.itger.polishAPI",
   "artifactId":"PolishAPI_2_1_2_sample",
-"basePackage":"pl.itger.PolishAPI",
-"configPackage":"pl.itger.PolishAPI.config",
-"modelPackage" : "pl.itger.PolishAPI.model",
-"apiPackage" : "pl.itger.PolishAPI.api",
+"basePackage":"pl.itger.polishAPI",
+"configPackage":"pl.itger.polishAPI.config",
+"modelPackage" : "pl.itger.polishAPI.model",
+"apiPackage" : "pl.itger.polishAPI.api",
 "sourceFolder" : "F:\workspace\PolishAPI_2_1_2_sample",
  "dateLibrary": "java8",
  "java8" : "true",
