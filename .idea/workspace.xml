@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="df181ad5-265a-4a95-93a6-923a5cf00963" name="Default Changelist" comment="reconfiguration for google cloud app engine">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectFilesBackup/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectFilesBackup1/.idea/workspace.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="testRunner" value="GRADLE" />
+    <option name="delegatedBuild" value="true" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="PolishAPI_2_1_2_sample" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+        <option name="lookForNested" value="true" />
+        <option name="vmOptionsForImporter" value="-Xmx768m" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectConfigurationFiles">
+    <option name="files">
+      <list>
+        <option value="$PROJECT_DIR$/.idea/vcs.xml" />
+        <option value="$PROJECT_DIR$/.idea/compiler.xml" />
+        <option value="$PROJECT_DIR$/.idea/encodings.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1V1ONwUCNQLEByZbGAwrvGQ13hc" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ACTIVE_CLOUD_PROJECT_ACCOUNT" value="p.zerynger@gmail.com" />
+    <property name="ACTIVE_CLOUD_PROJECT_ID" value="polishapi-psd2" />
+    <property name="ACTIVE_CLOUD_PROJECT_NAME" value="polishapi-psd2" />
+    <property name="ACTIVE_CLOUD_PROJECT_NUMBER" value="1094599076236" />
+    <property name="EXPLORER_KUBECONFIG" value="$PROJECT_DIR$/src/main/appengine/app.yaml" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/target/polish-api-0.0.1-SNAPSHOT.jar" />
+    <property name="project.structure.last.edited" value="Facets" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.4802395" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.importing" />
+  </component>
+  <component name="RunManager" selected="Google App Engine Deployment.Google App Engine Deployment">
+    <configuration name="polishAPI-psd2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="pl.itger.polishAPI.PolishAPI_2_1_2_SpringBoot" />
+      <module name="PolishAPI-psd2" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Unnamed" type="GCPDebug" factoryName="Google Stackdriver Debug" nameIsGenerated="true" CloudProjectName="polishapi-psd2" GoogleUsername="p.zerynger@gmail.com">
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GCPDebug" factoryName="Google Stackdriver Debug" CloudProjectName="polishapi-psd2" GoogleUsername="p.zerynger@gmail.com">
+      <method v="2" />
+    </configuration>
+    <configuration name="polishapi-psd2-0.0.1-SNAPSHOT-spring-boot.jar" type="JarApplication">
+      <option name="JAR_PATH" value="$PROJECT_DIR$/target/polishapi-psd2-0.0.1-SNAPSHOT-spring-boot.jar" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
+      <module name="PolishAPI-psd2" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Google App Engine Deployment" type="gcp-app-engine-deploy" factoryName="Google App Engine Deployment" server-name="Google App Engine">
+      <deployment type="filesystem-war-jar-module" project="polishapi-psd2" version="auto">
+        <settings cloudProjectName="polishapi-psd2" environment="APP_ENGINE_FLEX" googleUsername="p.zerynger@gmail.com" moduleName="PolishAPI-psd2" promote="true" stagedArtifactName="" stagedArtifactNameLegacy="true" stopPreviousVersion="true" userSpecifiedArtifactPath="C:\workspace\PolishAPI-psd2\target\polish-api-0.0.1-SNAPSHOT.jar" version="" />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="gcp-app-engine-deploy" factoryName="Google App Engine Deployment" server-name="Google App Engine">
+      <deployment type="filesystem-war-jar-module" project="polishapi-psd2" version="auto">
+        <settings cloudProjectName="polishapi-psd2" environment="APP_ENGINE_FLEX" googleUsername="p.zerynger@gmail.com" moduleName="PolishAPI-psd2" promote="true" stagedArtifactName="" stagedArtifactNameLegacy="true" stopPreviousVersion="true" userSpecifiedArtifactPath="C:\workspace\PolishAPI-psd2\target\polishapi-psd2-0.0.1-SNAPSHOT-spring-boot.jar" version="" />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.polishAPI-psd2" />
+      <item itemvalue="Google App Engine Deployment.Google App Engine Deployment" />
+      <item itemvalue="Google Stackdriver Debug.Unnamed" />
+      <item itemvalue="JAR Application.polishapi-psd2-0.0.1-SNAPSHOT-spring-boot.jar" />
+    </list>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <option name="contentProportion" value="0.15996909" />
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="df181ad5-265a-4a95-93a6-923a5cf00963" name="Default Changelist" comment="" />
+      <created>1562440887548</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1562440887548</updated>
+    </task>
+    <task id="LOCAL-00001" summary="reconfiguration for google cloud app engine">
+      <created>1576689335396</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1576689335397</updated>
+    </task>
+    <task id="LOCAL-00002" summary="reconfiguration for google cloud app engine">
+      <created>1576689753045</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1576689753045</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Bump jackson-databind version">
+      <created>1576750921712</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1576750921712</updated>
+    </task>
+    <task id="LOCAL-00004" summary="reconfiguration for google cloud app engine">
+      <created>1576751337603</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1576751337603</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <MESSAGE value="Bump jackson-databind version" />
+    <MESSAGE value="reconfiguration for google cloud app engine" />
+    <option name="LAST_COMMIT_MESSAGE" value="reconfiguration for google cloud app engine" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="309" y="0" width="761" height="768" key="#Google_App_Engine_Deployment" timestamp="1576613655630">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="309" y="0" width="761" height="768" key="#Google_App_Engine_Deployment/0.0.1366.768@0.0.1366.768" timestamp="1576613655629" />
+    <state x="550" y="84" key="#Project_Structure" timestamp="1576613612788">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="550" y="84" key="#Project_Structure/0.0.1366.768@0.0.1366.768" timestamp="1576613612788" />
+    <state x="137" y="35" width="1092" height="733" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1576593733743">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="137" y="35" width="1092" height="733" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.768@0.0.1366.768" timestamp="1576593733743" />
+    <state x="463" y="88" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1576593643480">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="463" y="88" key="#com.intellij.ide.macro.MacrosDialog/0.0.1366.768@0.0.1366.768" timestamp="1576593643480" />
+    <state x="488" y="93" key="#com.intellij.ide.util.MemberChooser" timestamp="1576595556588">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="488" y="93" key="#com.intellij.ide.util.MemberChooser/0.0.1366.768@0.0.1366.768" timestamp="1576595556588" />
+    <state x="402" y="32" width="725" height="704" key="#polishapi-psd2-0.0.1-SNAPSHOT-spring-boot.jar" timestamp="1576575061787">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="402" y="32" width="725" height="704" key="#polishapi-psd2-0.0.1-SNAPSHOT-spring-boot.jar/0.0.1366.768@0.0.1366.768" timestamp="1576575061787" />
+    <state x="325" y="0" key="CommitChangelistDialog2" timestamp="1576751609862">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="325" y="0" key="CommitChangelistDialog2/0.0.1366.768@0.0.1366.768" timestamp="1576751609862" />
+    <state x="463" y="138" key="FileChooserDialogImpl" timestamp="1576613651131">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="463" y="138" key="FileChooserDialogImpl/0.0.1366.768@0.0.1366.768" timestamp="1576613651131" />
+    <state width="1323" height="192" key="GridCell.Tab.0.bottom" timestamp="1576598775689">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="1323" height="192" key="GridCell.Tab.0.bottom/0.0.1366.768@0.0.1366.768" timestamp="1576598775689" />
+    <state width="1323" height="192" key="GridCell.Tab.0.center" timestamp="1576598775689">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="1323" height="192" key="GridCell.Tab.0.center/0.0.1366.768@0.0.1366.768" timestamp="1576598775689" />
+    <state width="1323" height="192" key="GridCell.Tab.0.left" timestamp="1576598775689">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="1323" height="192" key="GridCell.Tab.0.left/0.0.1366.768@0.0.1366.768" timestamp="1576598775689" />
+    <state width="1323" height="192" key="GridCell.Tab.0.right" timestamp="1576598775689">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="1323" height="192" key="GridCell.Tab.0.right/0.0.1366.768@0.0.1366.768" timestamp="1576598775689" />
+    <state x="395" y="99" key="MultipleFileMergeDialog" timestamp="1576751385863">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="395" y="99" key="MultipleFileMergeDialog/0.0.1366.768@0.0.1366.768" timestamp="1576751385863" />
+    <state x="163" y="0" key="SettingsEditor" timestamp="1576607571969">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="163" y="0" key="SettingsEditor/0.0.1366.768@0.0.1366.768" timestamp="1576607571969" />
+    <state x="463" y="290" key="SetupCloudRepositoryDialog" timestamp="1576593552256">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="463" y="290" key="SetupCloudRepositoryDialog/0.0.1366.768@0.0.1366.768" timestamp="1576593552256" />
+    <state x="275" y="116" key="Vcs.Push.Dialog.v2" timestamp="1576751345492">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="275" y="116" key="Vcs.Push.Dialog.v2/0.0.1366.768@0.0.1366.768" timestamp="1576751345492" />
+    <state x="92" y="92" width="1182" height="584" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog" timestamp="1576751591757">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="92" y="92" width="1182" height="584" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog/0.0.1366.768@0.0.1366.768" timestamp="1576751591757" />
+    <state x="379" y="121" width="607" height="526" key="find.popup" timestamp="1576682231694">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="379" y="121" width="607" height="526" key="find.popup/0.0.1366.768@0.0.1366.768" timestamp="1576682231694" />
+  </component>
+</project>
