@@ -1,4 +1,3 @@
-/ZBP-polish-api-2_1_2-swagger.json
 /server/target/
 /.idea/
 /.github/
@@ -7,3 +6,5 @@
 /projectFilesBackup/
 /projectFilesBackup/.idea/
 /projectFilesBackup1/
+
+/target/
