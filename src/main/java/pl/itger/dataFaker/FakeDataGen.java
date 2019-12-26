@@ -237,13 +237,13 @@ public class FakeDataGen {
         return diccItem;
     }
 
-    static public Address fakeAddress(Faker faker) {
-        Address addr = new Address();
-        addr.add(faker.address().streetName());
-        addr.add(faker.address().streetAddressNumber());
-        addr.add(faker.address().zipCode());
-        addr.add(faker.address().cityName());
-        addr.add(faker.address().country());
+    static public NameAddress fakeAddress(Faker faker) {
+        NameAddress addr = new NameAddress();
+        addr.addValueItem(faker.address().streetName());
+        addr.addValueItem(faker.address().streetAddressNumber());
+        addr.addValueItem(faker.address().zipCode());
+        addr.addValueItem(faker.address().cityName());
+        addr.addValueItem(faker.address().country());
         return addr;
     }
 

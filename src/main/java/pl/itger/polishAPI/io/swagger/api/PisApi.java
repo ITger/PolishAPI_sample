@@ -5,365 +5,391 @@
  */
 package pl.itger.polishAPI.io.swagger.api;
 
+import pl.itger.polishAPI.io.swagger.model.AddPaymentResponse;
+import pl.itger.polishAPI.io.swagger.model.BundleRequest;
+import pl.itger.polishAPI.io.swagger.model.BundleResponse;
+import pl.itger.polishAPI.io.swagger.model.CancelPaymentsRequest;
+import pl.itger.polishAPI.io.swagger.model.CancelPaymentsResponse;
+import pl.itger.polishAPI.io.swagger.model.CancelRecurringPaymentRequest;
+import pl.itger.polishAPI.io.swagger.model.CancelRecurringPaymentResponse;
+import pl.itger.polishAPI.io.swagger.model.DomesticRequest;
+import pl.itger.polishAPI.io.swagger.model.EEARequest;
+import pl.itger.polishAPI.io.swagger.model.Error;
+import pl.itger.polishAPI.io.swagger.model.GetBundleRequest;
+import pl.itger.polishAPI.io.swagger.model.GetBundleResponse;
+import pl.itger.polishAPI.io.swagger.model.GetMultiplePaymentsRequest;
+import pl.itger.polishAPI.io.swagger.model.GetMultiplePaymentsResponse;
+import pl.itger.polishAPI.io.swagger.model.GetPaymentRequest;
+import pl.itger.polishAPI.io.swagger.model.GetPaymentResponse;
+import pl.itger.polishAPI.io.swagger.model.GetRecurringPaymentRequest;
+import pl.itger.polishAPI.io.swagger.model.GetRecurringPaymentResponse;
+import pl.itger.polishAPI.io.swagger.model.NonEEARequest;
+import pl.itger.polishAPI.io.swagger.model.RecurringRequest;
+import pl.itger.polishAPI.io.swagger.model.RecurringResponse;
+import pl.itger.polishAPI.io.swagger.model.TaxRequest;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import pl.itger.polishAPI.io.swagger.model.Error;
-import pl.itger.polishAPI.io.swagger.model.*;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-03-14T19:37:54.479+01:00")
+import javax.validation.constraints.*;
+import java.util.List;
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-26T17:08:40.154+01:00")
 
 @Api(value = "Pis", description = "the Pis API")
 public interface PisApi {
 
     PisApiDelegate getDelegate();
 
-    @ApiOperation(value = "Initiate many transfers as bundle", nickname = "bundle", notes = "", response = PaymentsBundleResponse.class, authorizations = {
-            @Authorization(value = "xs2a_auth_aspsp", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+    @ApiOperation(value = "Inicjacja wielu przelewów / Initiate many transfers as bundle", nickname = "bundle", notes = "", response = BundleResponse.class, authorizations = {
+        @Authorization(value = "xs2a_auth_aspsp", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             }),
-            @Authorization(value = "xs2a_auth_decoupled", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+        @Authorization(value = "xs2a_auth_decoupled", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             })
-    }, tags = {"PIS",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = PaymentsBundleResponse.class),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
-            @ApiResponse(code = 405, message = "Method Not Allowed", response = Error.class),
-            @ApiResponse(code = 406, message = "Not Acceptable", response = Error.class),
-            @ApiResponse(code = 415, message = "Unsupported Media Type", response = Error.class),
-            @ApiResponse(code = 422, message = "Unprocessable entity", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class),
-            @ApiResponse(code = 501, message = "Not Implemented", response = Error.class),
-            @ApiResponse(code = 503, message = "Service Unavailable", response = Error.class)})
-    @RequestMapping(value = "/v2_1_2.1/payments/v2_1_2.1/bundle",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    default ResponseEntity<PaymentsBundleResponse> bundle(@ApiParam(value = "The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization, @ApiParam(value = "Gzip, deflate", required = true, allowableValues = "gzip, deflate") @RequestHeader(value = "Accept-Encoding", required = true) String acceptEncoding, @ApiParam(value = "Prefered language of response", required = true) @RequestHeader(value = "Accept-Language", required = true) String acceptLanguage, @ApiParam(value = "UTF-8", required = true, allowableValues = "utf-8") @RequestHeader(value = "Accept-Charset", required = true) String acceptCharset, @ApiParam(value = "Detached JWS signature of the body of the payload", required = true) @RequestHeader(value = "X-JWS-SIGNATURE", required = true) String X_JWS_SIGNATURE, @ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload.", required = true) @RequestHeader(value = "X-REQUEST-ID", required = true) String X_REQUEST_ID, @ApiParam(value = "Data for bundle of transfers", required = true) @Valid @RequestBody PaymentsBundleRequest bundleRequest) {
+    }, tags={ "PIS", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Powodzenie / Success", response = BundleResponse.class),
+        @ApiResponse(code = 400, message = "Błędne żądanie / Bad request", response = Error.class),
+        @ApiResponse(code = 401, message = "Nieautoryzowany dostęp / Unauthorized", response = Error.class),
+        @ApiResponse(code = 403, message = "Zabroniony / Forbidden", response = Error.class),
+        @ApiResponse(code = 405, message = "Metoda niedozwolona / Method Not Allowed", response = Error.class),
+        @ApiResponse(code = 406, message = "Niedozwolone / Not Acceptable", response = Error.class),
+        @ApiResponse(code = 415, message = "Nieznany sposób żądania / Unsupported Media Type", response = Error.class),
+        @ApiResponse(code = 422, message = "Jednostka nieprzetwarzalna / Unprocessable entity", response = Error.class),
+        @ApiResponse(code = 500, message = "Wewnętrzny błąd serwera / Internal Server Error", response = Error.class),
+        @ApiResponse(code = 501, message = "Nie zaimplementowano / Not Implemented", response = Error.class),
+        @ApiResponse(code = 503, message = "Usługa niedostępna / Service Unavailable", response = Error.class) })
+    @RequestMapping(value = "/v3_0.1/payments/v3_0.1/bundle",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<BundleResponse> bundle(@ApiParam(value = "Wartość nagłówka 'Authorization' powinna składać się z 'type' + 'credentials', gdzie dla metody z użyciem 'type', token powinien być typu 'Bearer'. / The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'." ,required=true) @RequestHeader(value="Authorization", required=true) String authorization,@ApiParam(value = "Gzip, deflate" ,required=true, allowableValues="gzip, deflate") @RequestHeader(value="Accept-Encoding", required=true) String acceptEncoding,@ApiParam(value = "Preferowany język odpowiedzi / Prefered language of response" ,required=true) @RequestHeader(value="Accept-Language", required=true) String acceptLanguage,@ApiParam(value = "UTF-8" ,required=true, allowableValues="utf-8") @RequestHeader(value="Accept-Charset", required=true) String acceptCharset,@ApiParam(value = "Osobny podpis JWS treści paylodu / Detached JWS signature of the body of the payload" ,required=true) @RequestHeader(value="X-JWS-SIGNATURE", required=true) String X_JWS_SIGNATURE,@ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload." ,required=true) @RequestHeader(value="X-REQUEST-ID", required=true) String X_REQUEST_ID,@ApiParam(value = "Dane żądania inicjalizacji wielu przelewów / Data for bundle of transfers" ,required=true )  @Valid @RequestBody BundleRequest bundleRequest) {
         return getDelegate().bundle(authorization, acceptEncoding, acceptLanguage, acceptCharset, X_JWS_SIGNATURE, X_REQUEST_ID, bundleRequest);
     }
 
 
-    @ApiOperation(value = "Cancelation of future dated payment", nickname = "cancelPayments", notes = "", response = CancelPaymentsResponse.class, authorizations = {
-            @Authorization(value = "xs2a_auth_aspsp", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+    @ApiOperation(value = "Anulowanie zaplanowanych płatności / Cancelation of future dated payment", nickname = "cancelPayments", notes = "", response = CancelPaymentsResponse.class, authorizations = {
+        @Authorization(value = "xs2a_auth_aspsp", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             }),
-            @Authorization(value = "xs2a_auth_decoupled", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+        @Authorization(value = "xs2a_auth_decoupled", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             })
-    }, tags = {"PIS",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success. Operation pefrormed but some of transactions could not be cancelled.", response = CancelPaymentsResponse.class),
-            @ApiResponse(code = 204, message = "Success. Operation pefrormed with no exceptions."),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
-            @ApiResponse(code = 405, message = "Method Not Allowed", response = Error.class),
-            @ApiResponse(code = 406, message = "Not Acceptable", response = Error.class),
-            @ApiResponse(code = 415, message = "Unsupported Media Type", response = Error.class),
-            @ApiResponse(code = 422, message = "Unprocessable entity", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class),
-            @ApiResponse(code = 501, message = "Not Implemented", response = Error.class),
-            @ApiResponse(code = 503, message = "Service Unavailable", response = Error.class)})
-    @RequestMapping(value = "/v2_1_2.1/payments/v2_1_2.1/cancelPayments",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    default ResponseEntity<CancelPaymentsResponse> cancelPayments(@ApiParam(value = "The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization, @ApiParam(value = "Gzip, deflate", required = true, allowableValues = "gzip, deflate") @RequestHeader(value = "Accept-Encoding", required = true) String acceptEncoding, @ApiParam(value = "Prefered language of response", required = true) @RequestHeader(value = "Accept-Language", required = true) String acceptLanguage, @ApiParam(value = "UTF-8", required = true, allowableValues = "utf-8") @RequestHeader(value = "Accept-Charset", required = true) String acceptCharset, @ApiParam(value = "Detached JWS signature of the body of the payload", required = true) @RequestHeader(value = "X-JWS-SIGNATURE", required = true) String X_JWS_SIGNATURE, @ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload.", required = true) @RequestHeader(value = "X-REQUEST-ID", required = true) String X_REQUEST_ID, @ApiParam(value = "Payments to be cancelled - identification data", required = true) @Valid @RequestBody CancelPaymentsRequest paymentData) {
+    }, tags={ "PIS", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Powodzenie. Operacja przeprowadzona, ale niektórych transakcji nie można było anulować. / Success. Operation pefrormed but some of transactions could not be cancelled.", response = CancelPaymentsResponse.class),
+        @ApiResponse(code = 204, message = "Powodzenie. Operacja wykonana bez żadnych wyjątków. / Success. Operation pefrormed with no exceptions."),
+        @ApiResponse(code = 400, message = "Błędne żądanie / Bad request", response = Error.class),
+        @ApiResponse(code = 401, message = "Nieautoryzowany dostęp / Unauthorized", response = Error.class),
+        @ApiResponse(code = 403, message = "Zabroniony / Forbidden", response = Error.class),
+        @ApiResponse(code = 405, message = "Metoda niedozwolona / Method Not Allowed", response = Error.class),
+        @ApiResponse(code = 406, message = "Niedozwolone / Not Acceptable", response = Error.class),
+        @ApiResponse(code = 415, message = "Nieznany sposób żądania / Unsupported Media Type", response = Error.class),
+        @ApiResponse(code = 422, message = "Jednostka nieprzetwarzalna / Unprocessable entity", response = Error.class),
+        @ApiResponse(code = 500, message = "Wewnętrzny błąd serwera / Internal Server Error", response = Error.class),
+        @ApiResponse(code = 501, message = "Nie zaimplementowano / Not Implemented", response = Error.class),
+        @ApiResponse(code = 503, message = "Usługa niedostępna / Service Unavailable", response = Error.class) })
+    @RequestMapping(value = "/v3_0.1/payments/v3_0.1/cancelPayments",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<CancelPaymentsResponse> cancelPayments(@ApiParam(value = "Wartość nagłówka 'Authorization' powinna składać się z 'type' + 'credentials', gdzie dla metody z użyciem 'type', token powinien być typu 'Bearer'. / The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'." ,required=true) @RequestHeader(value="Authorization", required=true) String authorization,@ApiParam(value = "Gzip, deflate" ,required=true, allowableValues="gzip, deflate") @RequestHeader(value="Accept-Encoding", required=true) String acceptEncoding,@ApiParam(value = "Preferowany język odpowiedzi / Prefered language of response" ,required=true) @RequestHeader(value="Accept-Language", required=true) String acceptLanguage,@ApiParam(value = "UTF-8" ,required=true, allowableValues="utf-8") @RequestHeader(value="Accept-Charset", required=true) String acceptCharset,@ApiParam(value = "Osobny podpis JWS treści paylodu / Detached JWS signature of the body of the payload" ,required=true) @RequestHeader(value="X-JWS-SIGNATURE", required=true) String X_JWS_SIGNATURE,@ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload." ,required=true) @RequestHeader(value="X-REQUEST-ID", required=true) String X_REQUEST_ID,@ApiParam(value = "Płatności do anulowania - dane identyfikacyjne / Payments to be cancelled - identification data" ,required=true )  @Valid @RequestBody CancelPaymentsRequest paymentData) {
         return getDelegate().cancelPayments(authorization, acceptEncoding, acceptLanguage, acceptCharset, X_JWS_SIGNATURE, X_REQUEST_ID, paymentData);
     }
 
 
-    @ApiOperation(value = "Cancelation of recurring payment", nickname = "cancelRecurringPayment", notes = "", response = CancelRecurringPaymentResponse.class, authorizations = {
-            @Authorization(value = "xs2a_auth_aspsp", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+    @ApiOperation(value = "Anulowanie płatności cyklicznej / Cancelation of recurring payment", nickname = "cancelRecurringPayment", notes = "", response = CancelRecurringPaymentResponse.class, authorizations = {
+        @Authorization(value = "xs2a_auth_aspsp", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             }),
-            @Authorization(value = "xs2a_auth_decoupled", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+        @Authorization(value = "xs2a_auth_decoupled", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             })
-    }, tags = {"PIS",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = CancelRecurringPaymentResponse.class),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
-            @ApiResponse(code = 405, message = "Method Not Allowed", response = Error.class),
-            @ApiResponse(code = 406, message = "Not Acceptable", response = Error.class),
-            @ApiResponse(code = 415, message = "Unsupported Media Type", response = Error.class),
-            @ApiResponse(code = 422, message = "Unprocessable entity", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class),
-            @ApiResponse(code = 501, message = "Not Implemented", response = Error.class),
-            @ApiResponse(code = 503, message = "Service Unavailable", response = Error.class)})
-    @RequestMapping(value = "/v2_1_2.1/payments/v2_1_2.1/cancelRecurringPayment",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    default ResponseEntity<CancelRecurringPaymentResponse> cancelRecurringPayment(@ApiParam(value = "The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization, @ApiParam(value = "Gzip, deflate", required = true, allowableValues = "gzip, deflate") @RequestHeader(value = "Accept-Encoding", required = true) String acceptEncoding, @ApiParam(value = "Prefered language of response", required = true) @RequestHeader(value = "Accept-Language", required = true) String acceptLanguage, @ApiParam(value = "UTF-8", required = true, allowableValues = "utf-8") @RequestHeader(value = "Accept-Charset", required = true) String acceptCharset, @ApiParam(value = "Detached JWS signature of the body of the payload", required = true) @RequestHeader(value = "X-JWS-SIGNATURE", required = true) String X_JWS_SIGNATURE, @ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload.", required = true) @RequestHeader(value = "X-REQUEST-ID", required = true) String X_REQUEST_ID, @ApiParam(value = "Recurring payment to be cancelled - identification data", required = true) @Valid @RequestBody CancelRecurringPaymentRequest recurringPaymentData) {
+    }, tags={ "PIS", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Powodzenie / Success", response = CancelRecurringPaymentResponse.class),
+        @ApiResponse(code = 400, message = "Błędne żądanie / Bad request", response = Error.class),
+        @ApiResponse(code = 401, message = "Nieautoryzowany dostęp / Unauthorized", response = Error.class),
+        @ApiResponse(code = 403, message = "Zabroniony / Forbidden", response = Error.class),
+        @ApiResponse(code = 405, message = "Metoda niedozwolona / Method Not Allowed", response = Error.class),
+        @ApiResponse(code = 406, message = "Niedozwolone / Not Acceptable", response = Error.class),
+        @ApiResponse(code = 415, message = "Nieznany sposób żądania / Unsupported Media Type", response = Error.class),
+        @ApiResponse(code = 422, message = "Jednostka nieprzetwarzalna / Unprocessable entity", response = Error.class),
+        @ApiResponse(code = 500, message = "Wewnętrzny błąd serwera / Internal Server Error", response = Error.class),
+        @ApiResponse(code = 501, message = "Nie zaimplementowano / Not Implemented", response = Error.class),
+        @ApiResponse(code = 503, message = "Usługa niedostępna / Service Unavailable", response = Error.class) })
+    @RequestMapping(value = "/v3_0.1/payments/v3_0.1/cancelRecurringPayment",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<CancelRecurringPaymentResponse> cancelRecurringPayment(@ApiParam(value = "Wartość nagłówka 'Authorization' powinna składać się z 'type' + 'credentials', gdzie dla metody z użyciem 'type', token powinien być typu 'Bearer'. / The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'." ,required=true) @RequestHeader(value="Authorization", required=true) String authorization,@ApiParam(value = "Gzip, deflate" ,required=true, allowableValues="gzip, deflate") @RequestHeader(value="Accept-Encoding", required=true) String acceptEncoding,@ApiParam(value = "Preferowany język odpowiedzi / Prefered language of response" ,required=true) @RequestHeader(value="Accept-Language", required=true) String acceptLanguage,@ApiParam(value = "UTF-8" ,required=true, allowableValues="utf-8") @RequestHeader(value="Accept-Charset", required=true) String acceptCharset,@ApiParam(value = "Osobny podpis JWS treści paylodu / Detached JWS signature of the body of the payload" ,required=true) @RequestHeader(value="X-JWS-SIGNATURE", required=true) String X_JWS_SIGNATURE,@ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload." ,required=true) @RequestHeader(value="X-REQUEST-ID", required=true) String X_REQUEST_ID,@ApiParam(value = "Płatność cykliczna do anulowania - dane identyfikacyjne / Recurring payment to be cancelled - identification data" ,required=true )  @Valid @RequestBody CancelRecurringPaymentRequest recurringPaymentData) {
         return getDelegate().cancelRecurringPayment(authorization, acceptEncoding, acceptLanguage, acceptCharset, X_JWS_SIGNATURE, X_REQUEST_ID, recurringPaymentData);
     }
 
 
-    @ApiOperation(value = "Initiate domestic transfer", nickname = "domestic", notes = "", response = AddPaymentResponse.class, authorizations = {
-            @Authorization(value = "xs2a_auth_aspsp", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+    @ApiOperation(value = "Inicjacja przelewu krajowego / Initiate domestic transfer", nickname = "domestic", notes = "", response = AddPaymentResponse.class, authorizations = {
+        @Authorization(value = "xs2a_auth_aspsp", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             }),
-            @Authorization(value = "xs2a_auth_decoupled", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+        @Authorization(value = "xs2a_auth_decoupled", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             })
-    }, tags = {"PIS",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = AddPaymentResponse.class),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
-            @ApiResponse(code = 405, message = "Method Not Allowed", response = Error.class),
-            @ApiResponse(code = 406, message = "Not Acceptable", response = Error.class),
-            @ApiResponse(code = 415, message = "Unsupported Media Type", response = Error.class),
-            @ApiResponse(code = 422, message = "Unprocessable entity", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class),
-            @ApiResponse(code = 501, message = "Not Implemented", response = Error.class),
-            @ApiResponse(code = 503, message = "Service Unavailable", response = Error.class)})
-    @RequestMapping(value = "/v2_1_2.1/payments/v2_1_2.1/domestic",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    default ResponseEntity<AddPaymentResponse> domestic(@ApiParam(value = "The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization, @ApiParam(value = "Gzip, deflate", required = true, allowableValues = "gzip, deflate") @RequestHeader(value = "Accept-Encoding", required = true) String acceptEncoding, @ApiParam(value = "Prefered language of response", required = true) @RequestHeader(value = "Accept-Language", required = true) String acceptLanguage, @ApiParam(value = "UTF-8", required = true, allowableValues = "utf-8") @RequestHeader(value = "Accept-Charset", required = true) String acceptCharset, @ApiParam(value = "Detached JWS signature of the body of the payload", required = true) @RequestHeader(value = "X-JWS-SIGNATURE", required = true) String X_JWS_SIGNATURE, @ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload.", required = true) @RequestHeader(value = "X-REQUEST-ID", required = true) String X_REQUEST_ID, @ApiParam(value = "Data for domestic transfer", required = true) @Valid @RequestBody PaymentDomesticRequest domesticRequest) {
+    }, tags={ "PIS", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Powodzenie / Success", response = AddPaymentResponse.class),
+        @ApiResponse(code = 400, message = "Błędne żądanie / Bad request", response = Error.class),
+        @ApiResponse(code = 401, message = "Nieautoryzowany dostęp / Unauthorized", response = Error.class),
+        @ApiResponse(code = 403, message = "Zabroniony / Forbidden", response = Error.class),
+        @ApiResponse(code = 405, message = "Metoda niedozwolona / Method Not Allowed", response = Error.class),
+        @ApiResponse(code = 406, message = "Niedozwolone / Not Acceptable", response = Error.class),
+        @ApiResponse(code = 415, message = "Nieznany sposób żądania / Unsupported Media Type", response = Error.class),
+        @ApiResponse(code = 422, message = "Jednostka nieprzetwarzalna / Unprocessable entity", response = Error.class),
+        @ApiResponse(code = 500, message = "Wewnętrzny błąd serwera / Internal Server Error", response = Error.class),
+        @ApiResponse(code = 501, message = "Nie zaimplementowano / Not Implemented", response = Error.class),
+        @ApiResponse(code = 503, message = "Usługa niedostępna / Service Unavailable", response = Error.class) })
+    @RequestMapping(value = "/v3_0.1/payments/v3_0.1/domestic",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<AddPaymentResponse> domestic(@ApiParam(value = "Wartość nagłówka 'Authorization' powinna składać się z 'type' + 'credentials', gdzie dla metody z użyciem 'type', token powinien być typu 'Bearer'. / The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'." ,required=true) @RequestHeader(value="Authorization", required=true) String authorization,@ApiParam(value = "Gzip, deflate" ,required=true, allowableValues="gzip, deflate") @RequestHeader(value="Accept-Encoding", required=true) String acceptEncoding,@ApiParam(value = "Preferowany język odpowiedzi / Prefered language of response" ,required=true) @RequestHeader(value="Accept-Language", required=true) String acceptLanguage,@ApiParam(value = "UTF-8" ,required=true, allowableValues="utf-8") @RequestHeader(value="Accept-Charset", required=true) String acceptCharset,@ApiParam(value = "Osobny podpis JWS treści paylodu / Detached JWS signature of the body of the payload" ,required=true) @RequestHeader(value="X-JWS-SIGNATURE", required=true) String X_JWS_SIGNATURE,@ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload." ,required=true) @RequestHeader(value="X-REQUEST-ID", required=true) String X_REQUEST_ID,@ApiParam(value = "Dane żądania inicjalizacji przelewu krajowego / Data for domestic transfer" ,required=true )  @Valid @RequestBody DomesticRequest domesticRequest) {
         return getDelegate().domestic(authorization, acceptEncoding, acceptLanguage, acceptCharset, X_JWS_SIGNATURE, X_REQUEST_ID, domesticRequest);
     }
 
 
-    @ApiOperation(value = "Initiate SEPA foreign transfers", nickname = "eEA", notes = "", response = AddPaymentResponse.class, authorizations = {
-            @Authorization(value = "xs2a_auth_aspsp", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+    @ApiOperation(value = "Inicjacja przelewów zagranicznych SEPA / Initiate SEPA foreign transfers", nickname = "eEA", notes = "", response = AddPaymentResponse.class, authorizations = {
+        @Authorization(value = "xs2a_auth_aspsp", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             }),
-            @Authorization(value = "xs2a_auth_decoupled", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+        @Authorization(value = "xs2a_auth_decoupled", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             })
-    }, tags = {"PIS",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = AddPaymentResponse.class),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
-            @ApiResponse(code = 405, message = "Method Not Allowed", response = Error.class),
-            @ApiResponse(code = 406, message = "Not Acceptable", response = Error.class),
-            @ApiResponse(code = 415, message = "Unsupported Media Type", response = Error.class),
-            @ApiResponse(code = 422, message = "Unprocessable entity", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class),
-            @ApiResponse(code = 501, message = "Not Implemented", response = Error.class),
-            @ApiResponse(code = 503, message = "Service Unavailable", response = Error.class)})
-    @RequestMapping(value = "/v2_1_2.1/payments/v2_1_2.1/EEA",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    default ResponseEntity<AddPaymentResponse> eEA(@ApiParam(value = "The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization, @ApiParam(value = "Gzip, deflate", required = true, allowableValues = "gzip, deflate") @RequestHeader(value = "Accept-Encoding", required = true) String acceptEncoding, @ApiParam(value = "Prefered language of response", required = true) @RequestHeader(value = "Accept-Language", required = true) String acceptLanguage, @ApiParam(value = "UTF-8", required = true, allowableValues = "utf-8") @RequestHeader(value = "Accept-Charset", required = true) String acceptCharset, @ApiParam(value = "Detached JWS signature of the body of the payload", required = true) @RequestHeader(value = "X-JWS-SIGNATURE", required = true) String X_JWS_SIGNATURE, @ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload.", required = true) @RequestHeader(value = "X-REQUEST-ID", required = true) String X_REQUEST_ID, @ApiParam(value = "Data for SEPA foreign transfer", required = true) @Valid @RequestBody PaymentEEARequest eeARequest) {
+    }, tags={ "PIS", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Powodzenie / Success", response = AddPaymentResponse.class),
+        @ApiResponse(code = 400, message = "Błędne żądanie / Bad request", response = Error.class),
+        @ApiResponse(code = 401, message = "Nieautoryzowany dostęp / Unauthorized", response = Error.class),
+        @ApiResponse(code = 403, message = "Zabroniony / Forbidden", response = Error.class),
+        @ApiResponse(code = 405, message = "Metoda niedozwolona / Method Not Allowed", response = Error.class),
+        @ApiResponse(code = 406, message = "Niedozwolone / Not Acceptable", response = Error.class),
+        @ApiResponse(code = 415, message = "Nieznany sposób żądania / Unsupported Media Type", response = Error.class),
+        @ApiResponse(code = 422, message = "Jednostka nieprzetwarzalna / Unprocessable entity", response = Error.class),
+        @ApiResponse(code = 500, message = "Wewnętrzny błąd serwera / Internal Server Error", response = Error.class),
+        @ApiResponse(code = 501, message = "Nie zaimplementowano / Not Implemented", response = Error.class),
+        @ApiResponse(code = 503, message = "Usługa niedostępna / Service Unavailable", response = Error.class) })
+    @RequestMapping(value = "/v3_0.1/payments/v3_0.1/EEA",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<AddPaymentResponse> eEA(@ApiParam(value = "Wartość nagłówka 'Authorization' powinna składać się z 'type' + 'credentials', gdzie dla metody z użyciem 'type', token powinien być typu 'Bearer'. / The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'." ,required=true) @RequestHeader(value="Authorization", required=true) String authorization,@ApiParam(value = "Gzip, deflate" ,required=true, allowableValues="gzip, deflate") @RequestHeader(value="Accept-Encoding", required=true) String acceptEncoding,@ApiParam(value = "Preferowany język odpowiedzi / Prefered language of response" ,required=true) @RequestHeader(value="Accept-Language", required=true) String acceptLanguage,@ApiParam(value = "UTF-8" ,required=true, allowableValues="utf-8") @RequestHeader(value="Accept-Charset", required=true) String acceptCharset,@ApiParam(value = "Osobny podpis JWS treści paylodu / Detached JWS signature of the body of the payload" ,required=true) @RequestHeader(value="X-JWS-SIGNATURE", required=true) String X_JWS_SIGNATURE,@ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload." ,required=true) @RequestHeader(value="X-REQUEST-ID", required=true) String X_REQUEST_ID,@ApiParam(value = "Dane żądania inicjalizacji przelewów zagranicznych SEPA / Data for SEPA foreign transfer" ,required=true )  @Valid @RequestBody EEARequest eeARequest) {
         return getDelegate().eEA(authorization, acceptEncoding, acceptLanguage, acceptCharset, X_JWS_SIGNATURE, X_REQUEST_ID, eeARequest);
     }
 
 
-    @ApiOperation(value = "Get the status of bundle of payments", nickname = "getBundle", notes = "", response = BundleResponse.class, authorizations = {
-            @Authorization(value = "xs2a_auth_aspsp", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+    @ApiOperation(value = "Uzyskanie status paczki przelewów / Get the status of bundle of payments", nickname = "getBundle", notes = "", response = GetBundleResponse.class, authorizations = {
+        @Authorization(value = "xs2a_auth_aspsp", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             }),
-            @Authorization(value = "xs2a_auth_decoupled", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+        @Authorization(value = "xs2a_auth_decoupled", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             })
-    }, tags = {"PIS",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = BundleResponse.class),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
-            @ApiResponse(code = 405, message = "Method Not Allowed", response = Error.class),
-            @ApiResponse(code = 406, message = "Not Acceptable", response = Error.class),
-            @ApiResponse(code = 415, message = "Unsupported Media Type", response = Error.class),
-            @ApiResponse(code = 422, message = "Unprocessable entity", response = Error.class),
-            @ApiResponse(code = 429, message = "Request limit for the requested service exceeded", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class),
-            @ApiResponse(code = 501, message = "Not Implemented", response = Error.class),
-            @ApiResponse(code = 503, message = "Service Unavailable", response = Error.class)})
-    @RequestMapping(value = "/v2_1_2.1/payments/v2_1_2.1/getBundle",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    default ResponseEntity<BundleResponse> getBundle(@ApiParam(value = "The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization, @ApiParam(value = "Gzip, deflate", required = true, allowableValues = "gzip, deflate") @RequestHeader(value = "Accept-Encoding", required = true) String acceptEncoding, @ApiParam(value = "Prefered language of response", required = true) @RequestHeader(value = "Accept-Language", required = true) String acceptLanguage, @ApiParam(value = "UTF-8", required = true, allowableValues = "utf-8") @RequestHeader(value = "Accept-Charset", required = true) String acceptCharset, @ApiParam(value = "Detached JWS signature of the body of the payload", required = true) @RequestHeader(value = "X-JWS-SIGNATURE", required = true) String X_JWS_SIGNATURE, @ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload.", required = true) @RequestHeader(value = "X-REQUEST-ID", required = true) String X_REQUEST_ID, @ApiParam(value = "Bundle ID", required = true) @Valid @RequestBody BundleRequest bundle) {
+    }, tags={ "PIS", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Powodzenie / Success", response = GetBundleResponse.class),
+        @ApiResponse(code = 400, message = "Błędne żądanie / Bad request", response = Error.class),
+        @ApiResponse(code = 401, message = "Nieautoryzowany dostęp / Unauthorized", response = Error.class),
+        @ApiResponse(code = 403, message = "Zabroniony / Forbidden", response = Error.class),
+        @ApiResponse(code = 405, message = "Metoda niedozwolona / Method Not Allowed", response = Error.class),
+        @ApiResponse(code = 406, message = "Niedozwolone / Not Acceptable", response = Error.class),
+        @ApiResponse(code = 415, message = "Nieznany sposób żądania / Unsupported Media Type", response = Error.class),
+        @ApiResponse(code = 422, message = "Jednostka nieprzetwarzalna / Unprocessable entity", response = Error.class),
+        @ApiResponse(code = 429, message = "Wyczerpany limit ilości żądań / Request limit for the requested service exceeded", response = Error.class),
+        @ApiResponse(code = 500, message = "Wewnętrzny błąd serwera / Internal Server Error", response = Error.class),
+        @ApiResponse(code = 501, message = "Nie zaimplementowano / Not Implemented", response = Error.class),
+        @ApiResponse(code = 503, message = "Usługa niedostępna / Service Unavailable", response = Error.class) })
+    @RequestMapping(value = "/v3_0.1/payments/v3_0.1/getBundle",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<GetBundleResponse> getBundle(@ApiParam(value = "Wartość nagłówka 'Authorization' powinna składać się z 'type' + 'credentials', gdzie dla metody z użyciem 'type', token powinien być typu 'Bearer'. / The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'." ,required=true) @RequestHeader(value="Authorization", required=true) String authorization,@ApiParam(value = "Gzip, deflate" ,required=true, allowableValues="gzip, deflate") @RequestHeader(value="Accept-Encoding", required=true) String acceptEncoding,@ApiParam(value = "Preferowany język odpowiedzi / Prefered language of response" ,required=true) @RequestHeader(value="Accept-Language", required=true) String acceptLanguage,@ApiParam(value = "UTF-8" ,required=true, allowableValues="utf-8") @RequestHeader(value="Accept-Charset", required=true) String acceptCharset,@ApiParam(value = "Osobny podpis JWS treści paylodu / Detached JWS signature of the body of the payload" ,required=true) @RequestHeader(value="X-JWS-SIGNATURE", required=true) String X_JWS_SIGNATURE,@ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload." ,required=true) @RequestHeader(value="X-REQUEST-ID", required=true) String X_REQUEST_ID,@ApiParam(value = "Identyfikator paczki przelewów / Bundle ID" ,required=true )  @Valid @RequestBody GetBundleRequest bundle) {
         return getDelegate().getBundle(authorization, acceptEncoding, acceptLanguage, acceptCharset, X_JWS_SIGNATURE, X_REQUEST_ID, bundle);
     }
 
 
-    @ApiOperation(value = "Get the status of multiple payments", nickname = "getMultiplePayments", notes = "", response = PaymentsResponse.class, tags = {"PIS",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = PaymentsResponse.class),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
-            @ApiResponse(code = 405, message = "Method Not Allowed", response = Error.class),
-            @ApiResponse(code = 406, message = "Not Acceptable", response = Error.class),
-            @ApiResponse(code = 415, message = "Unsupported Media Type", response = Error.class),
-            @ApiResponse(code = 422, message = "Unprocessable entity", response = Error.class),
-            @ApiResponse(code = 429, message = "Request limit for the requested service exceeded", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class),
-            @ApiResponse(code = 501, message = "Not Implemented", response = Error.class),
-            @ApiResponse(code = 503, message = "Service Unavailable", response = Error.class)})
-    @RequestMapping(value = "/v2_1_2.1/payments/v2_1_2.1/getMultiplePayments",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    default ResponseEntity<PaymentsResponse> getMultiplePayments(@ApiParam(value = "Gzip, deflate", required = true, allowableValues = "gzip, deflate") @RequestHeader(value = "Accept-Encoding", required = true) String acceptEncoding, @ApiParam(value = "Prefered language of response", required = true) @RequestHeader(value = "Accept-Language", required = true) String acceptLanguage, @ApiParam(value = "UTF-8", required = true, allowableValues = "utf-8") @RequestHeader(value = "Accept-Charset", required = true) String acceptCharset, @ApiParam(value = "Detached JWS signature of the body of the payload", required = true) @RequestHeader(value = "X-JWS-SIGNATURE", required = true) String X_JWS_SIGNATURE, @ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload.", required = true) @RequestHeader(value = "X-REQUEST-ID", required = true) String X_REQUEST_ID, @ApiParam(value = "Payments ID list", required = true) @Valid @RequestBody PaymentsRequest payments) {
+    @ApiOperation(value = "Uzyskanie statusu wielu płatności / Get the status of multiple payments", nickname = "getMultiplePayments", notes = "", response = GetMultiplePaymentsResponse.class, tags={ "PIS", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Powodzenie / Success", response = GetMultiplePaymentsResponse.class),
+        @ApiResponse(code = 400, message = "Błędne żądanie / Bad request", response = Error.class),
+        @ApiResponse(code = 403, message = "Zabroniony / Forbidden", response = Error.class),
+        @ApiResponse(code = 405, message = "Metoda niedozwolona / Method Not Allowed", response = Error.class),
+        @ApiResponse(code = 406, message = "Niedozwolone / Not Acceptable", response = Error.class),
+        @ApiResponse(code = 415, message = "Nieznany sposób żądania / Unsupported Media Type", response = Error.class),
+        @ApiResponse(code = 422, message = "Jednostka nieprzetwarzalna / Unprocessable entity", response = Error.class),
+        @ApiResponse(code = 429, message = "Wyczerpany limit ilości żądań / Request limit for the requested service exceeded", response = Error.class),
+        @ApiResponse(code = 500, message = "Wewnętrzny błąd serwera / Internal Server Error", response = Error.class),
+        @ApiResponse(code = 501, message = "Nie zaimplementowano / Not Implemented", response = Error.class),
+        @ApiResponse(code = 503, message = "Usługa niedostępna / Service Unavailable", response = Error.class) })
+    @RequestMapping(value = "/v3_0.1/payments/v3_0.1/getMultiplePayments",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<GetMultiplePaymentsResponse> getMultiplePayments(@ApiParam(value = "Gzip, deflate" ,required=true, allowableValues="gzip, deflate") @RequestHeader(value="Accept-Encoding", required=true) String acceptEncoding,@ApiParam(value = "Preferowany język odpowiedzi / Prefered language of response" ,required=true) @RequestHeader(value="Accept-Language", required=true) String acceptLanguage,@ApiParam(value = "UTF-8" ,required=true, allowableValues="utf-8") @RequestHeader(value="Accept-Charset", required=true) String acceptCharset,@ApiParam(value = "Osobny podpis JWS treści paylodu / Detached JWS signature of the body of the payload" ,required=true) @RequestHeader(value="X-JWS-SIGNATURE", required=true) String X_JWS_SIGNATURE,@ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload." ,required=true) @RequestHeader(value="X-REQUEST-ID", required=true) String X_REQUEST_ID,@ApiParam(value = "Lista identyfikatorów płatności / Payments ID list" ,required=true )  @Valid @RequestBody GetMultiplePaymentsRequest payments) {
         return getDelegate().getMultiplePayments(acceptEncoding, acceptLanguage, acceptCharset, X_JWS_SIGNATURE, X_REQUEST_ID, payments);
     }
 
 
-    @ApiOperation(value = "Get the status of payment", nickname = "getPayment", notes = "", response = GetPaymentResponse.class, authorizations = {
-            @Authorization(value = "xs2a_auth_aspsp", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+    @ApiOperation(value = "Uzyskanie statusu płatności / Get the status of payment", nickname = "getPayment", notes = "", response = GetPaymentResponse.class, authorizations = {
+        @Authorization(value = "xs2a_auth_aspsp", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             }),
-            @Authorization(value = "xs2a_auth_decoupled", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+        @Authorization(value = "xs2a_auth_decoupled", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             })
-    }, tags = {"PIS",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = GetPaymentResponse.class),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
-            @ApiResponse(code = 405, message = "Method Not Allowed", response = Error.class),
-            @ApiResponse(code = 406, message = "Not Acceptable", response = Error.class),
-            @ApiResponse(code = 415, message = "Unsupported Media Type", response = Error.class),
-            @ApiResponse(code = 422, message = "Unprocessable entity", response = Error.class),
-            @ApiResponse(code = 429, message = "Request limit for the requested service exceeded", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class),
-            @ApiResponse(code = 501, message = "Not Implemented", response = Error.class),
-            @ApiResponse(code = 503, message = "Service Unavailable", response = Error.class)})
-    @RequestMapping(value = "/v2_1_2.1/payments/v2_1_2.1/getPayment",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    default ResponseEntity<GetPaymentResponse> getPayment(@ApiParam(value = "The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization, @ApiParam(value = "Gzip, deflate", required = true, allowableValues = "gzip, deflate") @RequestHeader(value = "Accept-Encoding", required = true) String acceptEncoding, @ApiParam(value = "Prefered language of response", required = true) @RequestHeader(value = "Accept-Language", required = true) String acceptLanguage, @ApiParam(value = "UTF-8", required = true, allowableValues = "utf-8") @RequestHeader(value = "Accept-Charset", required = true) String acceptCharset, @ApiParam(value = "Detached JWS signature of the body of the payload", required = true) @RequestHeader(value = "X-JWS-SIGNATURE", required = true) String X_JWS_SIGNATURE, @ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload.", required = true) @RequestHeader(value = "X-REQUEST-ID", required = true) String X_REQUEST_ID, @ApiParam(value = "Payment ID", required = true) @Valid @RequestBody PaymentRequest payment) {
+    }, tags={ "PIS", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Powodzenie / Success", response = GetPaymentResponse.class),
+        @ApiResponse(code = 400, message = "Błędne żądanie / Bad request", response = Error.class),
+        @ApiResponse(code = 401, message = "Nieautoryzowany dostęp / Unauthorized", response = Error.class),
+        @ApiResponse(code = 403, message = "Zabroniony / Forbidden", response = Error.class),
+        @ApiResponse(code = 405, message = "Metoda niedozwolona / Method Not Allowed", response = Error.class),
+        @ApiResponse(code = 406, message = "Niedozwolone / Not Acceptable", response = Error.class),
+        @ApiResponse(code = 415, message = "Nieznany sposób żądania / Unsupported Media Type", response = Error.class),
+        @ApiResponse(code = 422, message = "Jednostka nieprzetwarzalna / Unprocessable entity", response = Error.class),
+        @ApiResponse(code = 429, message = "Wyczerpany limit ilości żądań / Request limit for the requested service exceeded", response = Error.class),
+        @ApiResponse(code = 500, message = "Wewnętrzny błąd serwera / Internal Server Error", response = Error.class),
+        @ApiResponse(code = 501, message = "Nie zaimplementowano / Not Implemented", response = Error.class),
+        @ApiResponse(code = 503, message = "Usługa niedostępna / Service Unavailable", response = Error.class) })
+    @RequestMapping(value = "/v3_0.1/payments/v3_0.1/getPayment",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<GetPaymentResponse> getPayment(@ApiParam(value = "Wartość nagłówka 'Authorization' powinna składać się z 'type' + 'credentials', gdzie dla metody z użyciem 'type', token powinien być typu 'Bearer'. / The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'." ,required=true) @RequestHeader(value="Authorization", required=true) String authorization,@ApiParam(value = "Gzip, deflate" ,required=true, allowableValues="gzip, deflate") @RequestHeader(value="Accept-Encoding", required=true) String acceptEncoding,@ApiParam(value = "Preferowany język odpowiedzi / Prefered language of response" ,required=true) @RequestHeader(value="Accept-Language", required=true) String acceptLanguage,@ApiParam(value = "UTF-8" ,required=true, allowableValues="utf-8") @RequestHeader(value="Accept-Charset", required=true) String acceptCharset,@ApiParam(value = "Osobny podpis JWS treści paylodu / Detached JWS signature of the body of the payload" ,required=true) @RequestHeader(value="X-JWS-SIGNATURE", required=true) String X_JWS_SIGNATURE,@ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload." ,required=true) @RequestHeader(value="X-REQUEST-ID", required=true) String X_REQUEST_ID,@ApiParam(value = "Identyfikator płatności / Payment ID" ,required=true )  @Valid @RequestBody GetPaymentRequest payment) {
         return getDelegate().getPayment(authorization, acceptEncoding, acceptLanguage, acceptCharset, X_JWS_SIGNATURE, X_REQUEST_ID, payment);
     }
 
 
-    @ApiOperation(value = "Get the status of recurring payment", nickname = "getRecurringPayment", notes = "", response = RecurringPaymentStatusResponse.class, authorizations = {
-            @Authorization(value = "xs2a_auth_aspsp", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+    @ApiOperation(value = "Uzyskanie status płatności cyklicznej / Get the status of recurring payment", nickname = "getRecurringPayment", notes = "", response = GetRecurringPaymentResponse.class, authorizations = {
+        @Authorization(value = "xs2a_auth_aspsp", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             }),
-            @Authorization(value = "xs2a_auth_decoupled", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+        @Authorization(value = "xs2a_auth_decoupled", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             })
-    }, tags = {"PIS",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = RecurringPaymentStatusResponse.class),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
-            @ApiResponse(code = 405, message = "Method Not Allowed", response = Error.class),
-            @ApiResponse(code = 406, message = "Not Acceptable", response = Error.class),
-            @ApiResponse(code = 415, message = "Unsupported Media Type", response = Error.class),
-            @ApiResponse(code = 422, message = "Unprocessable entity", response = Error.class),
-            @ApiResponse(code = 429, message = "Request limit for the requested service exceeded", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class),
-            @ApiResponse(code = 501, message = "Not Implemented", response = Error.class),
-            @ApiResponse(code = 503, message = "Service Unavailable", response = Error.class)})
-    @RequestMapping(value = "/v2_1_2.1/payments/v2_1_2.1/getRecurringPayment",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    default ResponseEntity<RecurringPaymentStatusResponse> getRecurringPayment(@ApiParam(value = "The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization, @ApiParam(value = "Gzip, deflate", required = true, allowableValues = "gzip, deflate") @RequestHeader(value = "Accept-Encoding", required = true) String acceptEncoding, @ApiParam(value = "Prefered language of response", required = true) @RequestHeader(value = "Accept-Language", required = true) String acceptLanguage, @ApiParam(value = "UTF-8", required = true, allowableValues = "utf-8") @RequestHeader(value = "Accept-Charset", required = true) String acceptCharset, @ApiParam(value = "Detached JWS signature of the body of the payload", required = true) @RequestHeader(value = "X-JWS-SIGNATURE", required = true) String X_JWS_SIGNATURE, @ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload.", required = true) @RequestHeader(value = "X-REQUEST-ID", required = true) String X_REQUEST_ID, @ApiParam(value = "Recurring payment identification", required = true) @Valid @RequestBody RecurringPaymentStatusRequest recurringPayment) {
+    }, tags={ "PIS", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Powodzenie / Success", response = GetRecurringPaymentResponse.class),
+        @ApiResponse(code = 400, message = "Błędne żądanie / Bad request", response = Error.class),
+        @ApiResponse(code = 401, message = "Nieautoryzowany dostęp / Unauthorized", response = Error.class),
+        @ApiResponse(code = 403, message = "Zabroniony / Forbidden", response = Error.class),
+        @ApiResponse(code = 405, message = "Metoda niedozwolona / Method Not Allowed", response = Error.class),
+        @ApiResponse(code = 406, message = "Niedozwolone / Not Acceptable", response = Error.class),
+        @ApiResponse(code = 415, message = "Nieznany sposób żądania / Unsupported Media Type", response = Error.class),
+        @ApiResponse(code = 422, message = "Jednostka nieprzetwarzalna / Unprocessable entity", response = Error.class),
+        @ApiResponse(code = 429, message = "Wyczerpany limit ilości żądań / Request limit for the requested service exceeded", response = Error.class),
+        @ApiResponse(code = 500, message = "Wewnętrzny błąd serwera / Internal Server Error", response = Error.class),
+        @ApiResponse(code = 501, message = "Nie zaimplementowano / Not Implemented", response = Error.class),
+        @ApiResponse(code = 503, message = "Usługa niedostępna / Service Unavailable", response = Error.class) })
+    @RequestMapping(value = "/v3_0.1/payments/v3_0.1/getRecurringPayment",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<GetRecurringPaymentResponse> getRecurringPayment(@ApiParam(value = "Wartość nagłówka 'Authorization' powinna składać się z 'type' + 'credentials', gdzie dla metody z użyciem 'type', token powinien być typu 'Bearer'. / The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'." ,required=true) @RequestHeader(value="Authorization", required=true) String authorization,@ApiParam(value = "Gzip, deflate" ,required=true, allowableValues="gzip, deflate") @RequestHeader(value="Accept-Encoding", required=true) String acceptEncoding,@ApiParam(value = "Preferowany język odpowiedzi / Prefered language of response" ,required=true) @RequestHeader(value="Accept-Language", required=true) String acceptLanguage,@ApiParam(value = "UTF-8" ,required=true, allowableValues="utf-8") @RequestHeader(value="Accept-Charset", required=true) String acceptCharset,@ApiParam(value = "Osobny podpis JWS treści paylodu / Detached JWS signature of the body of the payload" ,required=true) @RequestHeader(value="X-JWS-SIGNATURE", required=true) String X_JWS_SIGNATURE,@ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload." ,required=true) @RequestHeader(value="X-REQUEST-ID", required=true) String X_REQUEST_ID,@ApiParam(value = "Identyfikacja płatności cyklicznej / Recurring payment identification" ,required=true )  @Valid @RequestBody GetRecurringPaymentRequest recurringPayment) {
         return getDelegate().getRecurringPayment(authorization, acceptEncoding, acceptLanguage, acceptCharset, X_JWS_SIGNATURE, X_REQUEST_ID, recurringPayment);
     }
 
 
-    @ApiOperation(value = "Initiate non SEPA foreign transfers", nickname = "nonEEA", notes = "", response = AddPaymentResponse.class, authorizations = {
-            @Authorization(value = "xs2a_auth_aspsp", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+    @ApiOperation(value = "Inicjacja przelewów zagranicznych niezgodnych z SEPA / Initiate non SEPA foreign transfers", nickname = "nonEEA", notes = "", response = AddPaymentResponse.class, authorizations = {
+        @Authorization(value = "xs2a_auth_aspsp", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             }),
-            @Authorization(value = "xs2a_auth_decoupled", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+        @Authorization(value = "xs2a_auth_decoupled", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             })
-    }, tags = {"PIS",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = AddPaymentResponse.class),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
-            @ApiResponse(code = 405, message = "Method Not Allowed", response = Error.class),
-            @ApiResponse(code = 406, message = "Not Acceptable", response = Error.class),
-            @ApiResponse(code = 415, message = "Unsupported Media Type", response = Error.class),
-            @ApiResponse(code = 422, message = "Unprocessable entity", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class),
-            @ApiResponse(code = 501, message = "Not Implemented", response = Error.class),
-            @ApiResponse(code = 503, message = "Service Unavailable", response = Error.class)})
-    @RequestMapping(value = "/v2_1_2.1/payments/v2_1_2.1/nonEEA",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    default ResponseEntity<AddPaymentResponse> nonEEA(@ApiParam(value = "The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization, @ApiParam(value = "Gzip, deflate", required = true, allowableValues = "gzip, deflate") @RequestHeader(value = "Accept-Encoding", required = true) String acceptEncoding, @ApiParam(value = "Prefered language of response", required = true) @RequestHeader(value = "Accept-Language", required = true) String acceptLanguage, @ApiParam(value = "UTF-8", required = true, allowableValues = "utf-8") @RequestHeader(value = "Accept-Charset", required = true) String acceptCharset, @ApiParam(value = "Detached JWS signature of the body of the payload", required = true) @RequestHeader(value = "X-JWS-SIGNATURE", required = true) String X_JWS_SIGNATURE, @ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload.", required = true) @RequestHeader(value = "X-REQUEST-ID", required = true) String X_REQUEST_ID, @ApiParam(value = "Data for non SEPA foreign transfer", required = true) @Valid @RequestBody PaymentNonEEARequest nonEEARequest) {
+    }, tags={ "PIS", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Powodzenie / Success", response = AddPaymentResponse.class),
+        @ApiResponse(code = 400, message = "Błędne żądanie / Bad request", response = Error.class),
+        @ApiResponse(code = 401, message = "Nieautoryzowany dostęp / Unauthorized", response = Error.class),
+        @ApiResponse(code = 403, message = "Zabroniony / Forbidden", response = Error.class),
+        @ApiResponse(code = 405, message = "Metoda niedozwolona / Method Not Allowed", response = Error.class),
+        @ApiResponse(code = 406, message = "Niedozwolone / Not Acceptable", response = Error.class),
+        @ApiResponse(code = 415, message = "Nieznany sposób żądania / Unsupported Media Type", response = Error.class),
+        @ApiResponse(code = 422, message = "Jednostka nieprzetwarzalna / Unprocessable entity", response = Error.class),
+        @ApiResponse(code = 500, message = "Wewnętrzny błąd serwera / Internal Server Error", response = Error.class),
+        @ApiResponse(code = 501, message = "Nie zaimplementowano / Not Implemented", response = Error.class),
+        @ApiResponse(code = 503, message = "Usługa niedostępna / Service Unavailable", response = Error.class) })
+    @RequestMapping(value = "/v3_0.1/payments/v3_0.1/nonEEA",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<AddPaymentResponse> nonEEA(@ApiParam(value = "Wartość nagłówka 'Authorization' powinna składać się z 'type' + 'credentials', gdzie dla metody z użyciem 'type', token powinien być typu 'Bearer'. / The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'." ,required=true) @RequestHeader(value="Authorization", required=true) String authorization,@ApiParam(value = "Gzip, deflate" ,required=true, allowableValues="gzip, deflate") @RequestHeader(value="Accept-Encoding", required=true) String acceptEncoding,@ApiParam(value = "Preferowany język odpowiedzi / Prefered language of response" ,required=true) @RequestHeader(value="Accept-Language", required=true) String acceptLanguage,@ApiParam(value = "UTF-8" ,required=true, allowableValues="utf-8") @RequestHeader(value="Accept-Charset", required=true) String acceptCharset,@ApiParam(value = "Osobny podpis JWS treści paylodu / Detached JWS signature of the body of the payload" ,required=true) @RequestHeader(value="X-JWS-SIGNATURE", required=true) String X_JWS_SIGNATURE,@ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload." ,required=true) @RequestHeader(value="X-REQUEST-ID", required=true) String X_REQUEST_ID,@ApiParam(value = "Dane żądania inicjalizacji przelewów zagranicznych niezgodnych z SEPA / Data for non SEPA foreign transfer" ,required=true )  @Valid @RequestBody NonEEARequest nonEEARequest) {
         return getDelegate().nonEEA(authorization, acceptEncoding, acceptLanguage, acceptCharset, X_JWS_SIGNATURE, X_REQUEST_ID, nonEEARequest);
     }
 
 
-    @ApiOperation(value = "Defines new recurring payment", nickname = "recurring", notes = "", response = RecurringPaymentResponse.class, authorizations = {
-            @Authorization(value = "xs2a_auth_aspsp", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+    @ApiOperation(value = "Definicja nowej płatności cyklicznej / Defines new recurring payment", nickname = "recurring", notes = "", response = RecurringResponse.class, authorizations = {
+        @Authorization(value = "xs2a_auth_aspsp", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             }),
-            @Authorization(value = "xs2a_auth_decoupled", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+        @Authorization(value = "xs2a_auth_decoupled", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             })
-    }, tags = {"PIS",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = RecurringPaymentResponse.class),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
-            @ApiResponse(code = 405, message = "Method Not Allowed", response = Error.class),
-            @ApiResponse(code = 406, message = "Not Acceptable", response = Error.class),
-            @ApiResponse(code = 415, message = "Unsupported Media Type", response = Error.class),
-            @ApiResponse(code = 422, message = "Unprocessable entity", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class),
-            @ApiResponse(code = 501, message = "Not Implemented", response = Error.class),
-            @ApiResponse(code = 503, message = "Service Unavailable", response = Error.class)})
-    @RequestMapping(value = "/v2_1_2.1/payments/v2_1_2.1/recurring",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    default ResponseEntity<RecurringPaymentResponse> recurring(@ApiParam(value = "The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization, @ApiParam(value = "Gzip, deflate", required = true, allowableValues = "gzip, deflate") @RequestHeader(value = "Accept-Encoding", required = true) String acceptEncoding, @ApiParam(value = "Prefered language of response", required = true) @RequestHeader(value = "Accept-Language", required = true) String acceptLanguage, @ApiParam(value = "UTF-8", required = true, allowableValues = "utf-8") @RequestHeader(value = "Accept-Charset", required = true) String acceptCharset, @ApiParam(value = "Detached JWS signature of the body of the payload", required = true) @RequestHeader(value = "X-JWS-SIGNATURE", required = true) String X_JWS_SIGNATURE, @ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload.", required = true) @RequestHeader(value = "X-REQUEST-ID", required = true) String X_REQUEST_ID, @ApiParam(value = "Data for recurring payment definition", required = true) @Valid @RequestBody RecurringPaymentRequest recurringRequest) {
+    }, tags={ "PIS", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Powodzenie / Success", response = RecurringResponse.class),
+        @ApiResponse(code = 400, message = "Błędne żądanie / Bad request", response = Error.class),
+        @ApiResponse(code = 401, message = "Nieautoryzowany dostęp / Unauthorized", response = Error.class),
+        @ApiResponse(code = 403, message = "Zabroniony / Forbidden", response = Error.class),
+        @ApiResponse(code = 405, message = "Metoda niedozwolona / Method Not Allowed", response = Error.class),
+        @ApiResponse(code = 406, message = "Niedozwolone / Not Acceptable", response = Error.class),
+        @ApiResponse(code = 415, message = "Nieznany sposób żądania / Unsupported Media Type", response = Error.class),
+        @ApiResponse(code = 422, message = "Jednostka nieprzetwarzalna / Unprocessable entity", response = Error.class),
+        @ApiResponse(code = 500, message = "Wewnętrzny błąd serwera / Internal Server Error", response = Error.class),
+        @ApiResponse(code = 501, message = "Nie zaimplementowano / Not Implemented", response = Error.class),
+        @ApiResponse(code = 503, message = "Usługa niedostępna / Service Unavailable", response = Error.class) })
+    @RequestMapping(value = "/v3_0.1/payments/v3_0.1/recurring",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<RecurringResponse> recurring(@ApiParam(value = "Wartość nagłówka 'Authorization' powinna składać się z 'type' + 'credentials', gdzie dla metody z użyciem 'type', token powinien być typu 'Bearer'. / The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'." ,required=true) @RequestHeader(value="Authorization", required=true) String authorization,@ApiParam(value = "Gzip, deflate" ,required=true, allowableValues="gzip, deflate") @RequestHeader(value="Accept-Encoding", required=true) String acceptEncoding,@ApiParam(value = "Preferowany język odpowiedzi / Prefered language of response" ,required=true) @RequestHeader(value="Accept-Language", required=true) String acceptLanguage,@ApiParam(value = "UTF-8" ,required=true, allowableValues="utf-8") @RequestHeader(value="Accept-Charset", required=true) String acceptCharset,@ApiParam(value = "Osobny podpis JWS treści paylodu / Detached JWS signature of the body of the payload" ,required=true) @RequestHeader(value="X-JWS-SIGNATURE", required=true) String X_JWS_SIGNATURE,@ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload." ,required=true) @RequestHeader(value="X-REQUEST-ID", required=true) String X_REQUEST_ID,@ApiParam(value = "Dane żądania definicji nowej płatności cyklicznej / Data for recurring payment definition" ,required=true )  @Valid @RequestBody RecurringRequest recurringRequest) {
         return getDelegate().recurring(authorization, acceptEncoding, acceptLanguage, acceptCharset, X_JWS_SIGNATURE, X_REQUEST_ID, recurringRequest);
     }
 
 
-    @ApiOperation(value = "Initiate tax transfer", nickname = "tax", notes = "", response = AddPaymentResponse.class, authorizations = {
-            @Authorization(value = "xs2a_auth_aspsp", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+    @ApiOperation(value = "Inicjacja przelewu do organu podatkowego / Initiate tax transfer", nickname = "tax", notes = "", response = AddPaymentResponse.class, authorizations = {
+        @Authorization(value = "xs2a_auth_aspsp", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             }),
-            @Authorization(value = "xs2a_auth_decoupled", scopes = {
-                    @AuthorizationScope(scope = "pis", description = "Permission to initiate payments and check their statuses through Payment Initiation Service")
+        @Authorization(value = "xs2a_auth_decoupled", scopes = {
+            @AuthorizationScope(scope = "pis", description = "Zgoda na inicjowanie płatności i sprawdzanie ich statusu poprzez usługę inicjowania płatności / Permission to initiate payments and check their statuses through Payment Initiation Service")
             })
-    }, tags = {"PIS",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = AddPaymentResponse.class),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = Error.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
-            @ApiResponse(code = 405, message = "Method Not Allowed", response = Error.class),
-            @ApiResponse(code = 406, message = "Not Acceptable", response = Error.class),
-            @ApiResponse(code = 415, message = "Unsupported Media Type", response = Error.class),
-            @ApiResponse(code = 422, message = "Unprocessable entity", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class),
-            @ApiResponse(code = 501, message = "Not Implemented", response = Error.class),
-            @ApiResponse(code = 503, message = "Service Unavailable", response = Error.class)})
-    @RequestMapping(value = "/v2_1_2.1/payments/v2_1_2.1/tax",
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = RequestMethod.POST)
-    default ResponseEntity<AddPaymentResponse> tax(@ApiParam(value = "The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization, @ApiParam(value = "Gzip, deflate", required = true, allowableValues = "gzip, deflate") @RequestHeader(value = "Accept-Encoding", required = true) String acceptEncoding, @ApiParam(value = "Prefered language of response", required = true) @RequestHeader(value = "Accept-Language", required = true) String acceptLanguage, @ApiParam(value = "UTF-8", required = true, allowableValues = "utf-8") @RequestHeader(value = "Accept-Charset", required = true) String acceptCharset, @ApiParam(value = "Detached JWS signature of the body of the payload", required = true) @RequestHeader(value = "X-JWS-SIGNATURE", required = true) String X_JWS_SIGNATURE, @ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload.", required = true) @RequestHeader(value = "X-REQUEST-ID", required = true) String X_REQUEST_ID, @ApiParam(value = "Data for tax transfer", required = true) @Valid @RequestBody PaymentTaxRequest taxRequest) {
+    }, tags={ "PIS", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "Powodzenie / Success", response = AddPaymentResponse.class),
+        @ApiResponse(code = 400, message = "Błędne żądanie / Bad request", response = Error.class),
+        @ApiResponse(code = 401, message = "Nieautoryzowany dostęp / Unauthorized", response = Error.class),
+        @ApiResponse(code = 403, message = "Zabroniony / Forbidden", response = Error.class),
+        @ApiResponse(code = 405, message = "Metoda niedozwolona / Method Not Allowed", response = Error.class),
+        @ApiResponse(code = 406, message = "Niedozwolone / Not Acceptable", response = Error.class),
+        @ApiResponse(code = 415, message = "Nieznany sposób żądania / Unsupported Media Type", response = Error.class),
+        @ApiResponse(code = 422, message = "Jednostka nieprzetwarzalna / Unprocessable entity", response = Error.class),
+        @ApiResponse(code = 500, message = "Wewnętrzny błąd serwera / Internal Server Error", response = Error.class),
+        @ApiResponse(code = 501, message = "Nie zaimplementowano / Not Implemented", response = Error.class),
+        @ApiResponse(code = 503, message = "Usługa niedostępna / Service Unavailable", response = Error.class) })
+    @RequestMapping(value = "/v3_0.1/payments/v3_0.1/tax",
+        produces = { "application/json" }, 
+        consumes = { "application/json" },
+        method = RequestMethod.POST)
+    default ResponseEntity<AddPaymentResponse> tax(@ApiParam(value = "Wartość nagłówka 'Authorization' powinna składać się z 'type' + 'credentials', gdzie dla metody z użyciem 'type', token powinien być typu 'Bearer'. / The value of the Authorization header should consist of 'type' + 'credentials', where for the approach using the 'type' token should be 'Bearer'." ,required=true) @RequestHeader(value="Authorization", required=true) String authorization,@ApiParam(value = "Gzip, deflate" ,required=true, allowableValues="gzip, deflate") @RequestHeader(value="Accept-Encoding", required=true) String acceptEncoding,@ApiParam(value = "Preferowany język odpowiedzi / Prefered language of response" ,required=true) @RequestHeader(value="Accept-Language", required=true) String acceptLanguage,@ApiParam(value = "UTF-8" ,required=true, allowableValues="utf-8") @RequestHeader(value="Accept-Charset", required=true) String acceptCharset,@ApiParam(value = "Osobny podpis JWS treści paylodu / Detached JWS signature of the body of the payload" ,required=true) @RequestHeader(value="X-JWS-SIGNATURE", required=true) String X_JWS_SIGNATURE,@ApiParam(value = "Identyfikator żądania w formacie UUID (Wariant 1, Wersja 1), zgodnym ze standardem RFC 4122, nadawany przez TPP. Wartość musi być zgodna z parametrem requestId przekazywanym w ciele każdego żądania. / Request identifier using UUID format (Variant 1, Version 1), described in RFC 4122 standard, set by TPP. Value of this header must be the same as for the requestId param passed inside request payload." ,required=true) @RequestHeader(value="X-REQUEST-ID", required=true) String X_REQUEST_ID,@ApiParam(value = "Dane żądania inicjalizacji przelewów do organu podatkowego / Data for tax transfer" ,required=true )  @Valid @RequestBody TaxRequest taxRequest) {
         return getDelegate().tax(authorization, acceptEncoding, acceptLanguage, acceptCharset, X_JWS_SIGNATURE, X_REQUEST_ID, taxRequest);
     }
 

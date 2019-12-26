@@ -42,7 +42,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.1.9.RELEASE</version>
                 <configuration>
-                    <mainClass>pl.itger.polishAPI.PolishAPI_2_1_2_SpringBoot</mainClass>
+                    <mainClass>pl.itger.polishAPI.PolishAPI_SpringBoot</mainClass>
                 </configuration>
                 <executions>
                     <execution>

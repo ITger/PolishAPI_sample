@@ -118,14 +118,14 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                     response.setAccount(accountInfo);
                     responseEntity = new ResponseEntity<>(response, HttpStatus.OK);
                 } catch (Exception e) {
-                    LOG.error(e.getLocalizedMessage(), e);
+                    log.error(e.getLocalizedMessage(), e);
                     responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
                 responseEntity = new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
             }
         } else {
-            LOG.warn("AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
+            log.warn("AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
         }
         return responseEntity;
@@ -228,14 +228,14 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                     response.setPageInfo(pageInfo);
                     responseEntity = new ResponseEntity<AccountsResponse>(response, hs);
                 } catch (Exception e) {
-                    LOG.error(e.getLocalizedMessage(), e);
+                    log.error(e.getLocalizedMessage(), e);
                     responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
                 responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
-            LOG.warn("AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
+            log.warn("AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
         }
         return responseEntity;
@@ -306,7 +306,7 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                     if (perPage != null && perPage > 0) {
                         pipeline.add(Aggregates.limit(perPage));
                     }
-                    pipeline.forEach(o -> LOG.debug(o.toString()));
+                    pipeline.forEach(o -> log.debug(o.toString()));
                     JacksonCodecRegistry jacksonCodecRegistry = JacksonCodecRegistry.withDefaultObjectMapper();
                     jacksonCodecRegistry.addCodecForClass(HoldInfo.class);
                     MongoCollection<Document> coll = mongoTmpl.getDb().getCollection("holdInfo");
@@ -314,7 +314,7 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                     AggregateIterable<Document> aggIter = collection_2.aggregate(pipeline);
                     List<Document> holds = new ArrayList<>();
                     aggIter.iterator().forEachRemaining(holds::add);
-                    holds.forEach(o -> LOG.debug(o.toJson()));
+                    holds.forEach(o -> log.debug(o.toJson()));
                     if (holds.size() > 0) {
                         String first_id = Const.PREV + holds.get(0).get("_id").toString();
                         String last_id = Const.NEXT + holds.get(holds.size() - 1).get("_id").toString();
@@ -335,14 +335,14 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                     response.setPageInfo(pageInfo);
                     responseEntity = new ResponseEntity<HoldInfoResponse>(response, HttpStatus.OK);
                 } catch (Exception e) {
-                    LOG.error(e.getLocalizedMessage(), e);
+                    log.error(e.getLocalizedMessage(), e);
                     responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
                 responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
-            LOG.warn("AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
+            log.warn("AisApiDelegateImpl : ObjectMapper or HttpServletRequest not configured in default AisApi interface so no example is generated");
             responseEntity = new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
         }
         return responseEntity;

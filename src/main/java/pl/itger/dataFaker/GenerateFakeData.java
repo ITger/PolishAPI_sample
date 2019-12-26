@@ -95,11 +95,13 @@ public class GenerateFakeData {
         aiCollection.drop();
         MongoCollection<Document> holdInfo_coll = mdb.getCollection("holdInfo");
         MongoCollection<Document> transactionInfo_coll = mdb.getCollection("transactionInfo");
+        MongoCollection<Document> transactionDone_coll = mdb.getCollection("transactionDone");
         holdInfo_coll.drop();
         transactionInfo_coll.drop();
+        transactionDone_coll.drop();
         logger.info("accountInfo, accountBaseInfo, holdInfo, transactionInfo DROPPED");
         accountInfoRepository.deleteAll();
-        createAccounts(aiCollection, abiCollection, holdInfo_coll, transactionInfo_coll);//accountInfoRepository);
+        createAccounts(aiCollection, abiCollection, holdInfo_coll, transactionDone_coll);//accountInfoRepository);
         FindIterable<AccountInfo> accI_iter = aiCollection.find().projection(fields(include("accountNumber"), excludeId()));
         List<String> accountNumberList = new ArrayList<>();
         for (AccountInfo cnsmr : accI_iter) {
@@ -109,12 +111,17 @@ public class GenerateFakeData {
         return new ResponseEntity(accountNumberList, HttpStatus.OK);
     }
 
-    private void createAccounts(MongoCollection<AccountInfo> collection, MongoCollection<AccountBaseInfo> abiCollection, MongoCollection<Document> holdInfo_coll, MongoCollection<Document> transactionInfo_coll) {
+    private void createAccounts(MongoCollection<AccountInfo> collection,
+                                MongoCollection<AccountBaseInfo> abiCollection,
+                                MongoCollection<Document> holdInfo_coll,
+                                //MongoCollection<Document> transactionInfo_coll,
+                                MongoCollection<Document> transactionDone_coll) {
         logger.info("Creating accounts");
         List<AccountInfo> accIL = new ArrayList();
         List<AccountBaseInfo> accBIL = new ArrayList<>();
         List<Document> holdInfoList = new ArrayList<>();
         List<Document> transactionInfoList = new ArrayList<>();
+        List<Document> transactionDoneList = new ArrayList<>();
         int i = faker.number().numberBetween(40, 60);
         for (int ii = 0; ii <= i; ii++) {
             AccountInfo accI = new AccountInfo();
@@ -140,7 +147,8 @@ public class GenerateFakeData {
             //
             createAccountBaseInfo(accBIL, accI);
             createHolds(holdInfoList, accI);
-            createTransactions(transactionInfoList, accI);
+            //createTransactions(transactionInfoList, accI);
+            createTransactionsDone(transactionDoneList, accI);
         }
         collection.insertMany(accIL);
         collection.createIndex(Indexes.ascending("accountNumber"));
@@ -148,8 +156,10 @@ public class GenerateFakeData {
         abiCollection.createIndex(Indexes.ascending("accountNumber"));
         holdInfo_coll.insertMany(holdInfoList);
         holdInfo_coll.createIndex(Indexes.ascending("accountNumber"));
-        transactionInfo_coll.insertMany(transactionInfoList);
-        transactionInfo_coll.createIndex(Indexes.ascending("accountNumber"));
+        //transactionInfo_coll.insertMany(transactionInfoList);
+        //transactionInfo_coll.createIndex(Indexes.ascending("accountNumber"));
+        transactionDone_coll.insertMany(transactionDoneList);
+        transactionDone_coll.createIndex(Indexes.ascending("accountNumber"));
 
         /*try (ClientSession clientSession = client.startSession()) {
             return clientSession.withTransaction(() -> {
@@ -159,6 +169,21 @@ public class GenerateFakeData {
             }, txnOptions);
         }*/
     }
+
+    private void createTransactionsDone(List<Document> transactionDoneList, AccountInfo accI) {
+        logger.info("Creating TransactionsDone");
+        Gson gson = new Gson();
+        int i = faker.number().numberBetween(0, 100);
+        for (int ii = 0; ii <= i; ii++) {
+            TransactionInfo ti = new TransactionInfo();
+            createTransactionInfo(ti);
+            Document gDoc = Document.parse(gson.toJson(ti));
+            gDoc.append("accountNumber", accI.getAccountNumber());
+            transactionDoneList.add(gDoc);
+        }
+    }
+
+
 
     private void createAccountBaseInfo(@NotNull List<AccountBaseInfo> accBIL, @NotNull AccountInfo accI) {
         AccountBaseInfo accBI = new AccountBaseInfo();
@@ -204,6 +229,14 @@ public class GenerateFakeData {
         }
     }
 
+    private void createTransactionInfoZUS() {
+        TransactionInfoZUS tiZUS = new TransactionInfoZUS();
+//        tiZUS.setContributionId();
+//        tiZUS.setContributionPeriod();
+//        tiZUS.setContributionType();
+//        tiZUS.setPayerInfo();
+//        tiZUS.setPaymentTypeId();
+    }
     /**
      * @param ti
      */

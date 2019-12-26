@@ -2,7 +2,7 @@ package pl.itger.polishAPI.io.swagger.api;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-03-14T19:37:54.479+01:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-26T17:08:40.154+01:00")
 
 @javax.xml.bind.annotation.XmlRootElement
 public class ApiResponseMessage {
@@ -16,30 +16,29 @@ public class ApiResponseMessage {
     String type;
     String message;
 
-    public ApiResponseMessage() {
-    }
+    public ApiResponseMessage(){}
 
-    public ApiResponseMessage(int code, String message) {
+    public ApiResponseMessage(int code, String message){
         this.code = code;
-        switch (code) {
-            case ERROR:
-                setType("error");
-                break;
-            case WARNING:
-                setType("warning");
-                break;
-            case INFO:
-                setType("info");
-                break;
-            case OK:
-                setType("ok");
-                break;
-            case TOO_BUSY:
-                setType("too busy");
-                break;
-            default:
-                setType("unknown");
-                break;
+        switch(code){
+        case ERROR:
+            setType("error");
+            break;
+        case WARNING:
+            setType("warning");
+            break;
+        case INFO:
+            setType("info");
+            break;
+        case OK:
+            setType("ok");
+            break;
+        case TOO_BUSY:
+            setType("too busy");
+            break;
+        default:
+            setType("unknown");
+            break;
         }
         this.message = message;
     }
