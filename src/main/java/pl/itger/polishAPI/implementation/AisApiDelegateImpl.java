@@ -74,24 +74,11 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                 map(r -> r.getHeader("Accept"));
     }
 
-    @Override
-    public ResponseEntity<Void> deleteConsent(String acceptEncoding,
-                                              String acceptLanguage,
-                                              String acceptCharset,
-                                              String X_JWS_SIGNATURE,
-                                              String X_REQUEST_ID,
-                                              DeleteConsentRequest deleteConsentRequest) {
-        return AisApiDelegate.super.deleteConsent(acceptEncoding,
-                acceptLanguage,
-                acceptCharset,
-                X_JWS_SIGNATURE,
-                X_REQUEST_ID,
-                deleteConsentRequest); //To change body of generated methods, choose Tools | Templates.
-    }
+
 
 
     /**
-     * curl -k -v -X POST "https://localhost:8443/v2_1_2.1/accounts/v2_1_2.1/getAccount" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTc1OTE2OTg5LCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.K18f4CplNAUViZ00n87AEmddt3Q7GjIZQa_dbRxyne4*" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{  \"accountNumber\": \"6011-4221-0209-2707\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-10-15T20:59:12.601Z\", \"tppId\": \"string\",    \"userAgent\": \"string\", \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTc1OTE2OTg5LCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.K18f4CplNAUViZ00n87AEmddt3Q7GjIZQa_dbRxyne4*\"  }}"
+     * curl -k -v -X POST "https://localhost:8443/v3_0.1/accounts/v3_0.1/getAccount" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTc1OTE2OTg5LCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.K18f4CplNAUViZ00n87AEmddt3Q7GjIZQa_dbRxyne4*" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{  \"accountNumber\": \"6011-4221-0209-2707\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-10-15T20:59:12.601Z\", \"tppId\": \"string\",    \"userAgent\": \"string\", \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTc1OTE2OTg5LCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.K18f4CplNAUViZ00n87AEmddt3Q7GjIZQa_dbRxyne4*\"  }}"
      */
     @Override
     public ResponseEntity<AccountResponse> getAccount(String authorization,
