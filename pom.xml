@@ -195,11 +195,11 @@
 			<version>1.18.10</version>
 			<type>jar</type>
 		</dependency>
-		<dependency>
-			<groupId>dev.morphia.morphia</groupId>
-			<artifactId>core</artifactId>
-			<version>1.5.3</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>dev.morphia.morphia</groupId>-->
+<!--			<artifactId>core</artifactId>-->
+<!--			<version>1.5.3</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -211,11 +211,11 @@
 			<version>17.0.0</version>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.3.1</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>javax.xml.bind</groupId>-->
+<!--			<artifactId>jaxb-api</artifactId>-->
+<!--			<version>2.3.1</version>-->
+<!--		</dependency>-->
 
 
 	</dependencies>

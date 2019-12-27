@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
+
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -18,7 +20,7 @@ import javax.validation.constraints.*;
 @ApiModel(description = "Klasa zawierająca dane nazwy i adresu w postaci czterech linii danych / Simple name and  postal address Class")
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-26T17:08:40.154+01:00")
-
+@Document
 public class NameAddress  implements Serializable {
   private static final long serialVersionUID = 1L;
 

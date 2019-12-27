@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
+import pl.itger.polishAPI.codecs.AccountInfoCodec;
 import pl.itger.polishAPI.codecs.TypeOfProxyEnumCodec;
 import pl.itger.polishAPI.codecs.TypeOfRelationEnumCodec;
 
@@ -44,11 +45,16 @@ public class MongoDBConfig {
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
     public MongoClient mongoClient(@Value("${spring.data.mongodb.uri}") String connectionString) {
-        CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
+        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
         CodecRegistry typeOfRelationEnumCodec = fromCodecs(new TypeOfRelationEnumCodec());
         CodecRegistry typeOfProxyEnumCodec = fromCodecs(new TypeOfProxyEnumCodec());
-        CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), typeOfRelationEnumCodec, typeOfProxyEnumCodec, pojoCodecRegistry);
-        //CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), typeOfRelationEnumCodec, typeOfProxyEnumCodec);
+        CodecRegistry accountInfoCodec = fromCodecs(new AccountInfoCodec());
+        CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+                typeOfRelationEnumCodec,
+                typeOfProxyEnumCodec,
+                //accountInfoCodec,
+                pojoCodecRegistry);
         MongoClientSettings settings = MongoClientSettings.builder()
                 .readPreference(ReadPreference.primary())
                 .readConcern(ReadConcern.MAJORITY)

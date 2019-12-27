@@ -34,7 +34,7 @@ public class AccountBaseInfo  implements Serializable {
   private DictionaryItem accountType = null;
 
   @JsonProperty("psuRelations")
-  @Valid
+  //@Valid
   private List<AccountPsuRelation> psuRelations = new ArrayList<>();
 
   public AccountBaseInfo accountNumber(String accountNumber) {

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -16,7 +18,7 @@ import javax.validation.constraints.*;
 @ApiModel(description = "Klasa zawierająca dane elementu/pozycji słownika / Dictionary Item Class")
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-26T17:08:40.154+01:00")
-
+@Document
 public class DictionaryItem  implements Serializable {
   private static final long serialVersionUID = 1L;
 

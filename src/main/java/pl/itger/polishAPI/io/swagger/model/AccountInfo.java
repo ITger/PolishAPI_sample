@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.data.mongodb.core.mapping.Document;
 import pl.itger.polishAPI.io.swagger.model.AccountPsuRelation;
 import pl.itger.polishAPI.io.swagger.model.BankAccountInfo;
 import pl.itger.polishAPI.io.swagger.model.DictionaryItem;
@@ -23,7 +25,7 @@ import javax.validation.constraints.*;
 @ApiModel(description = "Klasa informacji o koncie / Account Information Class")
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-26T17:08:40.154+01:00")
-
+@Document
 public class AccountInfo  implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -89,7 +91,7 @@ public class AccountInfo  implements Serializable {
   private BankAccountInfo bank = null;
 
   @JsonProperty("psuRelations")
-  @Valid
+  //@Valid
   private List<AccountPsuRelation> psuRelations = new ArrayList<>();
 
   @JsonProperty("vatAccountNrb")
