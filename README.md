@@ -1,6 +1,7 @@
-# PSD2 PolishAPI 2_1_2 
+# PSD2 PolishAPI 3.0 
 This is a sample implementation of [PSD2](https://en.wikipedia.org/wiki/Payment_Services_Directive) 
-[Polish API 2_1_2 version](https://polishapi.org/en/).
+[Polish API 3.0 version](https://polishapi.org/en/).
+## This project is intended for educational purposes only. No commercial or production use.
 ## Getting Started
 In this case study I tried to get the best from Swagger code generator and the best software engineering practicies to obtain a maintainable project. Main patterns I used are Delegation, Loose Coupling, Separation of Responsibilities and others.
 ## Prerequisites
@@ -8,8 +9,9 @@ In this case study I tried to get the best from Swagger code generator and the b
 * [swagger-codegen](https://github.com/swagger-api/swagger-codegen)
 * [maven](https://maven.apache.org/)
 * [MongoDB](https://www.mongodb.com/)
-* [PolishAPI](https://app.swaggerhub.com/apis/ZBP/polish-api/2_1_2)
+* [PolishAPI](https://app.swaggerhub.com/apis/ZBP/polish-api/3_0)
 * [curl](https://github.com/curl/curl) or [curl for windows](https://curl.haxx.se/windows/)
+* currently valid token: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTgwMDgxMzUxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.qT9rDGy3NsXmKYZuUTcMBlbYHC7d2REBJ9ueumVhefE*
 ## Getting Started
 * After installing jdk 11 and Maven you should check minimal system requirements, simply run:
 ```
@@ -60,7 +62,7 @@ and then build swagger codegen:
 ```
 tests fail in the swagger version I installed on my Win10pro, so I skipped them.
 * Is good to know and understand all possible swagger codegen [parameters for spring](https://generator.swagger.io/api/gen/servers/spring).
-* Download the ZBP-polish-api-2_1_2-swagger.json file from [PolishAPI](https://app.swaggerhub.com/apis/ZBP/polish-api/2_1_2).
+* Download the ZBP-polish-api-3_0-swagger.json file from [PolishAPI](https://app.swaggerhub.com/apis/ZBP/polish-api/3_0).
 * In polishAPI_Options.json file I created, I included some parameters for swagger codegen. The most important are:
 ```
 {
@@ -75,20 +77,20 @@ tests fail in the swagger version I installed on my Win10pro, so I skipped them.
 ```
 * Next step is to generate the spring-boot server:
 ```
-{workspace_path}\swagger\swagger-codegen\java -jar modules/swagger-codegen-cli/target/swagger-codegen-cli.jar generate -i {workspace_path}\PolishAPI_2_1_2_sample\ZBP-polish-api-2_1_2-swagger.json -l spring -o {workspace_path}\PolishAPI_2_1_2_sample\server -c {workspace_path}\PolishAPI_2_1_2_sample\polishAPI_Options.json
+java -jar {workspace_path}\swagger\swagger-codegen\modules\swagger-codegen-cli\target\swagger-codegen-cli.jar generate -i {workspace_path}\polishAPI\ZBP-polish-api-3_0-swagger.json -l spring  -c {workspace_path}\polishAPI\polishAPI_Options.json
 ```
 * Next, in NetBeans (or any other IDE), create a New Project/Maven/Project with Existing POM.
 * Because I configured swagger-codegen with "delegatePattern": "true", after successful generation in previous step, I wrote classes that implemented AisApiDelegate, AsApiDelegate, CafApiDelegate, PisApiDelegate interfaces. In that classes I am implementing the business logic for all services.
 * Start your server as an simple java application. You can view the PolishAPI documentation in swagger-ui by pointing to  
-http://localhost:8080/  
+https://localhost:8443/  
 * I opted for MongoDB as data base, to fill mongo with fake data you should execute the following command:
 ```
-curl  -X POST  http://localhost:8080/makeFakeData
+curl  -X POST  https://localhost:8443//makeFakeData
 ```
 this way, we generate RANDOM fake data. 
 * When spring started, you can test its functionality. The best is using curl, for example:
 ```
-curl  -X POST -H "Accept: application/json" -H "Accept-Language: PL-pl"  -H "Referer: http://localhost:8080/swagger-ui.html" -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoidXNlcnMvSmFudXN6IGkgR3Jhxbx5bmEiLCJhdWQiOiJzb21ldGhpbmciLCJleHAiOjE1NTE4NjY1OTIsIm5hbWUiOiJKYW51c3ogaSBHcmHFvHluYSBOb3NhY3oiLCJzY29wZSI6InNlbGYgZ3JvdXBzL2FkbWlucyJ9.kfhkYfgXFstJe5Ws4UXGYtEQhh5NBg4Sl6Kqn1wkQH4" -H "X-JWS-SIGNATURE: 123" -H "Accept-Charset: utf-8" -H "X-REQUEST-ID: 1391c93e-45af-11e9-b210-d663bd873d93" -H "DNT: 1" -H "Accept-Encoding: gzip" -H "Connection: keep-alive" -d "{  \"accountNumber\": \"string\",  \"requestHeader\": {  \"ipAddress\": \"string\",  \"isDirectPsu\": false,  \"requestId\": \"1391c93e-45af-11e9-b210-d663bd873d93\",  \"sendDate\": \"2019-03-13T14:34:03.777Z\",  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoidXNlcnMvSmFudXN6IGkgR3Jhxbx5bmEiLCJhdWQiOiJzb21ldGhpbmciLCJleHAiOjE1NTE4NjY1OTIsIm5hbWUiOiJKYW51c3ogaSBHcmHFvHluYSBOb3NhY3oiLCJzY29wZSI6InNlbGYgZ3JvdXBzL2FkbWlucyJ9.kfhkYfgXFstJe5Ws4UXGYtEQhh5NBg4Sl6Kqn1wkQH4\",  \"tppId\": \"string\",  \"userAgent\": \"string\"  }   }"  http://localhost:8080/v2_1_2.1/accounts/v2_1_2.1/getAccount
+curl -k -v POST "https://localhost:8443/v3_0.1/accounts/v3_0.1/getAccounts" -H  "accept: application/json" -H  "Accept-Charset: utf-8" -H  "Accept-Encoding: gzip" -H  "Accept-Language: PL-pl" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTgwMDgxMzUxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.qT9rDGy3NsXmKYZuUTcMBlbYHC7d2REBJ9ueumVhefE*" -H  "X-JWS-SIGNATURE: wefewfef" -H  "X-REQUEST-ID: 95215B80-A744-11E9-B4AB-D922C8858915" -H  "Content-Type: application/json" -d "{ \"perPage\":\"2\", \"pageId\": \"0\",  \"requestHeader\": {    \"ipAddress\": \"string\",    \"isDirectPsu\": true,    \"requestId\": \"95215B80-A744-11E9-B4AB-D922C8858915\",    \"sendDate\": \"2019-10-15T20:59:12.601Z\", \"tppId\": \"string\",    \"userAgent\": \"string\", \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTgwMDgxMzUxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.qT9rDGy3NsXmKYZuUTcMBlbYHC7d2REBJ9ueumVhefE*\"  }}
 ```
 the query predicates must be in accordance with generated data. 
 ## .. work in progress ...
