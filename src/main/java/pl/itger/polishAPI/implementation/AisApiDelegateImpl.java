@@ -31,12 +31,17 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.itger.polishAPI.io.swagger.api.AisApiDelegate;
 import pl.itger.polishAPI.io.swagger.model.*;
-import pl.itger.polishAPI.utils.Const;
+import pl.itger.polishAPI.utils.PagingUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.*;
+
+import static pl.itger.polishAPI.utils.PagingUtils.getPageId;
+import static pl.itger.polishAPI.utils.PagingUtils.getPaginationDir;
+import static pl.itger.polishAPI.utils.PagingUtils.isPageIdValid;
+
 
 @Service
 public class AisApiDelegateImpl implements AisApiDelegate {
@@ -133,60 +138,75 @@ public class AisApiDelegateImpl implements AisApiDelegate {
         AccountsResponse response = new AccountsResponse();
         ResponseHeader responseHeader = new ResponseHeader();
         ResponseEntity<AccountsResponse> responseEntity;
-        List<AccountBaseInfo> listABI = new ArrayList<>();
         Block printBlock = o -> System.out.println(o);
-        PageInfo pageInfo = new PageInfo();
+        final PageInfo pageInfo = new PageInfo();
         HttpStatus hs = HttpStatus.OK;
         if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
-                String pageId = getAccountsRequest.getPageId();
-                Integer perPage = getAccountsRequest.getPerPage();
-                MongoTemplate mongoTmpl = new MongoTemplate(mongoDbFactory);
-                Bson filter;
-                Bson filter_check_exist = new BasicDBObject();
-                Bson sortOrder;
-                if (pageId == null || pageId.trim().isEmpty() || (!pageId.contains(Const.NEXT) && !pageId.contains(Const.PREV))) {
-                    filter = new BasicDBObject();
-                    sortOrder = new BasicDBObject("$natural", 1);
-                } else {
-                    String p_id = pageId.substring(6);
-                    String flt = pageId.substring(0, 6);
+                final MongoTemplate mongoTmpl = new MongoTemplate(mongoDbFactory);
+                List<Bson> pipeline = new LinkedList<>();
+                Bson filter_check_exist;// = new BasicDBObject();
+                Bson sortOrder;// = new BasicDBObject("$natural", 1);
+                Bson filter;// = new BasicDBObject();
+//                class FilteringUtil {
+//                    Bson filter_check_exist;// = new BasicDBObject();
+//                    Bson sortOrder;// = new BasicDBObject("$natural", 1);
+//                    Bson filter;// = new BasicDBObject();
+//                }
+//                FilteringUtil fu = new FilteringUtil();
+                final String pageId = getAccountsRequest.getPageId();
+                if (isPageIdValid(pageId)) {
+                    String p_id = getPageId(pageId);
                     filter_check_exist = Filters.eq("_id", new ObjectId(p_id));
-                    switch (flt) {
-                        case Const.NEXT: {
+                    switch (getPaginationDir(pageId)) {
+                        case PagingUtils.NEXT: {
                             filter = Filters.gt("_id", new ObjectId(p_id));
                             sortOrder = new BasicDBObject("$natural", 1);
+                            //pipeline.add(Aggregates.match(Filters.gt("_id", new ObjectId(p_id))));
+                            //pipeline.add(Aggregates.sort(Sorts.ascending("_id")));
                             break;
                         }
-                        case Const.PREV: {
+                        case PagingUtils.PREV: {
                             filter = Filters.lt("_id", new ObjectId(p_id));
                             sortOrder = new BasicDBObject("$natural", -1);
+                            //pipeline.add(Aggregates.match(Filters.lt("_id", new ObjectId(p_id))));
+                            //pipeline.add(Aggregates.sort(Sorts.ascending("_id")));
                             break;
                         }
                         default: {
                             filter = new BasicDBObject();
                             sortOrder = new BasicDBObject("$natural", 1);
+                            //pipeline.add(Aggregates.sort(Sorts.ascending("_id")));
                             break;
                         }
                     }
+                } else{
+                    filter_check_exist = new BasicDBObject();
+                    sortOrder = new BasicDBObject("$natural", 1);
+                    filter = new BasicDBObject();
+                    //pipeline.add(Aggregates.sort(Sorts.ascending("_id")));
                 }
                 JacksonCodecRegistry jacksonCodecRegistry = JacksonCodecRegistry.withDefaultObjectMapper();
                 jacksonCodecRegistry.addCodecForClass(AccountBaseInfo.class);
                 MongoCollection<?> coll = mongoTmpl.getDb().getCollection("accountBaseInfo");
                 MongoCollection collection_2 = coll.withCodecRegistry(jacksonCodecRegistry);
-                List<Document> list = new ArrayList<>();
                 boolean exist = collection_2.countDocuments(filter_check_exist) > 0;
+                List<AccountBaseInfo> listABI = new ArrayList<>();
                 if (exist) {
-                    FindIterable xx_2 = collection_2.find(filter).sort(sortOrder).limit(perPage);//.iterator().forEachRemaining(list::add);
-                    //xx_2.forEach(printBlock);
-                    Iterator<Document> documentIterator = xx_2.iterator();
+                    Integer perPage = getAccountsRequest.getPerPage();
+                    FindIterable findIterable = collection_2.find(filter).sort(sortOrder);
+                    if(perPage != null && perPage>0) {
+                        findIterable = findIterable.limit(perPage);
+                    }
+                    Iterator<Document> documentIterator = findIterable.iterator();
+                    List<Document> list = new ArrayList<>();
                     documentIterator.forEachRemaining(list::add);
                     if (list.size() > 0) {
-                        String first_id = Const.PREV + list.get(0).get("_id").toString();
-                        String last_id = Const.NEXT + list.get(list.size() - 1).get("_id").toString();
+                        String first_id = PagingUtils.PREV + list.get(0).get("_id").toString();
+                        String last_id = PagingUtils.NEXT + list.get(list.size() - 1).get("_id").toString();
                         pageInfo.setNextPage(last_id);
                         pageInfo.setPreviousPage(first_id);
-                        MongoCursor cursor = xx_2.iterator();
+                        MongoCursor cursor = findIterable.iterator();
                         while (cursor.hasNext()) {
                             Object obj = cursor.next();
                             try {
@@ -211,7 +231,7 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                     response.setResponseHeader(responseHeader);
                     response.setAccounts(listABI);
                     response.setPageInfo(pageInfo);
-                    responseEntity = new ResponseEntity<AccountsResponse>(response, hs);
+                    responseEntity = new ResponseEntity<>(response, hs);
                 } catch (Exception e) {
                     log.error(e.getLocalizedMessage(), e);
                     responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -248,12 +268,9 @@ public class AisApiDelegateImpl implements AisApiDelegate {
         HoldInfoResponse response = new HoldInfoResponse();
         ResponseEntity<HoldInfoResponse> responseEntity;
         PageInfo pageInfo = new PageInfo();
-        List<HoldInfo> listHI = new ArrayList<>();
         if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
                 try {
-                    String pageId = getHoldsRequest.getPageId();
-                    Integer perPage = getHoldsRequest.getPerPage();
                     List<Bson> pipeline = new LinkedList<>();
                     MongoTemplate mongoTmpl = new MongoTemplate(mongoDbFactory);
                     Optional.ofNullable(getHoldsRequest.getAccountNumber()).ifPresent(value -> pipeline.add(Aggregates.match(Filters.eq("AccountNumber", value))));
@@ -265,17 +282,17 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                     Optional.ofNullable(getHoldsRequest.getTransactionDateFrom()).ifPresent(value -> pipeline.add(Aggregates.match(Filters.gte("transactionDateFrom", value))));
                     Optional.ofNullable(getHoldsRequest.getTransactionDateTo()).ifPresent(value -> pipeline.add(Aggregates.match(Filters.lte("transactionDateTo", value))));
                     Optional.ofNullable(getHoldsRequest.getType()).ifPresent(value -> pipeline.add(Aggregates.match(Filters.gte("type", value))));
-                    if (pageId != null && !pageId.trim().isEmpty() && (pageId.contains(Const.NEXT) || pageId.contains(Const.PREV))) {
-                        String p_id = pageId.substring(6);
-                        String flt = pageId.substring(0, 6);
+                    final String pageId = getHoldsRequest.getPageId();
+                    if (isPageIdValid(pageId)) {
+                        final String p_id = getPageId(pageId);
                         //filter_check_exist = Filters.eq("_id", new ObjectId(p_id));
-                        switch (flt) {
-                            case Const.NEXT: {
+                        switch (getPaginationDir(pageId)) {
+                            case PagingUtils.NEXT: {
                                 pipeline.add(Aggregates.match(Filters.gt("_id", new ObjectId(p_id))));
                                 pipeline.add(Aggregates.sort(Sorts.ascending("_id")));
                                 break;
                             }
-                            case Const.PREV: {
+                            case PagingUtils.PREV: {
                                 pipeline.add(Aggregates.match(Filters.lt("_id", new ObjectId(p_id))));
                                 pipeline.add(Aggregates.sort(Sorts.ascending("_id")));
                                 break;
@@ -288,21 +305,17 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                     } else {
                         pipeline.add(Aggregates.sort(Sorts.ascending("_id")));
                     }
-                    if (perPage != null && perPage > 0) {
-                        pipeline.add(Aggregates.limit(perPage));
-                    }
-                    pipeline.forEach(o -> log.debug(o.toString()));
                     JacksonCodecRegistry jacksonCodecRegistry = JacksonCodecRegistry.withDefaultObjectMapper();
                     jacksonCodecRegistry.addCodecForClass(HoldInfo.class);
                     MongoCollection<Document> coll = mongoTmpl.getDb().getCollection("holdInfo");
                     MongoCollection<Document> collection_2 = coll.withCodecRegistry(jacksonCodecRegistry);
                     AggregateIterable<Document> aggIter = collection_2.aggregate(pipeline);
-                    List<Document> holds = new ArrayList<>();
-                    aggIter.iterator().forEachRemaining(holds::add);
-                    holds.forEach(o -> log.debug(o.toJson()));
-                    if (holds.size() > 0) {
-                        String first_id = Const.PREV + holds.get(0).get("_id").toString();
-                        String last_id = Const.NEXT + holds.get(holds.size() - 1).get("_id").toString();
+                    List<Document> list = new ArrayList<>();
+                    aggIter.iterator().forEachRemaining(list::add);
+                    List<HoldInfo> listHI = new ArrayList<>();
+                    if (list.size() > 0) {
+                        String first_id = PagingUtils.PREV + list.get(0).get("_id").toString();
+                        String last_id = PagingUtils.NEXT + list.get(list.size() - 1).get("_id").toString();
                         pageInfo.setNextPage(last_id);
                         pageInfo.setPreviousPage(first_id);
                         MongoCursor<Document> cursor = aggIter.iterator();
@@ -333,45 +346,8 @@ public class AisApiDelegateImpl implements AisApiDelegate {
         return responseEntity;
     }
 
-    @Override
-    public ResponseEntity<TransactionDetailResponse> getTransactionDetail(
-            String authorization,
-            String acceptEncoding,
-            String acceptLanguage,
-            String acceptCharset,
-            String X_JWS_SIGNATURE,
-            String X_REQUEST_ID,
-            TransactionDetailRequest getTransationDetailRequest
-    ) {
-        getTransationDetailRequest.getAccountNumber();
-        return AisApiDelegate.super.getTransactionDetail(authorization,
-                acceptEncoding,
-                acceptLanguage,
-                acceptCharset,
-                X_JWS_SIGNATURE,
-                X_REQUEST_ID,
-                getTransationDetailRequest); //To change body of generated methods, choose Tools | Templates.
-    }
 
-    @Override
-    public ResponseEntity<TransactionsCancelledInfoResponse> getTransactionsCancelled(
-            String authorization,
-            String acceptEncoding,
-            String acceptLanguage,
-            String acceptCharset,
-            String X_JWS_SIGNATURE,
-            String X_REQUEST_ID,
-            TransactionInfoRequest getTransactionsCancelledRequest
-    ) {
-        getTransactionsCancelledRequest.getAccountNumber();
-        return AisApiDelegate.super.getTransactionsCancelled(authorization,
-                acceptEncoding,
-                acceptLanguage,
-                acceptCharset,
-                X_JWS_SIGNATURE,
-                X_REQUEST_ID,
-                getTransactionsCancelledRequest); //To change body of generated methods, choose Tools | Templates.
-    }
+
 
     @Override
     public ResponseEntity<TransactionsDoneInfoResponse> getTransactionsDone(
@@ -386,7 +362,6 @@ public class AisApiDelegateImpl implements AisApiDelegate {
         if (getObjectMapper().
                 isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
-
                 getTransactionsDoneRequest.getAccountNumber();
                 getTransactionsDoneRequest.getBookingDateFrom();
                 getTransactionsDoneRequest.getBookingDateTo();
@@ -407,63 +382,6 @@ public class AisApiDelegateImpl implements AisApiDelegate {
                 X_JWS_SIGNATURE,
                 X_REQUEST_ID,
                 getTransactionsDoneRequest); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ResponseEntity<TransactionPendingInfoResponse> getTransactionsPending(
-            String authorization,
-            String acceptEncoding,
-            String acceptLanguage,
-            String acceptCharset,
-            String X_JWS_SIGNATURE,
-            String X_REQUEST_ID,
-            TransactionInfoRequest getTransactionsPendingRequest
-    ) {
-        return AisApiDelegate.super.getTransactionsPending(authorization,
-                acceptEncoding,
-                acceptLanguage,
-                acceptCharset,
-                X_JWS_SIGNATURE,
-                X_REQUEST_ID,
-                getTransactionsPendingRequest); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ResponseEntity<TransactionRejectedInfoResponse> getTransactionsRejected(
-            String authorization,
-            String acceptEncoding,
-            String acceptLanguage,
-            String acceptCharset,
-            String X_JWS_SIGNATURE,
-            String X_REQUEST_ID,
-            TransactionInfoRequest getTransactionsRejectedRequest
-    ) {
-        return AisApiDelegate.super.getTransactionsRejected(authorization,
-                acceptEncoding,
-                acceptLanguage,
-                acceptCharset,
-                X_JWS_SIGNATURE,
-                X_REQUEST_ID,
-                getTransactionsRejectedRequest); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ResponseEntity<TransactionsScheduledInfoResponse> getTransactionsScheduled(
-            String authorization,
-            String acceptEncoding,
-            String acceptLanguage,
-            String acceptCharset,
-            String X_JWS_SIGNATURE,
-            String X_REQUEST_ID,
-            TransactionInfoRequest getTransactionsScheduledRequest
-    ) {
-        return AisApiDelegate.super.getTransactionsScheduled(authorization,
-                acceptEncoding,
-                acceptLanguage,
-                acceptCharset,
-                X_JWS_SIGNATURE,
-                X_REQUEST_ID,
-                getTransactionsScheduledRequest); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

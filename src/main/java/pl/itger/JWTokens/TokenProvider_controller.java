@@ -46,14 +46,14 @@ public class TokenProvider_controller {
     @RequestMapping(value = "jwts", method = RequestMethod.POST)
     @ResponseBody
     public String get(@NotNull String client_id, @NotNull String secret, Authentication authentication) {
-        Date expirationDate = DateUtils.addDays(new Date(), 30);
+        Date expirationDate = DateUtils.addDays(new Date(), 90);
         String jwt = "Jwts.builder FAILED";
         //User user = ((User) authentication.getPrincipal());
 //        List<String> roles = user.getAuthorities()
 //                .stream()
 //                .map(GrantedAuthority::getAuthority)
 //                .collect(Collectors.toList());
-        List<String> roles = Arrays.asList(new String[]{"Hello", "World"});
+        List<String> roles = Arrays.asList("Rol1", "Rol2");
         try {
             jwt = Jwts.builder()
                     .setIssuer("http://itger.pl/")

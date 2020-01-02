@@ -190,7 +190,7 @@ public class GenerateFakeData {
         int i = faker.number().numberBetween(0, 100);
         for (int ii = 0; ii <= i; ii++) {
             TransactionInfo ti = new TransactionInfo();
-            createTransactionInfo(ti);
+            createTransactionInfo(ti, "Done", "wykonany");
             Document gDoc = Document.parse(gson.toJson(ti));
             gDoc.append("accountNumber", accI.getAccountNumber());
             transactionDoneList.add(gDoc);
@@ -233,7 +233,7 @@ public class GenerateFakeData {
         int i = faker.number().numberBetween(0, 10);
         for (int ii = 0; ii <= i; ii++) {
             TransactionInfo ti = new TransactionInfo();
-            createTransactionInfo(ti);
+            createTransactionInfo(ti, "Done", "wykonany");
             Document gDoc = Document.parse(gson.toJson(ti));
             gDoc.append("accountNumber", accI.getAccountNumber());
             transactionInfoList.add(gDoc);
@@ -258,8 +258,10 @@ public class GenerateFakeData {
 
     /**
      * @param ti
+     * @param statusCode
+     * @param statusName
      */
-    private void createTransactionInfo(@NotNull TransactionInfo ti) {
+    private void createTransactionInfo(@NotNull TransactionInfo ti, String statusCode, String statusName) {
         ti.setAmount(Double.toString(faker.number().randomDouble(2, 1, 1000000)));
         ti.setBookingDate(faker.date().past(1000, TimeUnit.DAYS).toInstant().atOffset(OffsetDateTime.now().getOffset()));
         ti.setCurrency(faker.currency().code());
@@ -273,8 +275,8 @@ public class GenerateFakeData {
         ti.setTradeDate(ti.getBookingDate().minusMinutes(5L));
         ti.setTransactionType(faker.commerce().productName());
         DictionaryItem di = new DictionaryItem();
-        di.setCode(faker.commerce().productName());
-        di.setDescription(faker.hipster().word());
+        di.setCode(statusCode);
+        di.setDescription(statusName);
         ti.setTransactionStatus(di);
         int i = faker.number().numberBetween(0, 1);
         ti.setTransactionCategory(i == 0 ? TransactionInfo.TransactionCategoryEnum.CREDIT : TransactionInfo.TransactionCategoryEnum.DEBIT);
