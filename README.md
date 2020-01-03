@@ -11,7 +11,7 @@ In this case study I tried to get the best from Swagger code generator and the b
 * [MongoDB](https://www.mongodb.com/)
 * [PolishAPI](https://app.swaggerhub.com/apis/ZBP/polish-api/3_0)
 * [curl](https://github.com/curl/curl) or [curl for windows](https://curl.haxx.se/windows/)
-* currently valid token: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTgwMDgxMzUxLCJyb2wiOlsiSGVsbG8iLCJXb3JsZCJdLCJuYW1lIjoiY2xpZW50X2lkIiwic2NvcGUiOiJpdGdlcl9wb2xpc2hBUElfMl8xXzIifQ.qT9rDGy3NsXmKYZuUTcMBlbYHC7d2REBJ9ueumVhefE*
+* currently valid token: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaXRnZXIucGwvIiwic3ViIjoic3ViamVjdCIsImF1ZCI6ImF1ZGllbmNlIiwiZXhwIjoxNTg1NzQ1MDEwLCJyb2wiOlsiUm9sMSIsIlJvbDIiXSwibmFtZSI6ImNsaWVudF9pZCIsInNjb3BlIjoiaXRnZXJfcG9saXNoQVBJXzJfMV8yIn0.Nqqc37-svsjtKyjww1x92PCHlFsfbG6gP3iGnUdg-p0*
 ## Getting Started
 * After installing jdk 11 and Maven you should check minimal system requirements, simply run:
 ```
