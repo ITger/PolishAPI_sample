@@ -1,6 +1,9 @@
 # PSD2 PolishAPI 3.0 
 This is a sample implementation of [PSD2](https://en.wikipedia.org/wiki/Payment_Services_Directive) 
-[Polish API 3.0 version](https://polishapi.org/en/).
+Polish API 3.0 version.
+
+[Wiki](https://github.com/ITger/PolishAPI_sample/wiki)
+
 ## This project is intended for educational purposes only. No commercial or production use.
 ## Getting Started
 In this case study I tried to get the best from Swagger code generator and the best software engineering practicies to obtain a maintainable project. Main patterns I used are Delegation, Loose Coupling, Separation of Responsibilities and others.
