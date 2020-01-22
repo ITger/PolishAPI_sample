@@ -5,7 +5,7 @@ Polish API 3.0 version.
 
 This sandbox is currently running on [Google Cloud](https://polishapi-psd2.appspot.com/swagger-ui.html).
 
-Full information on [wiki page](https://github.com/ITger/PolishAPI_sample/wiki).
+Full information on how to use this project you can learn on [wiki page](https://github.com/ITger/PolishAPI_sample/wiki).
 
 ## This project is intended for educational purposes only. No commercial or production use.
 ## Getting Started
