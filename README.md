@@ -1,8 +1,6 @@
-# PSD2 PolishAPI 3.0 
+# PSD2 PolishAPI 3.0 [Wiki](https://github.com/ITger/PolishAPI_sample/wiki)
 This is a sample implementation of [PSD2](https://en.wikipedia.org/wiki/Payment_Services_Directive) 
 Polish API 3.0 version.
-
-[Wiki](https://github.com/ITger/PolishAPI_sample/wiki)
 
 ## This project is intended for educational purposes only. No commercial or production use.
 ## Getting Started
@@ -88,7 +86,7 @@ java -jar {workspace_path}\swagger\swagger-codegen\modules\swagger-codegen-cli\t
 https://localhost:8443/  
 * I opted for MongoDB as data base, to fill mongo with fake data you should execute the following command:
 ```
-curl  -X POST  https://localhost:8443//makeFakeData
+curl  -X POST  https://localhost:8443/makeFakeData
 ```
 this way, we generate RANDOM fake data. 
 * When spring started, you can test its functionality. The best is using curl, for example:
