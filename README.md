@@ -1,6 +1,12 @@
-# PSD2 PolishAPI 3.0 
+# PSD2 PolishAPI 3.0
+
 This is a sample implementation of [PSD2](https://en.wikipedia.org/wiki/Payment_Services_Directive) 
-[Polish API 3.0 version](https://polishapi.org/en/).
+Polish API 3.0 version.
+
+This sandbox is currently running on [Google Cloud](https://polishapi-psd2.appspot.com/swagger-ui.html).
+
+Full information on how to use this project you can learn on [wiki page](https://github.com/ITger/PolishAPI_sample/wiki).
+
 ## This project is intended for educational purposes only. No commercial or production use.
 ## Getting Started
 In this case study I tried to get the best from Swagger code generator and the best software engineering practicies to obtain a maintainable project. Main patterns I used are Delegation, Loose Coupling, Separation of Responsibilities and others.
@@ -85,7 +91,7 @@ java -jar {workspace_path}\swagger\swagger-codegen\modules\swagger-codegen-cli\t
 https://localhost:8443/  
 * I opted for MongoDB as data base, to fill mongo with fake data you should execute the following command:
 ```
-curl  -X POST  https://localhost:8443//makeFakeData
+curl  -X POST  https://localhost:8443/makeFakeData
 ```
 this way, we generate RANDOM fake data. 
 * When spring started, you can test its functionality. The best is using curl, for example:
