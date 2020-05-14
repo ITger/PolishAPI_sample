@@ -18,7 +18,9 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.mongojack.JacksonCodecRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -34,23 +36,24 @@ import pl.itger.polishAPI.io.swagger.api.AisApiDelegate;
 import pl.itger.polishAPI.io.swagger.model.*;
 import pl.itger.polishAPI.utils.PagingUtils;
 
+
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.*;
 
-import static pl.itger.polishAPI.utils.PagingUtils.getPageId;
+import static pl.itger.polishAPI.utils.PagingUtils.*;
 import static pl.itger.polishAPI.utils.PagingUtils.getPaginationDir;
-import static pl.itger.polishAPI.utils.PagingUtils.isPageIdValid;
-
 
 @Service
-@ConditionalOnProperty(name = "AisApiDelegate.implementation.name", havingValue = "AisApiDelegateImpl")
-public class AisApiDelegateImpl implements AisApiDelegate {
+//@Qualifier("AisApiDelegateImpl_2")
+@ConditionalOnProperty(name = "AisApiDelegate.implementation.name", havingValue = "AisApiDelegateImpl_2")
+public class AisApiDelegateImpl_2 implements AisApiDelegate {
     private MongoDbFactory mongoDbFactory;
 
     @Autowired
-    public AisApiDelegateImpl(MongoDbFactory dbFactory) {
+    public AisApiDelegateImpl_2(MongoDbFactory dbFactory) {
         this.mongoDbFactory = dbFactory;
     }
 
