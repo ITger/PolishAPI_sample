@@ -28,9 +28,9 @@ import static org.bson.codecs.configuration.CodecRegistries.*;
         })*/
 
 @EnableMongoRepositories(basePackages = {"pl.itger.polishAPI.repository"})
-
 @Configuration
 @Service
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class MongoDBConfig {
 
     @Value("${spring.data.mongodb.database}")

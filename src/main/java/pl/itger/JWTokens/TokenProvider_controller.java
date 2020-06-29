@@ -18,9 +18,9 @@ package pl.itger.JWTokens;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,20 +39,16 @@ import java.util.logging.Logger;
  */
 @RestController
 @RequestMapping("/")
+@RequiredArgsConstructor
 public class TokenProvider_controller {
-    @Autowired
-    ResponseJWT respJWT;
+
+    final private ResponseJWT respJWT;
 
     @RequestMapping(value = "jwts", method = RequestMethod.POST)
     @ResponseBody
     public String get(@NotNull String client_id, @NotNull String secret, Authentication authentication) {
         Date expirationDate = DateUtils.addDays(new Date(), 90);
         String jwt = "Jwts.builder FAILED";
-        //User user = ((User) authentication.getPrincipal());
-//        List<String> roles = user.getAuthorities()
-//                .stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.toList());
         List<String> roles = Arrays.asList("Rol1", "Rol2");
         try {
             jwt = Jwts.builder()

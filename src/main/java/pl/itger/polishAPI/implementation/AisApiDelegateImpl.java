@@ -34,20 +34,24 @@ import pl.itger.polishAPI.io.swagger.api.AisApiDelegate;
 import pl.itger.polishAPI.io.swagger.model.*;
 import pl.itger.polishAPI.utils.PagingUtils;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.*;
 
-import static pl.itger.polishAPI.utils.PagingUtils.getPageId;
-import static pl.itger.polishAPI.utils.PagingUtils.getPaginationDir;
-import static pl.itger.polishAPI.utils.PagingUtils.isPageIdValid;
-
+import static pl.itger.polishAPI.utils.PagingUtils.*;
 
 @Service
+// for selected implementation see in application.properties files
 @ConditionalOnProperty(name = "AisApiDelegate.implementation.name", havingValue = "AisApiDelegateImpl")
 public class AisApiDelegateImpl implements AisApiDelegate {
     private MongoDbFactory mongoDbFactory;
+
+    @PostConstruct
+    public void xxx() {
+        log.info("AisApiDelegateImpl");
+    }
 
     @Autowired
     public AisApiDelegateImpl(MongoDbFactory dbFactory) {

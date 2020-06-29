@@ -1,7 +1,8 @@
 package pl.itger.JWTokens;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.SignatureException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -80,16 +82,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 if (StringUtils.isNotEmpty(username)) {
                     result = new UsernamePasswordAuthenticationToken(username, null, authorities);
                 }
-            } catch (ExpiredJwtException ex) {
-                LOG.error("{} failed : {}", token, ex.getMessage());
-            } catch (UnsupportedJwtException ex) {
-                LOG.error("{} failed : {}", token, ex.getMessage());
-            } catch (MalformedJwtException ex) {
-                LOG.error("{} failed : {}", token, ex.getMessage());
-            } catch (SignatureException ex) {
-                LOG.error("{} failed : {}", token, ex.getMessage());
-            } catch (IllegalArgumentException ex) {
-                LOG.error("{} failed : {}", token, ex.getMessage());
             } catch (Exception ex) {
                 LOG.error("{} failed : {}", token, ex.getMessage());
             }

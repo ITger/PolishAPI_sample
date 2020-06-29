@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
-import com.mongodb.client.AggregateIterable;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
+import com.mongodb.client.*;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
@@ -18,9 +15,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.mongojack.JacksonCodecRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -36,7 +31,6 @@ import pl.itger.polishAPI.io.swagger.api.AisApiDelegate;
 import pl.itger.polishAPI.io.swagger.model.*;
 import pl.itger.polishAPI.utils.PagingUtils;
 
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -44,13 +38,21 @@ import java.time.OffsetDateTime;
 import java.util.*;
 
 import static pl.itger.polishAPI.utils.PagingUtils.*;
-import static pl.itger.polishAPI.utils.PagingUtils.getPaginationDir;
 
 @Service
 //@Qualifier("AisApiDelegateImpl_2")
+// for selected implementation see in application.properties files
 @ConditionalOnProperty(name = "AisApiDelegate.implementation.name", havingValue = "AisApiDelegateImpl_2")
 public class AisApiDelegateImpl_2 implements AisApiDelegate {
     private MongoDbFactory mongoDbFactory;
+
+    @Autowired
+    private MongoClient mongoClient;
+
+    @PostConstruct
+    public void xxx() {
+        log.info("AisApiDelegateImpl_2");
+    }
 
     @Autowired
     public AisApiDelegateImpl_2(MongoDbFactory dbFactory) {

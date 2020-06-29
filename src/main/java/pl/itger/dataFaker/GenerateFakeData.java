@@ -97,9 +97,7 @@ public class GenerateFakeData {
         CodecRegistry pojoCodecRegistry = org.bson.codecs.configuration.CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 org.bson.codecs.configuration.CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build()));
         MongoDatabase mdb = mongoDbFactory.getDb().withCodecRegistry(pojoCodecRegistry);
-        ;
         database = mongoClient.getDatabase(dbName).withCodecRegistry(pojoCodecRegistry);
-        ;
         MongoCollection<AccountInfo> aiCollection = database.getCollection("accountInfo", AccountInfo.class);
         MongoCollection<AccountBaseInfo> abiCollection = database.getCollection("accountBaseInfo", AccountBaseInfo.class);
         abiCollection.drop();
