@@ -3,7 +3,7 @@
 This is a sample implementation of [PSD2](https://en.wikipedia.org/wiki/Payment_Services_Directive) 
 Polish API 3.0 version.
 
-This sandbox is currently running on [Google Cloud](https://polishapi-psd2.appspot.com/swagger-ui.html).
+~~This sandbox is currently running on [Google Cloud](https://polishapi-psd2.appspot.com/swagger-ui.html).~~
 
 Full information on how to use this project you can learn on [wiki page](https://github.com/ITger/PolishAPI_sample/wiki).
 
