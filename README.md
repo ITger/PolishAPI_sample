@@ -104,3 +104,5 @@ the query predicates must be in accordance with generated data.
 ## .. work in progress ...
 ## Authors
 * **Piotr Zerynger** - *Initial work* - [Piotr Zerynger](p.zerynger@gmail.com)
+
+[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=ITger&show_icons=true&theme=radical)](https://github.com/anuraghazra/github-readme-stats)
